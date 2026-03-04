@@ -22,5 +22,9 @@ Route::get('/teman', function () {
         <p>Prodi: Sistem Informasi</p>
 
         <p>Kami siap belajar Laravel! 🚀</p>
+
+        <hr>Halo Arel ini Adam, kita akan belajar Laravel bersama-sama!
+        yuk semangat belajar Laravel!
+        kira-kira kita akan belajar apa saja ya di Laravel?
     ';
 });
