@@ -6,19 +6,21 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route teman pertama
+// Route /teman menampilkan Adam & Arel
 Route::get('/teman', function () {
-    return '<h1>Halo! Nama saya Adam</h1>';
-     return '<h1>Halo! Nama saya Arel</h1>
-            <p>NIM: 4124027</p>
-            <p>Prodi: Sistem Informasi</p>
-            <p>Saya siap belajar Laravel! 🚀</p>';
-});
+    return '
+        <h1>Perkenalan Kelompok</h1>
 
-// Route teman kedua (Arel)
-Route::get('/perkenalan-arel', function (): string {
-    return '<h1>Halo! Nama saya Arel</h1>
-            <p>NIM: 4124027</p>
-            <p>Prodi: Sistem Informasi</p>
-            <p>Saya siap belajar Laravel! 🚀</p>';
+        <h2>Halo! Nama saya Adam</h2>
+        <p>NIM: 4124001</p>
+        <p>Prodi: Sistem Informasi</p>
+
+        <hr>
+
+        <h2>Halo! Nama saya Arel</h2>
+        <p>NIM: 4124027</p>
+        <p>Prodi: Sistem Informasi</p>
+
+        <p>Kami siap belajar Laravel! 🚀</p>
+    ';
 });
