@@ -16,9 +16,9 @@ Route::get('/', function () {
 
 Route::get('/perkenalan', function () {
 
-    return '<h1>Halo! Nama saya [Nama Anda]</h1>
+    return '<h1>Halo! Nama saya [Adam Andika Sukma]</h1>
 
-            <p>NIM: [NIM Anda] | Prodi: Sistem Informasi</p>
+            <p>NIM: [4124001] | Prodi: Sistem Informasi</p>
 
             <p>Saya siap belajar Laravel! 🚀</p>';
 
