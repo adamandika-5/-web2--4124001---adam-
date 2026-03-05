@@ -25,6 +25,5 @@ Route::get('/teman', function () {
 
         <hr>Halo Arel ini Adam, kita akan belajar Laravel bersama-sama!
         yuk semangat belajar Laravel!
-        kira-kira kita akan belajar apa saja ya di Laravel?
     ';
 });
