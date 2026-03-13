@@ -1,29 +1,36 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\KatalogController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+/*
+| Route Statis (Closure)
+*/
 
-// Route /teman menampilkan Adam & Arel
-Route::get('/teman', function () {
-    return '
-        <h1>Perkenalan Kelompok</h1>
+Route::get('/tentang', function () {
+    return "<h1>Halaman Tentang</h1>";
+})->name('tentang.index');
 
-        <h2>Halo! Nama saya Adam</h2>
-        <p>NIM: 4124001</p>
-        <p>Prodi: Sistem Informasi</p>
+Route::get('/kontak', function () {
+    return "<h1>Halaman Kontak</h1>";
+})->name('kontak.index');
 
-        <hr>
+Route::get('/layanan', function () {
+    return "<h1>Halaman Layanan</h1>";
+})->name('layanan.index');
 
-        <h2>Halo! Nama saya Arel</h2>
-        <p>NIM: 4124027</p>
-        <p>Prodi: Sistem Informasi</p>
 
-        <p>Kami siap belajar Laravel! 🚀</p>
+/*
+| Route Dinamis (Controller)
+*/
 
-        <hr>Halo Arel ini Adam, kita akan belajar Laravel bersama-sama!
-        yuk semangat belajar Laravel!
-    ';
-});
+Route::get('/profil', [ProfilController::class, 'index'])->name('profil.index');
+
+Route::get('/profil/{nim}', [ProfilController::class, 'show'])->name('profil.show');
+
+Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog.index');
+
+Route::get('/katalog/{id}', [KatalogController::class, 'show'])->name('katalog.show');
+
+
