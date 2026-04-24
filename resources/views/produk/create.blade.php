@@ -3,39 +3,73 @@
 @section('title', 'Tambah Produk')
 
 @section('content')
-<h1 class="text-2xl font-bold mb-6">Tambah Produk</h1>
+<div class="max-w-2xl mx-auto py-8">
+    @if ($errors->any())
+        <x-alert type="error" dismissible>
+            Periksa kembali data produk yang diisi.
+        </x-alert>
+    @endif
 
-<form method="POST" action="#" class="bg-white p-6 rounded shadow max-w-lg">
-    @csrf
+    <x-card title="Form Tambah Produk Toko Bangunan">
+        <form action="{{ route('produk.store') }}" method="POST" class="space-y-5">
+            @csrf
 
-    <!-- Nama -->
-    <div class="mb-4">
-        <label class="block mb-1 font-medium">Nama Produk</label>
-        <input type="text" name="nama" class="w-full border p-2 rounded">
+            <x-input
+                label="Nama Produk"
+                name="nama"
+                required
+                placeholder="Contoh: Semen Tiga Roda"
+                hint="Masukkan nama material bangunan."
+            />
 
-        @error('nama')
-            <p class="text-red-500 text-sm">{{ $message }}</p>
-        @enderror
-    </div>
+            <x-input
+                label="Kategori"
+                name="kategori"
+                required
+                placeholder="Contoh: Semen, Cat, Pasir"
+            />
 
-    <!-- Harga -->
-    <div class="mb-4">
-        <label class="block mb-1 font-medium">Harga</label>
-        <input type="text" name="harga" class="w-full border p-2 rounded">
+            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <x-input
+                    label="Harga"
+                    name="harga"
+                    type="number"
+                    required
+                    placeholder="Contoh: 75000"
+                />
 
-        @error('harga')
-            <p class="text-red-500 text-sm">{{ $message }}</p>
-        @enderror
-    </div>
+                <x-input
+                    label="Stok"
+                    name="stok"
+                    type="number"
+                    required
+                    placeholder="Contoh: 100"
+                />
+            </div>
 
-    <!-- Deskripsi -->
-    <div class="mb-4">
-        <label class="block mb-1 font-medium">Deskripsi</label>
-        <textarea name="deskripsi" class="w-full border p-2 rounded"></textarea>
-    </div>
+            <div class="space-y-1">
+                <label for="deskripsi" class="block text-sm font-medium text-slate-700">
+                    Deskripsi
+                </label>
+                <textarea
+                    id="deskripsi"
+                    name="deskripsi"
+                    rows="4"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    placeholder="Tuliskan deskripsi singkat produk"
+                >{{ old('deskripsi') }}</textarea>
+                @error('deskripsi')
+                    <p class="text-sm text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
 
-    <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-        Simpan
-    </button>
-</form>
+            <div class="flex gap-3">
+                <x-button type="submit">Simpan Produk</x-button>
+                <x-button href="{{ route('produk.index') }}" variant="secondary">
+                    Kembali
+                </x-button>
+            </div>
+        </form>
+    </x-card>
+</div>
 @endsection
