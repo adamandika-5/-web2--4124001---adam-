@@ -1,24 +1,27 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Produk')
-
 @section('content')
 
-<div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+<div class="max-w-4xl mx-auto py-10">
 
-    <img src="{{ $item['gambar'] }}" class="w-full rounded mb-4">
+    <img src="{{ $produk['gambar'] }}"
+         class="w-full h-80 object-cover rounded-xl mb-6">
 
-    <h1 class="text-2xl font-bold mb-2">
-        {{ $item['nama'] }}
+    <h1 class="text-3xl font-bold mb-3">
+        {{ $produk['nama'] }}
     </h1>
 
-    <p class="text-gray-700 mb-4">
-        {{ $item['deskripsi'] }}
+    <p class="text-gray-600 mb-4">
+        {{ $produk['deskripsi'] }}
     </p>
 
-    <a href="/produk" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
-        Kembali
-    </a>
+    <p class="text-2xl font-bold text-teal-600 mb-3">
+        Rp {{ number_format($produk['harga'], 0, ',', '.') }}
+    </p>
+
+    <p class="text-gray-500">
+        Stok: {{ $produk['stok'] }}
+    </p>
 
 </div>
 
