@@ -3,153 +3,109 @@
 @section('title', 'Katalog Produk')
 
 @section('content')
-
-<div class="max-w-6xl mx-auto px-4 py-8">
-
+<div class="max-w-7xl mx-auto px-4 py-8">
+    
     {{-- Flash Message --}}
     @if(session('success'))
-        <x-alert type="success" :message="session('success')" dismissible />
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl mb-6">
+        {{ session('success') }}
+    </div>
     @endif
 
-    @if(session('error'))
-        <x-alert type="error" :message="session('error')" dismissible />
-    @endif
-
-    {{-- Header --}}
+    {{-- Header + Search + Tombol Tambah --}}
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-
         <div>
-            <h1 class="text-3xl font-bold text-slate-800">
-                Katalog Produk
-            </h1>
-
-            <p class="text-gray-500">
-                Total: {{ count($produk) }} produk
-            </p>
+            <h1 class="text-3xl font-bold text-gray-800">Katalog Produk</h1>
+            <p class="text-gray-500">Total: {{ $produk->total() }} produk</p>
         </div>
-
+        
         <div class="flex gap-3 flex-wrap">
-
-            {{-- Search --}}
-            <form method="GET" class="flex gap-2">
-
-                <input
+            <form method="GET" action="{{ route('produk.index') }}" class="flex gap-2">
+                <input 
                     type="text"
-                    name="q"
+                    name="q" 
                     value="{{ request('q') }}"
                     placeholder="Cari produk..."
-                    class="border rounded-xl px-4 py-2 focus:ring-2 focus:ring-teal-500"
-                >
-
-                <x-button type="submit">
+                    class="border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-xl">
                     Cari
-                </x-button>
-
+                </button>
             </form>
-
-            {{-- Tombol Tambah --}}
+            
             <a href="{{ route('produk.create') }}"
-               class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-xl">
+               class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl">
                 + Tambah
             </a>
-
         </div>
-
     </div>
 
     {{-- Grid Produk --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
         @forelse($produk as $p)
-
-            <x-card class="group">
-
-                {{-- Header Card --}}
-                <div class="flex items-center justify-between mb-4">
-
-                    <x-badge color="teal">
-                        {{ $p['kategori'] ?? 'Umum' }}
-                    </x-badge>
-
-                    <span class="text-sm text-gray-500">
-                        Stok: {{ $p['stok'] ?? 0 }}
-                    </span>
-
-                </div>
-
-                {{-- Gambar --}}
-                <img
-                    src="{{ $p['gambar'] ?? 'https://via.placeholder.com/400x250' }}"
-                    alt="{{ $p['nama'] ?? 'Produk' }}"
-                    class="mb-4 h-48 w-full rounded-lg object-cover"
-                >
-
-                {{-- Nama --}}
-                <h2 class="text-xl font-bold text-slate-800">
-                    {{ $p['nama'] ?? '-' }}
-                </h2>
-
-                {{-- Deskripsi --}}
-                <p class="mt-2 text-sm text-gray-600">
-                    {{ $p['deskripsi'] ?? 'Tidak ada deskripsi.' }}
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition">
+            
+            {{-- Gambar Produk (jika ada) --}}
+            @if($p->foto)
+            <img src="{{ $p->foto }}" alt="{{ $p->nama }}" class="w-full h-48 object-cover">
+            @else
+            <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                <span class="text-gray-400 text-sm">Tidak ada gambar</span>
+            </div>
+            @endif
+            
+            <div class="p-6">
+                <span class="inline-block bg-teal-100 text-teal-800 text-xs px-3 py-1 rounded-full">
+                    {{ $p->kategori ?? 'Umum' }}
+                </span>
+                
+                <h2 class="text-lg font-bold mt-3 mb-1 text-gray-800">{{ $p->nama }}</h2>
+                
+                <p class="text-2xl font-bold text-teal-600 mb-2">
+                    Rp {{ number_format($p->harga, 0, ',', '.') }}
                 </p>
-
-                {{-- Harga --}}
-                <p class="mt-4 text-2xl font-bold text-teal-600">
-                    Rp {{ number_format($p['harga'] ?? 0, 0, ',', '.') }}
-                </p>
-
-                {{-- Tombol --}}
-                <div class="flex gap-2 mt-5">
-
-                    <a href="#"
-                       class="flex-1 text-center bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-xl text-sm">
+                
+                <p class="text-sm text-gray-500 mb-4">Stok: {{ $p->stok }}</p>
+                
+                <div class="flex gap-2">
+                    {{-- Tombol Detail --}}
+                    <a href="{{ route('produk.show', $p->id) }}"
+                       class="flex-1 text-center bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-xl text-sm transition">
                         Detail
                     </a>
-
-                    <a href="#"
-                       class="flex-1 text-center bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-xl text-sm">
+                    
+                    {{-- Tombol Edit --}}
+                    <a href="{{ route('produk.edit', $p->id) }}"
+                       class="flex-1 text-center bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-xl text-sm transition">
                         Edit
                     </a>
-
-                    <form action="#"
-                          method="POST"
-                          onsubmit="return confirm('Hapus produk ini?')">
-
-                        @csrf
+                    
+                    {{-- Tombol Hapus --}}
+                    <form action="{{ route('produk.destroy', $p->id) }}" method="POST" 
+                          onsubmit="return confirm('Yakin ingin menghapus produk ini?')"
+                          class="inline">
+                        @csrf 
                         @method('DELETE')
-
-                        <button
-                            type="submit"
-                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-xl text-sm">
+                        <button type="submit" 
+                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl text-sm transition">
                             Hapus
                         </button>
-
                     </form>
-
                 </div>
-
-            </x-card>
-
-        @empty
-
-            <div class="col-span-3 text-center py-16">
-
-                <p class="text-gray-500 text-lg">
-                    Produk tidak ditemukan.
-                </p>
-
             </div>
-
+        </div>
+        @empty
+        <div class="col-span-3 text-center py-16">
+            <p class="text-gray-500 text-lg">Produk tidak ditemukan.</p>
+            <a href="{{ route('produk.create') }}" class="text-teal-600 hover:underline mt-2 inline-block">
+                Tambah produk pertama
+            </a>
+        </div>
         @endforelse
-
     </div>
 
     {{-- Pagination --}}
     <div class="mt-8">
-        {{-- Pagination dinonaktifkan sementara --}}
+        {{ $produk->withQueryString()->links() }}
     </div>
-
 </div>
-
 @endsection
