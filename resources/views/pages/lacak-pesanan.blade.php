@@ -14,8 +14,8 @@
     </div>
 
     {{-- Form Lacak --}}
-    <form action="{{ route('lacak.show', '') }}" method="GET"
-          onsubmit="event.preventDefault(); window.location.href='/lacak/'+document.getElementById('nomorInput').value.trim()"
+    <form action="{{ route('lacak') }}" method="GET"
+          onsubmit="event.preventDefault(); const nomor = document.getElementById('nomorInput').value.trim(); if (nomor) { window.location.href = '{{ url('/lacak') }}/' + encodeURIComponent(nomor); }"
           style="background:#fff;border-radius:var(--r-xl);padding:32px;box-shadow:var(--sh-md);border:1px solid rgba(176,139,110,.1);margin-bottom:36px">
         <label class="form-lbl" style="font-size:14px;margin-bottom:10px;display:block">
             Nomor Pesanan

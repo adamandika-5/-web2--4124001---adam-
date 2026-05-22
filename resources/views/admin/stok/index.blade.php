@@ -44,7 +44,7 @@
                 <select name="kategori" onchange="this.form.submit()"
                         style="padding:6px 10px;border:1.5px solid var(--sand);border-radius:var(--r-md);background:#fff;font-family:var(--fb);font-size:12.5px;color:var(--soil);outline:none;cursor:pointer">
                     <option value="">Semua Kategori</option>
-                    @foreach($kategoris as $kat)
+                    @foreach($kategoris ?? [] as $kat)
                         <option value="{{ $kat->id }}" {{ request('kategori')==$kat->id?'selected':'' }}>{{ $kat->nama }}</option>
                     @endforeach
                 </select>
@@ -59,14 +59,14 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($produks as $p)
+                @forelse($produks ?? [] as $p)
                 <tr>
                     <td>
                         <div style="font-weight:700;font-size:13px;color:var(--soil)">{{ Str::limit($p->nama,40) }}</div>
                         <div style="font-size:11px;color:var(--clay)">SKU: {{ $p->sku ?? '—' }}</div>
                     </td>
                     <td>
-                        <span class="badge" style="background:rgba(176,139,110,.1);color:var(--clay);font-size:11px">{{ $p->kategori->nama }}</span>
+                        <span class="badge" style="background:rgba(176,139,110,.1);color:var(--clay);font-size:11px">{{ $p->kategori->nama ?? '—' }}</span>
                     </td>
                     <td>
                         <div style="display:flex;align-items:center;gap:8px">
@@ -105,6 +105,7 @@
                 @endforelse
             </tbody>
         </table>
+        @if(isset($produks) && method_exists($produks, 'currentPage'))
         <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-top:1px solid rgba(176,139,110,.09);background:var(--oat)">
             <div style="font-size:13px;color:var(--clay)">{{ $produks->total() }} produk</div>
             <div style="display:flex;gap:4px">
@@ -116,6 +117,7 @@
                 @if($produks->hasMorePages())<a href="{{ $produks->nextPageUrl() }}" class="pag-btn">›</a>@endif
             </div>
         </div>
+        @endif
     </div>
 
     {{-- Riwayat & Info --}}
@@ -127,7 +129,7 @@
                 Perlu Restock Segera
                 <span class="badge badge-low">{{ $stokRendah + $stokHabis }}</span>
             </div>
-            @forelse($produkKritis as $p)
+            @forelse($produkKritis ?? [] as $p)
             <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(176,139,110,.07)">
                 <div>
                     <div style="font-size:13px;font-weight:700;color:var(--soil)">{{ Str::limit($p->nama,28) }}</div>

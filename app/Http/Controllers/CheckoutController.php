@@ -26,6 +26,7 @@ class CheckoutController extends Controller
             'alamat_id'        => 'required|exists:alamat_users,id',
             'jenis_pengiriman' => 'required|in:ekspedisi,armada',
             'metode_bayar'     => 'required|in:transfer_bank,qris,cod,dp',
+            'ekspedisi'        => 'required_if:jenis_pengiriman,ekspedisi|nullable|in:jnt,jne,sicepat',
         ]);
 
         $alamat   = auth()->user()->alamat()->findOrFail($request->alamat_id);

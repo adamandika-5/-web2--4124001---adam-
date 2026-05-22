@@ -55,8 +55,8 @@
                     </svg>
                     @php
                         try {
-                            $cartCount = class_exists('\Cart') ? \Cart::count() : 0;
-                        } catch (\Exception $e) {
+                            $cartCount = class_exists('\Cart') ? \Cart::getTotalQuantity() : 0;
+                        } catch (\Throwable $e) {
                             $cartCount = 0;
                         }
                     @endphp

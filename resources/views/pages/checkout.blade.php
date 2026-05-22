@@ -1,6 +1,30 @@
 @extends('layouts.app')
 @section('title', 'Checkout')
 
+@push('styles')
+<style>
+    .ekspedisi-card {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 14px !important;
+        border: 2px solid var(--sand) !important;
+        border-radius: var(--r-md) !important;
+        cursor: pointer !important;
+        transition: all 0.2s !important;
+        background: #fff !important;
+        text-align: left !important;
+    }
+    .ekspedisi-card:hover {
+        border-color: var(--terracotta) !important;
+    }
+    .ekspedisi-card:has(input:checked) {
+        border-color: var(--terracotta) !important;
+        background: rgba(198, 107, 61, 0.04) !important;
+    }
+</style>
+@endpush
+
 @section('content')
 
 {{-- Stepper --}}
@@ -48,7 +72,7 @@
                     @foreach($alamats as $alamat)
                     <label style="display:flex;gap:14px;padding:16px;border:2px solid {{ $alamat->is_utama ? 'var(--terracotta)' : 'var(--sand)' }};border-radius:var(--r-lg);cursor:pointer;transition:border-color .2s;background:{{ $alamat->is_utama ? 'rgba(198,107,61,.04)' : '#fff' }}"
                            onmouseover="this.style.borderColor='var(--terracotta)'" onmouseout="this.style.borderColor='{{ $alamat->is_utama ? 'var(--terracotta)' : 'var(--sand)' }}'">
-                        <input type="radio" name="alamat_id" value="{{ $alamat->id }}"
+                        <input type="radio" name="alamat_id" value="{{ $alamat->id }}" data-kota="{{ $alamat->kota }}"
                                {{ $alamat->is_utama || $loop->first ? 'checked' : '' }}
                                style="accent-color:var(--terracotta);margin-top:3px;flex-shrink:0">
                         <div style="flex:1">
@@ -116,12 +140,13 @@
                             ['jne','JNE Regular','2-5 hari'],
                             ['sicepat','SiCepat HALU','1-3 hari'],
                         ] as [$val, $nama, $est])
-                        <label style="display:flex;flex-direction:column;gap:4px;padding:11px;border:1.5px solid var(--sand);border-radius:var(--r-md);cursor:pointer;transition:all .2s;text-align:center"
-                               onmouseover="this.style.borderColor='var(--terracotta)'" onmouseout="if(!this.querySelector('input').checked)this.style.borderColor='var(--sand)'">
+                        <label class="ekspedisi-card">
                             <input type="radio" name="ekspedisi" value="{{ $val }}" {{ $val==='jnt'?'checked':'' }}
-                                   style="display:none" onchange="this.closest('label').style.borderColor='var(--terracotta)'">
-                            <span style="font-size:13px;font-weight:700;color:var(--soil)">{{ $nama }}</span>
-                            <span style="font-size:11px;color:var(--clay)">{{ $est }}</span>
+                                   style="accent-color:var(--terracotta);margin:0;flex-shrink:0">
+                            <div>
+                                <span style="display:block;font-size:13px;font-weight:700;color:var(--soil)">{{ $nama }}</span>
+                                <span style="display:block;font-size:11px;color:var(--clay);margin-top:2px">{{ $est }}</span>
+                            </div>
                         </label>
                         @endforeach
                     </div>
@@ -172,7 +197,7 @@
         {{-- Ringkasan Item --}}
         <div style="background:#fff;border-radius:var(--r-lg);padding:20px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08);margin-bottom:14px">
             <div style="font-size:13.5px;font-weight:700;color:var(--soil);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--sand)">
-                Ringkasan Pesanan ({{ \Cart::count() }} produk)
+                Ringkasan Pesanan ({{ class_exists('\Cart') ? \Cart::getTotalQuantity() : 0 }} produk)
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto;margin-bottom:14px">
                 @foreach(\Cart::getContent() as $item)
@@ -250,12 +275,17 @@ async function hitungOngkir(kota, jenis) {
 
 function updatePengiriman(radio) {
     const selectedAlamat = document.querySelector('[name="alamat_id"]:checked');
+    const ekspedisiOptions = document.getElementById('ekspedisiOptions');
     if (radio.value === 'ekspedisi') {
+        document.getElementById('ongkirVal').value = 0;
         document.getElementById('ongkirDisplay').textContent = 'Dihitung saat konfirmasi';
         document.getElementById('ongkirDisplay').style.color = 'var(--ochre)';
+        document.getElementById('totalDisplay').textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
+        if (ekspedisiOptions) ekspedisiOptions.style.display = 'grid';
     } else {
+        if (ekspedisiOptions) ekspedisiOptions.style.display = 'none';
         if (selectedAlamat) {
-            const kota = selectedAlamat.closest('label').querySelector('[style*="kota"]')?.textContent;
+            const kota = selectedAlamat.getAttribute('data-kota');
             hitungOngkir(kota, radio.value);
         }
     }
@@ -266,6 +296,14 @@ document.querySelectorAll('[name="alamat_id"]').forEach(r => {
         const jenis = document.querySelector('[name="jenis_pengiriman"]:checked')?.value;
         if (jenis === 'armada') updatePengiriman({value:'armada'});
     });
+});
+
+// Run initially to match current state
+document.addEventListener('DOMContentLoaded', () => {
+    const activeJenis = document.querySelector('[name="jenis_pengiriman"]:checked');
+    if (activeJenis) {
+        updatePengiriman(activeJenis);
+    }
 });
 </script>
 @endpush
