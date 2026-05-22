@@ -21,12 +21,11 @@
         <div class="pub-nav-inner">
 
             {{-- Logo --}}
-            <a href="{{ route('beranda') }}" class="nav-logo">
-                <div class="nav-logo-mark">
-                    <svg viewBox="0 0 20 20"><path d="M3 16 L10 3 L17 16 Z"/></svg>
-                </div>
-                Sinar Alam
-            </a>
+<a href="{{ route('beranda') }}" class="nav-logo" style="display:flex;align-items:center;text-decoration:none">
+    <img src="{{ asset('gambar/logo-sinar-alam.png') }}"
+         alt="Sinar Alam"
+         style="height:46px;width:auto;display:block">
+</a>
 
             {{-- Menu --}}
             <div class="nav-links">
@@ -168,7 +167,7 @@
     </footer>
 
     {{-- WhatsApp Float --}}
-    <a href="https://wa.me/{{ config('app.whatsapp_number', '6234355512345') }}" target="_blank" class="wa-float" title="Chat WhatsApp Sinar Alam">💬</a>
+    <a href="https://wa.me/{{ config('app.whatsapp_number', '625749503756') }}" target="_blank" class="wa-float" title="Chat WhatsApp Sinar Alam">💬</a>
 
     <script>
         function toggleDropdown() {
