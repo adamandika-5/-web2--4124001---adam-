@@ -13,17 +13,17 @@
 --}}
 
 {{-- Ringkasan stok --}}
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+<div class="adm-stat-strip" style="grid-template-columns:repeat(4,1fr)">
     @foreach([
         ['📦','Total Produk Aktif',$totalAktif,'rgba(198,107,61,.1)','var(--soil)'],
         ['✅','Stok Aman',$stokAman,'rgba(96,108,56,.1)','var(--moss)'],
         ['⚠️','Stok Rendah (< 20)',$stokRendah,'rgba(192,142,58,.1)','var(--ochre)'],
         ['❌','Stok Habis',$stokHabis,'rgba(192,48,48,.08)','#c03030'],
     ] as [$ikon,$label,$val,$bg,$warna])
-    <div style="background:#fff;border-radius:var(--r-lg);padding:18px 20px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.07)">
+    <div class="adm-card" style="padding:18px 20px">
         <div style="width:40px;height:40px;background:{{ $bg }};border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px">{{ $ikon }}</div>
-        <div style="font-size:11px;color:var(--clay);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px">{{ $label }}</div>
-        <div style="font-family:var(--fd);font-size:26px;font-weight:700;color:{{ $warna }}">{{ number_format($val) }}</div>
+        <div class="adm-stat-lbl">{{ $label }}</div>
+        <div class="adm-stat-val" style="color:{{ $warna }}">{{ number_format($val) }}</div>
     </div>
     @endforeach
 </div>
@@ -31,18 +31,16 @@
 <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
 
     {{-- Tabel Stok --}}
-    <div style="background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;border:1px solid rgba(176,139,110,.07)">
+    <div class="adm-tbl-wrap">
         <div style="padding:14px 20px;border-bottom:1px solid rgba(176,139,110,.09);display:flex;align-items:center;justify-content:space-between">
-            <div style="font-family:var(--fd);font-size:15.5px;font-weight:500;color:var(--soil)">Inventaris Stok</div>
+            <div class="adm-card-hdr" style="margin-bottom:0">Inventaris Stok</div>
             <form method="GET" action="{{ route('admin.stok.index') }}" style="display:flex;gap:8px">
-                <select name="filter" onchange="this.form.submit()"
-                        style="padding:6px 10px;border:1.5px solid var(--sand);border-radius:var(--r-md);background:#fff;font-family:var(--fb);font-size:12.5px;color:var(--soil);outline:none;cursor:pointer">
+                <select name="filter" onchange="this.form.submit()" class="form-inp" style="font-size:12.5px;padding:6px 10px">
                     <option value="">Semua</option>
                     <option value="low_stock" {{ request('filter')==='low_stock'?'selected':'' }}>Stok Rendah</option>
                     <option value="out_of_stock" {{ request('filter')==='out_of_stock'?'selected':'' }}>Stok Habis</option>
                 </select>
-                <select name="kategori" onchange="this.form.submit()"
-                        style="padding:6px 10px;border:1.5px solid var(--sand);border-radius:var(--r-md);background:#fff;font-family:var(--fb);font-size:12.5px;color:var(--soil);outline:none;cursor:pointer">
+                <select name="kategori" onchange="this.form.submit()" class="form-inp" style="font-size:12.5px;padding:6px 10px">
                     <option value="">Semua Kategori</option>
                     @foreach($kategoris ?? [] as $kat)
                         <option value="{{ $kat->id }}" {{ request('kategori')==$kat->id?'selected':'' }}>{{ $kat->nama }}</option>
@@ -106,8 +104,8 @@
             </tbody>
         </table>
         @if(isset($produks) && method_exists($produks, 'currentPage'))
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-top:1px solid rgba(176,139,110,.09);background:var(--oat)">
-            <div style="font-size:13px;color:var(--clay)">{{ $produks->total() }} produk</div>
+        <div class="adm-tbl-footer">
+            <div class="adm-tbl-footer-info">{{ $produks->total() }} produk</div>
             <div style="display:flex;gap:4px">
                 @if(!$produks->onFirstPage())<a href="{{ $produks->previousPageUrl() }}" class="pag-btn">‹</a>@endif
                 @foreach($produks->getUrlRange(max(1,$produks->currentPage()-2),min($produks->lastPage(),$produks->currentPage()+2)) as $pg=>$url)

@@ -301,6 +301,40 @@ nav[aria-label="pagination"] ul li span.cursor-default,
 .section-card-hdr a { font-size: 12px; color: var(--terracotta); font-weight: 600; text-decoration: none; font-family: var(--fb); }
 .section-card-hdr a:hover { text-decoration: underline; }
 
+/* ── ADMIN CARD UTILITY ── */
+.adm-card { background: #fff; border-radius: var(--r-lg); box-shadow: var(--sh-sm); border: 1px solid rgba(176,139,110,.08); }
+.adm-card-body { padding: 24px; }
+.adm-card-hdr { font-family: var(--fd); font-size: 15.5px; font-weight: 500; color: var(--soil); display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.adm-card-hdr a { font-size: 12.5px; color: var(--terracotta); text-decoration: none; font-weight: 700; font-family: var(--fb); }
+.adm-card-hdr a:hover { text-decoration: underline; }
+
+/* ── ADMIN PAGE HEADER ── */
+.adm-page-hdr { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.adm-page-hdr-title { font-family: var(--fd); font-size: 17px; font-weight: 500; color: var(--soil); }
+
+/* ── ADMIN TOOLBAR ── */
+.adm-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+.adm-toolbar .form-inp { padding: 8px 12px; font-size: 13px; border-radius: var(--r-md); }
+
+/* ── ADMIN STAT STRIP ── */
+.adm-stat-strip { display: grid; gap: 12px; margin-bottom: 20px; }
+.adm-stat-item { background: #fff; border-radius: var(--r-lg); padding: 14px 16px; box-shadow: var(--sh-sm); border: 2px solid rgba(176,139,110,.07); text-decoration: none; transition: border-color .2s; display: block; }
+.adm-stat-item:hover { border-color: var(--terracotta); }
+.adm-stat-item.active { border-color: var(--terracotta); }
+.adm-stat-lbl { font-size: 11px; color: var(--clay); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+.adm-stat-val { font-family: var(--fd); font-size: 26px; font-weight: 700; color: var(--soil); line-height: 1.1; }
+
+/* ── ADMIN TABLE WRAPPER ── */
+.adm-tbl-wrap { background: #fff; border-radius: var(--r-lg); box-shadow: var(--sh-sm); border: 1px solid rgba(176,139,110,.07); overflow: hidden; margin-bottom: 4px; }
+.adm-tbl-footer { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-top: 1px solid rgba(176,139,110,.09); background: var(--oat); }
+.adm-tbl-footer-info { font-size: 13px; color: var(--clay); }
+
+/* ── ADMIN BREADCRUMB ── */
+.adm-breadcrumb { font-size: 12.5px; color: var(--clay); flex: 1; margin-left: 12px; }
+
+/* ── ROW HOVER ── */
+.row-hover:hover td { background: rgba(232,220,199,.2); }
+
 /* ── WA FLOAT ── */
 .wa-float { position: fixed; bottom: 24px; right: 24px; width: 52px; height: 52px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 18px rgba(37,211,102,.38); cursor: pointer; z-index: 998; transition: all .2s; text-decoration: none; animation: wafloat 3.5s ease-in-out infinite; }
 @keyframes wafloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }

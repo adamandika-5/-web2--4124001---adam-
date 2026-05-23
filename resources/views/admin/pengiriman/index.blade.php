@@ -6,22 +6,22 @@
 @section('content')
 
 {{-- Stats --}}
-<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:22px;max-width:400px">
-    <div style="background:#fff;border-radius:var(--r-md);padding:16px 20px;border:1px solid rgba(176,139,110,.08);box-shadow:var(--sh-sm)">
-        <div style="font-size:24px;font-weight:700;color:var(--terracotta);font-family:var(--fd)">{{ $siapKirim }}</div>
-        <div style="font-size:12.5px;color:var(--clay)">🚚 Siap Dikirim</div>
+<div class="adm-stat-strip" style="grid-template-columns:repeat(2,1fr);max-width:360px">
+    <div class="adm-card" style="padding:16px 20px">
+        <div class="adm-stat-val" style="color:var(--terracotta)">{{ $siapKirim }}</div>
+        <div class="adm-stat-lbl" style="margin-top:4px">🚚 Siap Dikirim</div>
     </div>
-    <div style="background:#fff;border-radius:var(--r-md);padding:16px 20px;border:1px solid rgba(176,139,110,.08);box-shadow:var(--sh-sm)">
-        <div style="font-size:24px;font-weight:700;color:#2563eb;font-family:var(--fd)">{{ $dikirim }}</div>
-        <div style="font-size:12.5px;color:var(--clay)">📦 Dalam Pengiriman</div>
+    <div class="adm-card" style="padding:16px 20px">
+        <div class="adm-stat-val" style="color:#2563eb">{{ $dikirim }}</div>
+        <div class="adm-stat-lbl" style="margin-top:4px">📦 Dalam Pengiriman</div>
     </div>
 </div>
 
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+<div class="adm-toolbar" style="justify-content:space-between">
     <form method="GET" style="display:flex;gap:8px">
         <input class="form-inp" type="text" name="q" value="{{ request('q') }}"
                placeholder="No. pesanan, penerima, kota..."
-               style="width:260px;padding:8px 12px;font-size:13px">
+               style="width:260px;font-size:13px;padding:8px 12px">
         <select class="form-inp" name="status" style="width:140px;font-size:13px;padding:8px">
             <option value="">Semua Status</option>
             <option value="dikonfirmasi" {{ request('status')==='dikonfirmasi'?'selected':'' }}>Dikonfirmasi</option>
@@ -35,15 +35,15 @@
     </a>
 </div>
 
-<div style="background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.07);overflow:hidden">
-    <table style="width:100%;border-collapse:collapse;font-size:13.5px">
+<div class="adm-tbl-wrap">
+    <table class="data-tbl">
         <thead>
-            <tr style="background:var(--oat)">
-                <th style="padding:12px 16px;text-align:left;color:var(--clay);font-weight:600">No. Pesanan</th>
-                <th style="padding:12px 16px;text-align:left;color:var(--clay);font-weight:600">Penerima</th>
-                <th style="padding:12px 16px;text-align:left;color:var(--clay);font-weight:600">Kota Tujuan</th>
-                <th style="padding:12px 16px;text-align:center;color:var(--clay);font-weight:600">Status</th>
-                <th style="padding:12px 16px;text-align:center;color:var(--clay);font-weight:600">Aksi</th>
+            <tr>
+                <th>No. Pesanan</th>
+                <th>Penerima</th>
+                <th>Kota Tujuan</th>
+                <th style="text-align:center">Status</th>
+                <th style="text-align:center">Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -62,22 +62,18 @@
                 </td>
                 <td style="padding:12px 16px;text-align:center">
                     @php
-                        $warna = match($pesanan->status) {
-                            'dikonfirmasi' => ['rgba(37,99,235,.1)', '#2563eb'],
-                            'diproses'     => ['rgba(234,179,8,.12)', '#a16207'],
-                            'dikirim'      => ['rgba(22,163,74,.1)', '#16a34a'],
-                            default        => ['rgba(176,139,110,.1)', 'var(--clay)'],
+                        $sPill = match($pesanan->status) {
+                            'dikonfirmasi' => 's-proses',
+                            'diproses'     => 's-proses',
+                            'dikirim'      => 's-lunas',
+                            default        => 's-pending',
                         };
                     @endphp
-                    <span style="padding:3px 10px;border-radius:99px;font-size:11.5px;font-weight:700;
-                        background:{{ $warna[0] }};color:{{ $warna[1] }}">
-                        {{ ucfirst($pesanan->status) }}
-                    </span>
+                    <span class="status-pill {{ $sPill }}">{{ ucfirst($pesanan->status) }}</span>
                 </td>
                 <td style="padding:12px 16px;text-align:center">
-                    <a href="{{ route('admin.pengiriman.show', $pesanan) }}"
-                       style="font-size:12.5px;color:var(--terracotta);font-weight:600;text-decoration:none">
-                        Detail
+                    <a href="{{ route('admin.pengiriman.show', $pesanan) }}" class="act-btn" title="Detail" style="display:inline-flex">
+                        <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                     </a>
                 </td>
             </tr>

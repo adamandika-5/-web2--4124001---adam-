@@ -57,22 +57,22 @@
 </div>
 
 {{-- ── TABEL PRODUK ── --}}
-<div style="background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.07);overflow:hidden;margin-bottom:20px">
-    <table style="width:100%;border-collapse:collapse;font-size:13.5px">
+<div class="adm-tbl-wrap" style="margin-bottom:20px">
+    <table class="data-tbl">
         <thead>
-            <tr style="background:var(--oat)">
-                <th style="padding:12px 16px;text-align:left;color:var(--clay);font-weight:600;width:120px">SKU</th>
-                <th style="padding:12px 16px;text-align:left;color:var(--clay);font-weight:600">Produk</th>
-                <th style="padding:12px 16px;text-align:left;color:var(--clay);font-weight:600">Kategori</th>
-                <th style="padding:12px 16px;text-align:right;color:var(--clay);font-weight:600;width:140px">Harga</th>
-                <th style="padding:12px 16px;text-align:right;color:var(--clay);font-weight:600;width:110px">Stok</th>
-                <th style="padding:12px 16px;text-align:center;color:var(--clay);font-weight:600;width:100px">Status</th>
-                <th style="padding:12px 16px;text-align:center;color:var(--clay);font-weight:600;width:140px">Aksi</th>
+            <tr>
+                <th style="width:110px">SKU</th>
+                <th>Produk</th>
+                <th>Kategori</th>
+                <th style="text-align:right;width:140px">Harga</th>
+                <th style="text-align:right;width:100px">Stok</th>
+                <th style="text-align:center;width:90px">Status</th>
+                <th style="text-align:center;width:120px">Aksi</th>
             </tr>
         </thead>
         <tbody>
             @forelse($produk ?? [] as $p)
-            <tr style="border-top:1px solid rgba(176,139,110,.06)" class="row-hover">
+            <tr class="row-hover">
                 
                 {{-- SKU --}}
                 <td style="padding:12px 16px;font-family:monospace;color:var(--clay)">

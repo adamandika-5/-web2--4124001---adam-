@@ -9,8 +9,8 @@
 <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:20px;margin-bottom:28px">
     
     {{-- Card 1: Pendapatan --}}
-    <div style="background:#fff;border-radius:var(--r-lg);padding:24px;border:1px solid rgba(176,139,110,.08);box-shadow:var(--sh-sm);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
-        <div style="font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--clay);margin-bottom:12px">Pendapatan Bulan Ini</div>
+    <div class="adm-card" style="padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
+        <div class="adm-stat-lbl">Pendapatan Bulan Ini</div>
         <div>
             <div style="font-family:var(--fd);font-size:26px;font-weight:700;color:var(--soil)">Rp {{ number_format($pendapatanBulanIni, 0, ',', '.') }}</div>
             <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12.5px">
@@ -26,8 +26,8 @@
     </div>
 
     {{-- Card 2: Pesanan --}}
-    <div style="background:#fff;border-radius:var(--r-lg);padding:24px;border:1px solid rgba(176,139,110,.08);box-shadow:var(--sh-sm);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
-        <div style="font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--clay);margin-bottom:12px">Pesanan Baru</div>
+    <div class="adm-card" style="padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
+        <div class="adm-stat-lbl">Pesanan Baru</div>
         <div>
             <div style="font-family:var(--fd);font-size:26px;font-weight:700;color:var(--soil)">{{ number_format($pesananBulanIni) }}</div>
             <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12.5px">
@@ -43,8 +43,8 @@
     </div>
 
     {{-- Card 3: Pelanggan Baru --}}
-    <div style="background:#fff;border-radius:var(--r-lg);padding:24px;border:1px solid rgba(176,139,110,.08);box-shadow:var(--sh-sm);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
-        <div style="font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--clay);margin-bottom:12px">Pelanggan Baru</div>
+    <div class="adm-card" style="padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
+        <div class="adm-stat-lbl">Pelanggan Baru</div>
         <div>
             <div style="font-family:var(--fd);font-size:26px;font-weight:700;color:var(--soil)">{{ number_format($pelangganBaru) }}</div>
             <div style="margin-top:6px;font-size:12.5px;color:var(--clay)">Terdaftar bulan ini</div>
@@ -53,8 +53,8 @@
     </div>
 
     {{-- Card 4: Sewa Aktif --}}
-    <div style="background:#fff;border-radius:var(--r-lg);padding:24px;border:1px solid rgba(176,139,110,.08);box-shadow:var(--sh-sm);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
-        <div style="font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--clay);margin-bottom:12px">Sewa Alat Aktif</div>
+    <div class="adm-card" style="padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
+        <div class="adm-stat-lbl">Sewa Alat Aktif</div>
         <div>
             <div style="font-family:var(--fd);font-size:26px;font-weight:700;color:var(--soil)">{{ number_format($sewaAktif) }}</div>
             <div style="margin-top:6px;font-size:12.5px;color:var(--clay)">
