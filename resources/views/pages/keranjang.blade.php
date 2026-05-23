@@ -13,26 +13,26 @@
 @endphp
 
 <div style="max-width:1280px;margin:0 auto;padding:32px 48px 64px">
-    <div style="margin-bottom:28px">
+    <div class="page-hdr">
         <div class="section-label">Pembelian</div>
         <h1 class="section-title" style="font-size:clamp(26px,3vw,38px)">Keranjang Belanja</h1>
     </div>
 
     @if($itemsList->isEmpty())
-        <div style="text-align:center;padding:64px 24px;background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
+        <div style="text-align:center;padding:64px 24px" class="card">
             <div style="font-size:64px;margin-bottom:16px">🛒</div>
             <h2 style="font-family:var(--fd);font-size:20px;font-weight:600;color:var(--soil);margin-bottom:8px">Keranjang Belanja Kosong</h2>
             <p style="font-size:14px;color:var(--clay);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto">
                 Anda belum menambahkan produk apa pun ke dalam keranjang belanja. Jelajahi katalog kami untuk menemukan material berkualitas.
             </p>
-            <a href="{{ route('katalog.index') }}" class="btn btn-primary" style="padding:10px 24px;text-decoration:none">Jelajahi Katalog</a>
+            <a href="{{ route('katalog.index') }}" class="btn btn-primary" style="text-decoration:none">Jelajahi Katalog</a>
         </div>
     @else
         <div style="display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start">
             
             {{-- KOLOM KIRI: Daftar Produk --}}
             <div style="display:flex;flex-direction:column;gap:16px">
-                <div style="background:#fff;border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
+                <div class="card">
                     
                     {{-- Header Tabel / List --}}
                     <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:1.5px solid var(--sand);margin-bottom:20px">
@@ -93,12 +93,18 @@
 
                                     {{-- Qty Update & Hapus --}}
                                     <div style="display:flex;align-items:center;gap:16px;flex-shrink:0">
-                                        <form action="{{ route('keranjang.update', $item->id) }}" method="POST" style="display:flex;align-items:center;border:1.5px solid var(--sand);border-radius:var(--r-sm);overflow:hidden;background:var(--oat)">
+                                        <form action="{{ route('keranjang.update', $item->id) }}" method="POST">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="button" onclick="decrementQty('qty_{{ $item->id }}')" style="border:none;background:none;width:32px;height:32px;cursor:pointer;color:var(--clay);font-weight:700;font-size:16px">-</button>
-                                            <input type="number" name="qty" id="qty_{{ $item->id }}" value="{{ $item->quantity }}" min="1" max="{{ $produk ? $produk->stok : 9999 }}" onchange="this.form.submit()" style="width:40px;border:none;text-align:center;background:#fff;height:32px;font-family:var(--fb);font-size:13.5px;color:var(--soil);font-weight:600;-webkit-appearance:none;margin:0;outline:none">
-                                            <button type="button" onclick="incrementQty('qty_{{ $item->id }}')" style="border:none;background:none;width:32px;height:32px;cursor:pointer;color:var(--clay);font-weight:700;font-size:16px">+</button>
+                                            <div class="qty-ctrl">
+                                                <button type="button" class="qty-btn" onclick="decrementQty('qty_{{ $item->id }}')">−</button>
+                                                <input type="number" name="qty" id="qty_{{ $item->id }}"
+                                                       value="{{ $item->quantity }}"
+                                                       min="1" max="{{ $produk ? $produk->stok : 9999 }}"
+                                                       onchange="this.form.submit()"
+                                                       class="qty-input">
+                                                <button type="button" class="qty-btn" onclick="incrementQty('qty_{{ $item->id }}')">+</button>
+                                            </div>
                                         </form>
 
                                         <div style="text-align:right;min-width:110px">
@@ -131,10 +137,8 @@
 
             {{-- KOLOM KANAN: Ringkasan Belanja --}}
             <div style="position:sticky;top:90px">
-                <div style="background:#fff;border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
-                    <h2 style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--soil);margin:0 0 16px;padding-bottom:12px;border-bottom:1.5px solid var(--sand)">
-                        Ringkasan Belanja
-                    </h2>
+                <div class="card" style="margin-top:0">
+                    <h2 class="card-hdr" style="font-size:16px;font-weight:600">Ringkasan Belanja</h2>
                     
                     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
                         <div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--clay)">

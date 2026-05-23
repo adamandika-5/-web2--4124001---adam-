@@ -35,88 +35,66 @@
     </div>
 
     <div style="display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:start">
-        <aside style="position:sticky;top:20px">
+        <aside style="position:sticky;top:80px">
             <form method="GET" action="{{ route('katalog.index') }}">
-                <div style="background:#fff;border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08);margin-bottom:14px">
-                    <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--clay);margin-bottom:10px">
-                        Cari Produk
-                    </div>
-
-                    <div style="display:flex;gap:6px;width:100%;align-items:center">
+                <div class="filter-card">
+                    <span class="filter-title">Cari Produk</span>
+                    <div class="filter-search-row">
                         <input type="text"
                                name="q"
                                value="{{ request('q') }}"
                                placeholder="Nama produk"
-                               style="flex:1;min-width:0;box-sizing:border-box;padding:8px 10px;border:1.5px solid rgba(176,139,110,.2);border-radius:var(--r-sm);font-family:var(--fb);font-size:13px;color:var(--soil);outline:none">
-
-                        <button type="submit"
-                                style="flex:0 0 auto;box-sizing:border-box;padding:8px 12px;background:var(--terracotta);color:#fff;border:none;border-radius:var(--r-sm);cursor:pointer;font-size:13px;white-space:nowrap">
-                            Cari
-                        </button>
+                               class="form-inp">
+                        <button type="submit" class="btn btn-primary btn-sm" style="flex-shrink:0;padding:8px 12px">Cari</button>
                     </div>
                 </div>
 
                 @if($kategoriList->count() > 0)
-                    <div style="background:#fff;border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08);margin-bottom:14px">
-                        <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--clay);margin-bottom:12px">
-                            Kategori
-                        </div>
-
-                        <div style="display:flex;flex-direction:column;gap:4px">
+                    <div class="filter-card">
+                        <span class="filter-title">Kategori</span>
+                        <div style="display:flex;flex-direction:column;gap:2px">
                             <a href="{{ route('katalog.index', request()->except('kategori', 'page')) }}"
-                               style="padding:6px 10px;border-radius:var(--r-sm);font-size:13px;font-weight:600;text-decoration:none;background:{{ !request('kategori') ? 'rgba(198,107,61,.1)' : 'transparent' }};color:{{ !request('kategori') ? 'var(--terracotta)' : 'var(--clay)' }}">
+                               class="filter-cat-link {{ !request('kategori') ? 'active' : '' }}">
                                 Semua Kategori
                             </a>
-
                             @foreach($kategoriList as $kat)
                                 <a href="{{ route('katalog.index', array_merge(request()->except('kategori', 'page'), ['kategori' => $kat->slug])) }}"
-                                   style="padding:6px 10px;border-radius:var(--r-sm);font-size:13px;text-decoration:none;display:flex;align-items:center;justify-content:space-between;background:{{ request('kategori') === $kat->slug ? 'rgba(198,107,61,.1)' : 'transparent' }};color:{{ request('kategori') === $kat->slug ? 'var(--terracotta)' : 'var(--clay)' }};font-weight:{{ request('kategori') === $kat->slug ? '700' : '400' }}">
+                                   class="filter-cat-link {{ request('kategori') === $kat->slug ? 'active' : '' }}">
                                     <span>{{ $kat->nama }}</span>
-                                    <span style="font-size:11px;background:var(--oat);padding:1px 6px;border-radius:99px">
-                                        {{ $kat->produk_count ?? 0 }}
-                                    </span>
+                                    <span class="filter-cat-count">{{ $kat->produk_count ?? 0 }}</span>
                                 </a>
                             @endforeach
                         </div>
                     </div>
                 @endif
 
-                <div style="background:#fff;border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08);margin-bottom:14px">
-                    <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--clay);margin-bottom:12px">
-                        Rentang Harga
-                    </div>
-
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div class="filter-card">
+                    <span class="filter-title">Rentang Harga</span>
+                    <div class="filter-price-grid">
                         <div>
-                            <div style="font-size:11.5px;color:var(--clay);margin-bottom:4px">Min</div>
-                            <input type="number"
-                                   name="harga_min"
+                            <span class="filter-price-lbl">Min (Rp)</span>
+                            <input type="number" name="harga_min"
                                    value="{{ request('harga_min') }}"
-                                   placeholder="0"
-                                   min="0"
-                                   style="width:100%;padding:7px 8px;border:1.5px solid rgba(176,139,110,.2);border-radius:var(--r-sm);font-size:13px;font-family:var(--fb)">
+                                   placeholder="0" min="0"
+                                   class="form-inp">
                         </div>
-
                         <div>
-                            <div style="font-size:11.5px;color:var(--clay);margin-bottom:4px">Max</div>
-                            <input type="number"
-                                   name="harga_max"
+                            <span class="filter-price-lbl">Max (Rp)</span>
+                            <input type="number" name="harga_max"
                                    value="{{ request('harga_max') }}"
-                                   placeholder="Maks"
-                                   min="0"
-                                   style="width:100%;padding:7px 8px;border:1.5px solid rgba(176,139,110,.2);border-radius:var(--r-sm);font-size:13px;font-family:var(--fb)">
+                                   placeholder="Maks" min="0"
+                                   class="form-inp">
                         </div>
                     </div>
                 </div>
 
-                <button type="submit"
-                        style="width:100%;padding:11px;background:var(--terracotta);color:#fff;border:none;border-radius:var(--r-md);font-family:var(--fb);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px">
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px">
                     Terapkan Filter
                 </button>
 
                 @if(request()->hasAny(['q','kategori','harga_min','harga_max','filter','satuan','sort']))
-                    <a href="{{ route('katalog.index') }}"
-                       style="display:block;width:100%;padding:10px;border:1.5px solid rgba(176,139,110,.2);border-radius:var(--r-md);font-size:13px;text-align:center;color:var(--clay);text-decoration:none;font-family:var(--fb)">
+                    <a href="{{ route('katalog.index') }}" class="btn btn-secondary"
+                       style="width:100%;justify-content:center;text-decoration:none">
                         Reset Filter
                     </a>
                 @endif
@@ -148,7 +126,7 @@
 
                     <select name="sort"
                             onchange="this.form.submit()"
-                            style="padding:7px 10px;border:1.5px solid rgba(176,139,110,.18);border-radius:var(--r-sm);font-family:var(--fb);font-size:13px;color:var(--soil);background:#fff;cursor:pointer">
+                            class="form-inp" style="width:auto;padding:7px 10px;font-size:13px;cursor:pointer">
                         <option value="terlaris" {{ request('sort','terlaris') === 'terlaris' ? 'selected' : '' }}>Terlaris</option>
                         <option value="terbaru" {{ request('sort') === 'terbaru' ? 'selected' : '' }}>Terbaru</option>
                         <option value="harga_asc" {{ request('sort') === 'harga_asc' ? 'selected' : '' }}>Harga: Terendah</option>

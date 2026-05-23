@@ -261,6 +261,46 @@ nav[aria-label="pagination"] ul li span[aria-current="page"],
 nav[aria-label="pagination"] ul li span.cursor-default,
 .pagination .page-item.disabled .page-link { opacity: .4; cursor: not-allowed; }
 
+/* ── FILTER SIDEBAR CARD ── */
+.filter-card { background: #fff; border-radius: var(--r-lg); padding: 18px; box-shadow: var(--sh-sm); border: 1px solid rgba(176,139,110,.08); margin-bottom: 14px; }
+.filter-title { font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--clay); margin-bottom: 10px; display: block; }
+.filter-search-row { display: flex; gap: 6px; align-items: center; }
+.filter-search-row .form-inp { border-radius: var(--r-sm); padding: 8px 10px; font-size: 13px; flex: 1; min-width: 0; }
+.filter-cat-link { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-radius: var(--r-sm); font-size: 13px; text-decoration: none; transition: all .2s; }
+.filter-cat-link:hover { background: rgba(198,107,61,.08); color: var(--terracotta); }
+.filter-cat-link.active { background: rgba(198,107,61,.1); color: var(--terracotta); font-weight: 700; }
+.filter-cat-count { font-size: 11px; background: var(--oat); padding: 1px 6px; border-radius: 99px; color: var(--clay); }
+.filter-price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.filter-price-lbl { font-size: 11.5px; color: var(--clay); margin-bottom: 4px; display: block; }
+.filter-price-grid .form-inp { padding: 7px 8px; border-radius: var(--r-sm); font-size: 13px; }
+
+/* ── QTY CONTROL (Keranjang) ── */
+.qty-ctrl { display: flex; align-items: center; border: 1.5px solid var(--sand); border-radius: var(--r-sm); overflow: hidden; background: var(--oat); }
+.qty-btn { width: 32px; height: 34px; border: none; background: transparent; cursor: pointer; color: var(--clay); font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center; transition: all .2s; line-height: 1; }
+.qty-btn:hover { background: var(--sand); color: var(--soil); }
+.qty-input { width: 40px; height: 34px; border: none; text-align: center; background: #fff; font-family: var(--fb); font-size: 13.5px; color: var(--soil); font-weight: 600; outline: none; -webkit-appearance: none; -moz-appearance: textfield; margin: 0; }
+.qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* ── CHECKOUT STEPPER ── */
+.checkout-stepper { background: #fff; border-bottom: 1px solid rgba(176,139,110,.12); padding: 14px 48px; }
+.checkout-stepper-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 0; }
+.step-item { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; white-space: nowrap; }
+.step-item.done { color: var(--clay); }
+.step-item.active { color: var(--terracotta); }
+.step-item.upcoming { color: var(--clay); opacity: .6; }
+.step-dot { width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.step-dot.done { background: var(--moss); color: #fff; }
+.step-dot.active { background: var(--terracotta); color: #fff; }
+.step-dot.upcoming { background: var(--sand); color: var(--clay); }
+.step-line { flex: 1; height: 1.5px; max-width: 60px; margin: 0 12px; }
+.step-line.done { background: var(--terracotta); }
+.step-line.upcoming { background: var(--sand); }
+
+/* ── SECTION CARD HEADER (Checkout) ── */
+.section-card-hdr { font-family: var(--fd); font-size: 17px; font-weight: 500; color: var(--soil); margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
+.section-card-hdr a { font-size: 12px; color: var(--terracotta); font-weight: 600; text-decoration: none; font-family: var(--fb); }
+.section-card-hdr a:hover { text-decoration: underline; }
+
 /* ── WA FLOAT ── */
 .wa-float { position: fixed; bottom: 24px; right: 24px; width: 52px; height: 52px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 18px rgba(37,211,102,.38); cursor: pointer; z-index: 998; transition: all .2s; text-decoration: none; animation: wafloat 3.5s ease-in-out infinite; }
 @keyframes wafloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
