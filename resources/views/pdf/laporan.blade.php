@@ -30,7 +30,7 @@
 
     <div class="header">
         <h1>Laporan Penjualan — Sinar Alam</h1>
-        <p>Toko Material Bangunan | Jl. Raya Bangil No. 45, Pasuruan, Jawa Timur</p>
+        <p>Toko Material Bangunan | Jl. Brawijaya No.74/203, Peterongan, Kec. Peterongan, Kabupaten Jombang, Jawa Timur 61481</p>
         <p>Dicetak: {{ now()->isoFormat('dddd, D MMMM Y HH:mm') }}</p>
     </div>
 

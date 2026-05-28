@@ -28,8 +28,8 @@
 @section('content')
 
 {{-- Stepper --}}
-<div style="background:#fff;border-bottom:1px solid rgba(176,139,110,.12);padding:14px 48px">
-    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;font-size:13.5px;font-weight:600">
+<div class="checkout-stepper-wrap" style="background:#fff;border-bottom:1px solid rgba(176,139,110,.12)">
+    <div class="checkout-stepper" style="padding:14px 28px">
         <span style="color:var(--clay);display:flex;align-items:center;gap:6px">
             <span style="width:22px;height:22px;background:var(--moss);color:#fff;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px">✓</span>
             Keranjang
@@ -50,7 +50,7 @@
 <form action="{{ route('checkout.proses') }}" method="POST" id="checkoutForm">
 @csrf
 
-<div style="max-width:1200px;margin:0 auto;padding:32px 48px;display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start">
+<div class="page-section resp-grid-checkout" style="padding-top:32px;padding-bottom:48px">
 
     {{-- ── KIRI ── --}}
     <div style="display:flex;flex-direction:column;gap:16px">
@@ -163,7 +163,7 @@
                 @foreach([
                     ['transfer_bank','🏦','Transfer Bank','BCA, BNI, Mandiri, BRI'],
                     ['qris','📱','QRIS','Scan & bayar semua e-wallet'],
-                    ['cod','💵','COD (Bayar di Tempat)','Khusus area Pasuruan'],
+                    ['cod','💵','COD (Bayar di Tempat)','Khusus area Jombang'],
                     ['dp','💰','Bayar DP','Min. 30% untuk proyek besar'],
                 ] as [$val,$ikon,$nama,$desc])
                 <label style="display:flex;gap:12px;padding:14px;border:2px solid var(--sand);border-radius:var(--r-lg);cursor:pointer;transition:border-color .2s"
@@ -192,7 +192,7 @@
     </div>
 
     {{-- ── KANAN: RINGKASAN ── --}}
-    <div style="position:sticky;top:90px">
+    <div class="checkout-summary" style="position:sticky;top:90px">
 
         {{-- Ringkasan Item --}}
         <div style="background:#fff;border-radius:var(--r-lg);padding:20px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08);margin-bottom:14px">

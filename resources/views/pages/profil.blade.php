@@ -5,9 +5,16 @@
 @section('content')
 <div style="max-width:1280px;margin:0 auto;padding:32px 48px 64px">
 
-    <div class="page-hdr">
-        <div class="section-label">Akun Saya</div>
-        <h1 class="section-title" style="font-size:clamp(26px,3vw,38px)">Profil Saya</h1>
+    <div class="page-hdr" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:28px">
+        <div>
+            <div class="section-label">Akun Saya</div>
+            <h1 class="section-title" style="font-size:clamp(26px,3vw,38px);margin-top:8px">Profil Saya</h1>
+        </div>
+        @if(in_array(auth()->user()->role, ['admin', 'super_admin']))
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary btn-sm" style="margin-bottom:6px">
+                ⬅ Kembali ke Dashboard Admin
+            </a>
+        @endif
     </div>
 
     {{-- Error/Success Alerts --}}

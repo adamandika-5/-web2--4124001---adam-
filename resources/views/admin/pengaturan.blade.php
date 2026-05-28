@@ -98,7 +98,7 @@
                     <div class="form-grp">
                         <label class="form-lbl">Kota</label>
                         <input class="form-inp" type="text" name="settings[kota]"
-                               value="{{ \App\Models\Pengaturan::get('kota','Pasuruan') }}">
+                               value="{{ \App\Models\Pengaturan::get('kota','Jombang') }}">
                     </div>
                     <div class="form-grp" style="grid-column:1/-1">
                         <label class="form-lbl">Alamat Lengkap</label>
@@ -186,7 +186,7 @@
                     <div class="form-grp">
                         <label class="form-lbl">Kota Asal Pengiriman</label>
                         <input class="form-inp" type="text" name="settings[kota_asal]"
-                               value="{{ \App\Models\Pengaturan::get('kota_asal','Pasuruan') }}">
+                               value="{{ \App\Models\Pengaturan::get('kota_asal','Jombang') }}">
                     </div>
                 </div>
             </div>
@@ -199,7 +199,7 @@
                 <div class="form-grp">
                     <label class="form-lbl">Meta Title Beranda</label>
                     <input class="form-inp" type="text" name="settings[meta_title]"
-                           value="{{ \App\Models\Pengaturan::get('meta_title','Sinar Alam — Toko Material Bangunan Pasuruan') }}">
+                           value="{{ \App\Models\Pengaturan::get('meta_title','Sinar Alam — Toko Material Bangunan Jombang') }}">
                 </div>
                 <div class="form-grp">
                     <label class="form-lbl">Meta Description Beranda</label>

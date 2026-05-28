@@ -15,7 +15,11 @@ class PengaturanController extends Controller
 
     public function update(Request $request)
     {
-        // Simpan semua pengaturan dari array settings[]
+        $request->validate([
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'favicon' => 'nullable|mimes:jpg,jpeg,png,webp,ico|max:2048',
+            'qris_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
         if ($request->has('settings')) {
             foreach ($request->settings as $kunci => $nilai) {
                 // Tentukan grup berdasarkan prefix kunci

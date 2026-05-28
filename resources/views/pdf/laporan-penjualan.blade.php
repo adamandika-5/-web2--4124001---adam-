@@ -47,7 +47,7 @@
     <div class="header">
         <div>
             <div class="logo">🏗️ Sinar Alam</div>
-            <div class="logo-sub">Toko Material Bangunan · Pasuruan, Jawa Timur</div>
+            <div class="logo-sub">Toko Material Bangunan · Jombang, Jawa Timur</div>
         </div>
         <div class="report-title">
             <h1>LAPORAN PENJUALAN</h1>

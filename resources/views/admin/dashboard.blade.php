@@ -70,7 +70,7 @@
 
 </div>
 
-<div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:28px;align-items:start">
+<div class="adm-dash-grid">
 
     {{-- ── GRAFIK PENDAPATAN ── --}}
     <div style="background:#fff;border-radius:var(--r-lg);padding:24px;border:1px solid rgba(176,139,110,.08);box-shadow:var(--sh-sm)">

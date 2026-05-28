@@ -6,6 +6,13 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Masuk') — Sinar Alam</title>
     <meta name="description" content="Masuk ke akun Sinar Alam untuk berbelanja material bangunan.">
+    
+    @php
+        $faviconPath = \App\Models\Pengaturan::get('favicon');
+        $faviconVersion = \App\Models\Pengaturan::where('kunci', 'favicon')->first()?->updated_at?->timestamp ?? 'default';
+        $faviconUrl = $faviconPath ? asset('storage/' . $faviconPath) : asset('favicon.ico');
+    @endphp
+    <link rel="icon" href="{{ $faviconUrl }}?v={{ $faviconVersion }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +54,7 @@
 
         {{-- Decorative features list --}}
         <div style="margin-top:48px;display:flex;flex-direction:column;gap:14px">
-            @foreach(['🏪 Toko material bangunan terpercaya', '🚚 Pengiriman ke seluruh Pasuruan', '🔧 Sewa alat bangunan profesional'] as $item)
+            @foreach(['🏪 Toko material bangunan terpercaya', '🚚 Pengiriman ke seluruh Jombang', '🔧 Sewa alat bangunan profesional'] as $item)
             <div style="display:flex;align-items:center;gap:12px">
                 <div style="width:28px;height:28px;background:rgba(198,107,61,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">
                     {{ substr($item, 0, 2) }}
@@ -59,7 +66,7 @@
 
         {{-- Bottom branding --}}
         <div style="position:absolute;bottom:32px;left:56px;font-size:12px;color:rgba(232,220,199,.25)">
-            © {{ date('Y') }} Sinar Alam, Pasuruan — Jawa Timur
+            © {{ date('Y') }} Sinar Alam, Jombang — Jawa Timur
         </div>
     </div>
 

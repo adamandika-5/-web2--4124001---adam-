@@ -25,7 +25,7 @@
 </section>
 
 {{-- Filter & Grid --}}
-<div style="max-width:1280px;margin:0 auto;padding:36px 48px">
+<div class="home-section" style="padding-top:36px">
 
     {{-- Filter bar --}}
     <form method="GET" action="{{ route('sewa.index') }}" style="display:flex;gap:10px;align-items:center;margin-bottom:28px;flex-wrap:wrap">
@@ -51,7 +51,7 @@
     </form>
 
     {{-- Grid Alat --}}
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+    <div class="sewa-grid">
         @forelse($alat as $a)
         <div style="background:#fff;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08);transition:all .3s var(--ease)"
              onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='var(--sh-lg)'"
@@ -162,10 +162,10 @@
     @endif
 
     {{-- Kalkulator Biaya --}}
-    <div style="margin-top:52px;background:var(--soil);border-radius:var(--r-xl);padding:40px;position:relative;overflow:hidden">
+    <div class="sewa-kalkulator-wrap">
         <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 85% 30%,rgba(198,107,61,.22) 0%,transparent 55%)"></div>
         <div class="grain"></div>
-        <div style="position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center">
+        <div class="sewa-kalkulator-inner">
             <div>
                 <div class="section-label" style="color:var(--clay-light)">Kalkulator Biaya</div>
                 <h3 style="font-family:var(--fd);font-size:28px;font-weight:500;color:var(--sand);margin:8px 0 12px">
@@ -188,7 +188,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+                <div class="sewa-date-grid">
                     <div>
                         <div style="font-size:12px;font-weight:700;color:rgba(232,220,199,.6);margin-bottom:6px">Tanggal Mulai</div>
                         <input type="date" id="kalMulai" onchange="kalkulasi()"

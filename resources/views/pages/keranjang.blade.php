@@ -12,7 +12,7 @@
     }
 @endphp
 
-<div style="max-width:1280px;margin:0 auto;padding:32px 48px 64px">
+<div class="page-section" style="padding-top:32px;padding-bottom:64px">
     <div class="page-hdr">
         <div class="section-label">Pembelian</div>
         <h1 class="section-title" style="font-size:clamp(26px,3vw,38px)">Keranjang Belanja</h1>
@@ -28,7 +28,7 @@
             <a href="{{ route('katalog.index') }}" class="btn btn-primary" style="text-decoration:none">Jelajahi Katalog</a>
         </div>
     @else
-        <div style="display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start">
+        <div class="resp-grid-cart">
             
             {{-- KOLOM KIRI: Daftar Produk --}}
             <div style="display:flex;flex-direction:column;gap:16px">
@@ -136,7 +136,7 @@
             </div>
 
             {{-- KOLOM KANAN: Ringkasan Belanja --}}
-            <div style="position:sticky;top:90px">
+            <div class="cart-summary" style="position:sticky;top:90px">
                 <div class="card" style="margin-top:0">
                     <h2 class="card-hdr" style="font-size:16px;font-weight:600">Ringkasan Belanja</h2>
                     

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Beranda')
-@section('meta_desc', 'Sinar Alam — Toko material bangunan terlengkap di Pasuruan, Jawa Timur. Semen, besi, keramik, cat, dan sewa alat bangunan dengan harga terbaik.')
+@section('meta_desc', 'Sinar Alam menyediakan material bangunan berkualitas seperti semen, pasir, batu, besi, keramik, cat, pipa, dan sewa alat bangunan untuk kebutuhan renovasi dan konstruksi di Jombang.')
 
 @section('content')
 
@@ -80,7 +80,7 @@
 </section>
 
 {{-- ── KATEGORI ── --}}
-<section style="padding:52px 48px;max-width:1280px;margin:0 auto">
+<section class="home-section">
     <div class="section-label">Belanja Berdasarkan Kategori</div>
     <h2 class="section-title">Material apa yang <em>Anda butuhkan?</em></h2>
 
@@ -95,8 +95,8 @@
 </section>
 
 {{-- ── PRODUK UNGGULAN ── --}}
-<section style="padding:0 48px 64px;max-width:1280px;margin:0 auto">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px">
+<section class="home-section" style="padding-top:0">
+    <div class="home-sec-hdr">
         <div>
             <div class="section-label">Pilihan Terlaris</div>
             <h2 class="section-title">Produk <em>Unggulan</em></h2>
@@ -104,7 +104,7 @@
         <a href="{{ route('katalog.index', ['filter' => 'unggulan']) }}" class="btn btn-secondary btn-sm">Lihat Semua →</a>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+    <div class="home-prod-grid">
         @foreach($produkUnggulan as $produk)
             <div class="prod-card">
                 <a href="{{ route('produk.show', $produk->slug) }}" style="text-decoration:none;color:inherit">
@@ -167,33 +167,33 @@
 
 {{-- ── PROMO BANNER ── --}}
 @if($promos->count() > 0)
-<section style="padding:0 48px 64px;max-width:1280px;margin:0 auto">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px">
+<section class="home-section pb-4">
+    <div class="home-sec-hdr">
         <div>
             <div class="section-label">Penawaran Terbatas</div>
             <h2 class="section-title">Promo & <em>Diskon</em> Minggu Ini</h2>
         </div>
     </div>
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+    <div class="home-promo-grid">
         @php $promoUtama = $promos->first(); $promoKecil = $promos->slice(1, 2); @endphp
-        <div style="background:var(--soil-mid);border-radius:var(--r-lg);padding:36px 40px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;min-height:200px">
+        <div class="promo-card-main">
             <div class="grain"></div>
-            <div style="position:absolute;top:-20%;right:-5%;width:55%;font-size:120px;opacity:.1;pointer-events:none">🏗️</div>
-            <div style="position:relative;z-index:2">
-                <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,220,199,.5);margin-bottom:8px">{{ $promoUtama->label ?? 'Promo Spesial' }}</div>
-                <div style="font-family:var(--fd);font-size:clamp(20px,2.5vw,30px);color:var(--sand);font-weight:500;line-height:1.2;margin-bottom:14px">
+            <div class="promo-icon">🏗️</div>
+            <div class="promo-content">
+                <div class="promo-label">{{ $promoUtama->label ?? 'Promo Spesial' }}</div>
+                <div class="promo-title">
                     {!! $promoUtama->judul_html ?? $promoUtama->nama !!}
                 </div>
-                <a href="{{ route('promo.show', $promoUtama->slug) }}" class="btn" style="background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.25);font-size:13px;padding:9px 20px">Belanja Sekarang →</a>
+                <a href="{{ route('promo.show', $promoUtama->slug) }}" class="btn btn-light-outline">Belanja Sekarang →</a>
             </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="promo-grid-sub">
             @foreach($promoKecil as $p)
-                <a href="{{ route('promo.show', $p->slug) }}" style="background:#2E3A1C;border-radius:var(--r-lg);padding:22px 28px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;min-height:90px;text-decoration:none">
+                <a href="{{ route('promo.show', $p->slug) }}" class="promo-card-sub">
                     <div class="grain"></div>
-                    <div style="position:relative;z-index:2">
-                        <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,220,199,.5);margin-bottom:6px">{{ $p->label ?? 'Promo' }}</div>
-                        <div style="font-family:var(--fd);font-size:18px;color:var(--sand);font-weight:500">{!! $p->judul_html ?? $p->nama !!}</div>
+                    <div class="promo-content">
+                        <div class="promo-label">{{ $p->label ?? 'Promo' }}</div>
+                        <div class="promo-title">{!! $p->judul_html ?? $p->nama !!}</div>
                     </div>
                 </a>
             @endforeach
@@ -203,15 +203,15 @@
 @endif
 
 {{-- ── PRODUK TERBARU ── --}}
-<section style="padding:0 48px 64px;max-width:1280px;margin:0 auto">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px">
+<section class="home-section pt-0">
+    <div class="home-sec-hdr">
         <div>
             <div class="section-label">Baru Masuk</div>
             <h2 class="section-title">Produk <em>Terbaru</em></h2>
         </div>
         <a href="{{ route('katalog.index', ['sort' => 'terbaru']) }}" class="btn btn-secondary btn-sm">Lihat Semua →</a>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+    <div class="home-prod-grid">
         @foreach($produkTerbaru as $produk)
             <div class="prod-card">
                 <a href="{{ route('produk.show', $produk->slug) }}" style="text-decoration:none;color:inherit">
@@ -256,9 +256,9 @@
 </section>
 
 {{-- ── TRUST SECTION ── --}}
-<section style="background:var(--soil);padding:72px 48px;position:relative;overflow:hidden">
+<section class="home-trust-section">
     <div class="grain"></div>
-    <div style="max-width:1280px;margin:0 auto;position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;background-image:radial-gradient(ellipse 60% 80% at 75% 40%,rgba(198,107,61,.18) 0%,transparent 55%)">
+    <div class="home-trust-inner">
         <div>
             <div class="section-label" style="color:var(--clay-light)">Kenapa Pilih Kami</div>
             <h2 class="section-title light">Lebih dari sekadar<br><em>toko bangunan.</em></h2>
@@ -286,7 +286,7 @@
                 </div>
             </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="home-stats-grid">
             <div style="background:rgba(255,255,255,.05);border:1px solid rgba(232,220,199,.09);border-radius:var(--r-lg);padding:28px 22px">
                 <div style="font-family:var(--fd);font-size:44px;font-weight:700;color:var(--terracotta);line-height:1">{{ number_format($totalPesanan) }}+</div>
                 <div style="font-size:13px;color:rgba(232,220,199,.42);margin-top:7px;line-height:1.4">Pesanan terkirim sejak 2019</div>
@@ -301,7 +301,7 @@
             </div>
             <div style="background:rgba(255,255,255,.05);border:1px solid rgba(232,220,199,.09);border-radius:var(--r-lg);padding:28px 22px">
                 <div style="font-family:var(--fd);font-size:44px;font-weight:700;color:var(--terracotta);line-height:1">1 Hr</div>
-                <div style="font-size:13px;color:rgba(232,220,199,.42);margin-top:7px;line-height:1.4">Pengiriman area Pasuruan & sekitarnya</div>
+                <div style="font-size:13px;color:rgba(232,220,199,.42);margin-top:7px;line-height:1.4">Pengiriman area Jombang & sekitarnya</div>
             </div>
         </div>
     </div>

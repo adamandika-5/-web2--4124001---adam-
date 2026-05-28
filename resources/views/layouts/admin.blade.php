@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') — Admin Sinar Alam</title>
+    
+    @php
+        $faviconPath = \App\Models\Pengaturan::get('favicon');
+        $faviconVersion = \App\Models\Pengaturan::where('kunci', 'favicon')->first()?->updated_at?->timestamp ?? 'default';
+        $faviconUrl = $faviconPath ? asset('storage/' . $faviconPath) : asset('favicon.ico');
+    @endphp
+    <link class="favicon-link" rel="icon" href="{{ $faviconUrl }}?v={{ $faviconVersion }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -125,13 +132,19 @@
 
         {{-- User info --}}
         <div class="adm-sb-footer">
-            <div class="adm-sb-user">
-                <div class="adm-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 2)) }}</div>
+            <a href="{{ route('profil') }}" class="adm-sb-user" style="text-decoration:none">
+                @if(auth()->user()->avatar)
+                    <div style="width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--terracotta)">
+                        <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="{{ e(auth()->user()->name) }}" style="width:100%;height:100%;object-fit:cover">
+                    </div>
+                @else
+                    <div class="adm-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 2)) }}</div>
+                @endif
                 <div>
-                    <div class="adm-user-name">{{ auth()->user()->name }}</div>
-                    <div class="adm-user-role">{{ auth()->user()->role === 'admin' ? 'Administrator' : 'Staff' }}</div>
+                    <div class="adm-user-name" style="color:var(--sand)">{{ auth()->user()->name }}</div>
+                    <div class="adm-user-role" style="color:rgba(232,220,199,.32)">{{ auth()->user()->role === 'admin' ? 'Administrator' : 'Staff' }}</div>
                 </div>
-            </div>
+            </a>
             <form action="{{ route('logout') }}" method="POST" style="margin-top:4px">
                 @csrf
                 <button type="submit" style="display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;background:transparent;border:none;cursor:pointer;border-radius:var(--r-sm);font-family:var(--fb);font-size:12px;color:rgba(232,220,199,.32);transition:all .2s" onmouseover="this.style.background='rgba(232,220,199,.06)';this.style.color='var(--terracotta)'" onmouseout="this.style.background='transparent';this.style.color='rgba(232,220,199,.32)'">
@@ -147,6 +160,11 @@
 
         {{-- Topbar --}}
         <div class="adm-topbar">
+            {{-- Sidebar toggle (mobile) --}}
+            <button class="adm-sidebar-toggle" id="admSidebarToggle" onclick="toggleAdmSidebar()" aria-label="Toggle sidebar">
+                <span></span><span></span><span></span>
+            </button>
+
             <div class="adm-topbar-title">@yield('page_title', 'Dashboard')</div>
 
             {{-- Breadcrumb --}}
@@ -168,9 +186,13 @@
                 @endif
             </div>
 
-            <div class="adm-avatar" style="cursor:pointer" title="{{ auth()->user()->name }}">
-                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-            </div>
+            <a href="{{ route('profil') }}" class="adm-avatar" style="cursor:pointer;text-decoration:none;overflow:hidden;background:var(--terracotta);display:flex;align-items:center;justify-content:center" title="{{ auth()->user()->name }}">
+                @if(auth()->user()->avatar)
+                    <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="{{ e(auth()->user()->name) }}" style="width:100%;height:100%;object-fit:cover">
+                @else
+                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                @endif
+            </a>
         </div>
 
         {{-- Flash Messages --}}
@@ -200,11 +222,21 @@
     </div>
 </div>
 
+{{-- Mobile Sidebar Overlay --}}
+<div class="adm-overlay" id="admOverlay" onclick="toggleAdmSidebar()"></div>
+
 @stack('scripts')
 <script>
     function toggleNotif() {
-        // bisa dikembangkan jadi dropdown notifikasi
         window.location.href = '{{ route('admin.stok.index') }}?filter=low_stock';
+    }
+    function toggleAdmSidebar() {
+        const layout  = document.querySelector('.adm-layout');
+        const overlay = document.getElementById('admOverlay');
+        const sidebar = document.querySelector('.adm-sidebar');
+        if (!layout) return;
+        const open = layout.classList.toggle('sidebar-open');
+        if (overlay) overlay.classList.toggle('active', open);
     }
 </script>
 </body>

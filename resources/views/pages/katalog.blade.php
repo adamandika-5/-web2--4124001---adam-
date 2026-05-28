@@ -14,7 +14,7 @@
     $lastItem = method_exists($produkList, 'lastItem') ? ($produkList->lastItem() ?? 0) : $totalProduk;
 @endphp
 
-<div style="max-width:1280px;margin:0 auto;padding:32px 48px 64px">
+<div class="page-section" style="padding-top:32px;padding-bottom:64px">
     <div style="margin-bottom:28px">
         <div class="section-label">Belanja Material</div>
 
@@ -34,8 +34,8 @@
         </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:start">
-        <aside style="position:sticky;top:80px">
+    <div class="resp-grid-sidebar">
+        <aside class="katalog-aside" style="position:sticky;top:80px">
             <form method="GET" action="{{ route('katalog.index') }}">
                 <div class="filter-card">
                     <span class="filter-title">Cari Produk</span>
@@ -102,6 +102,11 @@
         </aside>
 
         <div>
+            {{-- Tombol Filter Mobile (hanya tampil di layar kecil via CSS) --}}
+            <button type="button" class="filter-toggle-btn" onclick="toggleKatalogFilter(this)">
+                🔽 Tampilkan Filter
+            </button>
+
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
                 <div style="font-size:13px;color:var(--clay)">
                     @if(request()->hasAny(['q','kategori','harga_min','harga_max','filter']))
@@ -151,7 +156,7 @@
                     </a>
                 </div>
             @else
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+                <div class="prod-grid">
                     @foreach($produkList as $p)
                         @php
                             $gambarPath = null;
@@ -280,3 +285,14 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function toggleKatalogFilter(btn) {
+        const aside = document.querySelector('.katalog-aside');
+        if (!aside) return;
+        const isOpen = aside.classList.toggle('open');
+        btn.textContent = isOpen ? '🔼 Sembunyikan Filter' : '🔽 Tampilkan Filter';
+    }
+</script>
+@endpush

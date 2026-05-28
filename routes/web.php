@@ -48,6 +48,12 @@ Route::get('/sewa-alat', [SewaAlatController::class, 'index'])->name('sewa.index
 Route::get('/sewa-alat/{slug}', [SewaAlatController::class, 'show'])->name('sewa.show');
 Route::get('/sewa-alat/{slug}/kalkulasi', [SewaAlatController::class, 'kalkulasi'])->name('sewa.kalkulasi');
 
+// Halaman Statis
+Route::view('/tentang-kami', 'pages.tentang-kami')->name('tentang-kami');
+Route::view('/kebijakan-privasi', 'pages.kebijakan-privasi')->name('kebijakan-privasi');
+Route::view('/syarat-ketentuan', 'pages.syarat-ketentuan')->name('syarat-ketentuan');
+Route::view('/kontak', 'pages.kontak')->name('kontak');
+
 /*
 |--------------------------------------------------------------------------
 | AUTH ROUTES
@@ -86,7 +92,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profil/alamat', [ProfilController::class, 'tambahAlamat'])->name('profil.alamat.store');
     Route::delete('/profil/alamat/{id}', [ProfilController::class, 'hapusAlamat'])->name('profil.alamat.delete');
 
-    Route::middleware('role:user,admin')->group(function () {
+    Route::middleware('role:user')->group(function () {
         // Keranjang
         Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
         Route::post('/keranjang/tambah', [KeranjangController::class, 'tambah'])->name('keranjang.tambah');

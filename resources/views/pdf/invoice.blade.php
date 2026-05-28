@@ -84,7 +84,7 @@
             <div class="logo-name">🏗️ Sinar Alam</div>
             <div class="logo-tagline">Toko Material Bangunan Terpercaya</div>
             <div class="logo-contact">
-                📍 Jl. Raya Bangil No. 45, Pasuruan, Jawa Timur<br>
+                📍 Jl. Brawijaya No.74/203, Peterongan, Kec. Peterongan, Kabupaten Jombang, Jawa Timur 61481<br>
                 📞 (0343) 555-1234 &nbsp;·&nbsp; ✉️ info@sinaralam.id
             </div>
         </div>

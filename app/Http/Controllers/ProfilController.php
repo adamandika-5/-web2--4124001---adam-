@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 
 class ProfilController extends Controller
@@ -22,17 +23,18 @@ class ProfilController extends Controller
             'name'    => 'required|string|max:100',
             'email'   => 'required|email|unique:users,email,' . $user->id,
             'telepon' => 'nullable|string|max:20',
-            'avatar'  => 'nullable|image|max:2048',
+            'avatar'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $data = $request->only('name', 'email', 'telepon');
 
         if ($request->hasFile('avatar')) {
-            // Hapus avatar lama
+            // Hapus avatar lama jika ada
             if ($user->avatar) {
-                \Storage::disk('public')->delete($user->avatar);
+                Storage::disk('public')->delete($user->avatar);
             }
-            $data['avatar'] = $request->file('avatar')->store('avatar', 'public');
+            // Simpan file dengan nama unik ke storage/app/public/profil
+            $data['avatar'] = $request->file('avatar')->store('profil', 'public');
         }
 
         $user->update($data);
