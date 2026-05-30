@@ -46,7 +46,6 @@ class ProdukController extends Controller
         $data = $request->validate([
             'nama'             => 'required|string|max:200',
             'kategori_id'      => 'required|exists:kategoris,id',
-            'sub_kategori_id'  => 'nullable|exists:sub_kategoris,id',
             'harga'            => 'required|numeric|min:0',
             'harga_promo'      => 'nullable|numeric|lt:harga',
             'stok'             => 'required|integer|min:0',
@@ -54,7 +53,6 @@ class ProdukController extends Controller
             'deskripsi'        => 'required|string',
             'sku'              => 'nullable|string|unique:produks,sku',
             'berat'            => 'nullable|numeric',
-            'spesifikasi'      => 'nullable|string',
             'jenis_pengiriman' => 'required|in:ekspedisi,armada,keduanya',
             'aktif'            => 'boolean',
             'unggulan'         => 'boolean',
@@ -96,14 +94,12 @@ class ProdukController extends Controller
         $data = $request->validate([
             'nama'             => 'required|string|max:200',
             'kategori_id'      => 'required|exists:kategoris,id',
-            'sub_kategori_id'  => 'nullable|exists:sub_kategoris,id',
             'harga'            => 'required|numeric|min:0',
             'harga_promo'      => 'nullable|numeric|lt:harga',
             'stok'             => 'required|integer|min:0',
             'satuan'           => 'required|string',
             'deskripsi'        => 'required|string',
             'berat'            => 'nullable|numeric',
-            'spesifikasi'      => 'nullable|string',
             'jenis_pengiriman' => 'required|in:ekspedisi,armada,keduanya',
             'gambar.*'         => 'nullable|image|max:2048',
         ]);

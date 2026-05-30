@@ -12,6 +12,7 @@
 --}}
 
 {{-- Filter --}}
+
 <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
     <form method="GET" action="{{ route('admin.activity-log') }}" style="display:flex;gap:10px;flex:1;flex-wrap:wrap">
         <div style="position:relative;flex:1;min-width:200px">

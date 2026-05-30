@@ -12,7 +12,6 @@ class Produk extends Model
 
     protected $fillable = [
         'kategori_id',
-        'sub_kategori_id',
         'supplier_id',
         'nama',
         'slug',
@@ -20,7 +19,6 @@ class Produk extends Model
         'ikon',
         'warna_bg',
         'deskripsi',
-        'spesifikasi',
         'harga',
         'harga_promo',
         'stok',

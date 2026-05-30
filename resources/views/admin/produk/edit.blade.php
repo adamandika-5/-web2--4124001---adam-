@@ -55,21 +55,6 @@
                     @enderror
                 </div>
 
-                {{-- Sub Kategori --}}
-                <div class="form-grp">
-                    <label class="form-lbl">Sub Kategori</label>
-                    <select name="sub_kategori_id" class="form-inp @error('sub_kategori_id') is-invalid @enderror">
-                        <option value="">-- Pilih Sub Kategori (Opsional) --</option>
-                        @foreach($subKategoris as $sub)
-                            <option value="{{ $sub->id }}" {{ old('sub_kategori_id', $produk->sub_kategori_id) == $sub->id ? 'selected' : '' }}>
-                                {{ $sub->nama }} ({{ $sub->kategori->nama ?? '' }})
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('sub_kategori_id')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
 
                 {{-- Satuan --}}
                 <div class="form-grp">
@@ -144,15 +129,6 @@
                     @enderror
                 </div>
 
-                {{-- Spesifikasi --}}
-                <div class="form-grp" style="grid-column: 1 / -1">
-                    <label class="form-lbl">Spesifikasi Produk (Opsional)</label>
-                    <textarea name="spesifikasi" class="form-inp @error('spesifikasi') is-invalid @enderror" 
-                              rows="3" placeholder="Contoh: Dimensi, Material, Merek, Daya Tahan, dll...">{{ old('spesifikasi', $produk->spesifikasi) }}</textarea>
-                    @error('spesifikasi')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
 
                 {{-- Status Aktif & Unggulan --}}
                 <div class="form-grp" style="grid-column: 1 / -1; display:flex; gap:32px; margin-top: 8px">
@@ -190,24 +166,34 @@
                     <div style="grid-column: 1 / -1; margin-top: 12px">
                         <label class="form-lbl" style="margin-bottom:12px">Gambar Produk Saat Ini</label>
                         <div style="display:flex; flex-wrap:wrap; gap:16px">
-                            @foreach(collect($produk->gambar ?? []) as $g)
-                                <div id="gambar-{{ $g->id }}" style="position:relative; width:120px; height:120px; border-radius:var(--r-md); border:1.5px solid var(--sand); overflow:hidden; background:var(--oat); display:flex; align-items:center; justify-content:center">
-                                    <img src="{{ asset('storage/' . $g->path) }}" style="width:100%; height:100%; object-fit:cover">
-                                    
-                                    {{-- Badge Utama --}}
-                                    @if($g->is_utama)
-                                        <div style="position:absolute; top:4px; left:4px; background:var(--moss); color:#fff; font-size:9.5px; font-weight:700; padding:2px 6px; border-radius:99px; line-height:1">
-                                            Utama
-                                        </div>
-                                    @endif
+                            @foreach(collect($produk->gambar ?? []) as $index => $g)
+                                @php
+                                    $gambarPath = is_string($g) ? $g : (is_array($g) ? ($g['path'] ?? '') : ($g->path ?? ''));
+                                    $gambarId = is_object($g) && isset($g->id) ? $g->id : (is_array($g) && isset($g['id']) ? $g['id'] : $index);
+                                    $isUtama = is_object($g) ? !empty($g->is_utama) : (is_array($g) ? !empty($g['is_utama']) : false);
+                                    $hasId = (is_object($g) && isset($g->id)) || (is_array($g) && isset($g['id']));
+                                @endphp
+                                @if(!empty($gambarPath))
+                                    <div id="gambar-{{ $gambarId }}" style="position:relative; width:120px; height:120px; border-radius:var(--r-md); border:1.5px solid var(--sand); overflow:hidden; background:var(--oat); display:flex; align-items:center; justify-content:center">
+                                        <img src="{{ asset('storage/' . $gambarPath) }}" style="width:100%; height:100%; object-fit:cover">
+                                        
+                                        {{-- Badge Utama --}}
+                                        @if($isUtama)
+                                            <div style="position:absolute; top:4px; left:4px; background:var(--moss); color:#fff; font-size:9.5px; font-weight:700; padding:2px 6px; border-radius:99px; line-height:1">
+                                                Utama
+                                            </div>
+                                        @endif
 
-                                    {{-- Tombol Hapus --}}
-                                    <button type="button" onclick="hapusGambar({{ $g->id }}, 'gambar-{{ $g->id }}')" 
-                                            style="position:absolute; top:4px; right:4px; background:#dc2626; color:#fff; border:none; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; font-weight:bold; box-shadow:0 2px 6px rgba(0,0,0,.15)"
-                                            title="Hapus gambar ini">
-                                        ×
-                                    </button>
-                                </div>
+                                        {{-- Tombol Hapus --}}
+                                        @if($hasId)
+                                            <button type="button" onclick="hapusGambar({{ $gambarId }}, 'gambar-{{ $gambarId }}')" 
+                                                    style="position:absolute; top:4px; right:4px; background:#dc2626; color:#fff; border:none; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; font-weight:bold; box-shadow:0 2px 6px rgba(0,0,0,.15)"
+                                                    title="Hapus gambar ini">
+                                                ×
+                                            </button>
+                                        @endif
+                                    </div>
+                                @endif
                             @endforeach
                         </div>
                     </div>
