@@ -27,7 +27,7 @@ class UserController extends Controller
         return view('admin.users.index', [
             'users'      => $query->paginate(20)->withQueryString(),
             'totalUser'  => User::where('role', 'user')->count(),
-            'totalAdmin' => User::whereIn('role', ['admin', 'staff'])->count(),
+            'totalAdmin' => User::where('role', 'admin')->count(),
             'nonaktif'   => User::where('aktif', false)->count(),
         ]);
     }
@@ -43,7 +43,7 @@ class UserController extends Controller
             'name'     => 'required|string|max:100',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'role'     => 'required|in:user,admin,staff',
+            'role'     => 'required|in:user,admin',
             'telepon'  => 'nullable|string|max:20',
         ]);
 
@@ -75,7 +75,7 @@ class UserController extends Controller
         $request->validate([
             'name'    => 'required|string|max:100',
             'email'   => 'required|email|unique:users,email,' . $user->id,
-            'role'    => 'required|in:user,admin,staff',
+            'role'    => 'required|in:user,admin',
             'telepon' => 'nullable|string|max:20',
             'aktif'   => 'boolean',
         ]);

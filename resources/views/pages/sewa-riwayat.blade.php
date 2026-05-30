@@ -8,13 +8,13 @@
 @section('content')
 <div style="max-width:1000px;margin:0 auto;padding:36px 48px">
 
-    <div style="font-family:var(--fd);font-size:26px;font-weight:500;color:var(--soil);margin-bottom:24px">
+    <div style="font-family:var(--fs);font-size:26px;font-weight:700;color:var(--soil);margin-bottom:24px">
         Riwayat Sewa Alat
     </div>
 
     {{-- Filter --}}
     <div style="display:flex;gap:4px;background:var(--sand);border-radius:var(--r-md);padding:4px;margin-bottom:24px;width:fit-content;flex-wrap:wrap">
-        @foreach([['','Semua'],['aktif','Aktif'],['selesai','Selesai'],['batal','Batal']] as [$val,$label])
+        @foreach([['','Semua'],['pending','Menunggu'],['aktif','Aktif'],['selesai','Selesai'],['batal','Batal']] as [$val,$label])
         <a href="{{ route('sewa.riwayat', ['status'=>$val]) }}"
            style="padding:7px 16px;border-radius:10px;font-size:13px;font-weight:{{ request('status')===$val||($val===''&&!request('status'))?'700':'500' }};text-decoration:none;transition:all .2s;
                   background:{{ request('status')===$val||($val===''&&!request('status'))?'#fff':'transparent' }};
@@ -65,7 +65,7 @@
                 @endif
             </div>
             <div style="flex:1;min-width:200px">
-                <div style="font-family:var(--fd);font-size:16px;font-weight:500;color:var(--soil);margin-bottom:8px">
+                <div style="font-family:var(--fs);font-size:16px;font-weight:700;color:var(--soil);margin-bottom:8px">
                     {{ $booking->alat->nama }}
                 </div>
                 <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--clay)">
@@ -86,7 +86,7 @@
             </div>
             <div style="text-align:right;flex-shrink:0">
                 <div style="font-size:11.5px;color:var(--clay);margin-bottom:3px">Total Biaya</div>
-                <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--terracotta)">
+                <div style="font-family:var(--fs);font-size:18px;font-weight:700;color:var(--terracotta)">
                     Rp {{ number_format($booking->total_bayar,0,',','.') }}
                 </div>
                 @if($booking->deposit > 0)
@@ -113,7 +113,7 @@
     @empty
     <div style="text-align:center;padding:72px 40px;background:#fff;border-radius:var(--r-xl);border:1px solid rgba(176,139,110,.1)">
         <div style="font-size:52px;margin-bottom:14px">🔧</div>
-        <div style="font-family:var(--fd);font-size:20px;color:var(--soil);margin-bottom:8px">Belum ada riwayat sewa</div>
+        <div style="font-family:var(--fs);font-size:20px;font-weight:700;color:var(--soil);margin-bottom:8px">Belum ada riwayat sewa</div>
         <div style="font-size:14px;color:var(--clay);margin-bottom:22px">Sewa alat bangunan sesuai kebutuhan proyek Anda</div>
         <a href="{{ route('sewa.index') }}" class="btn btn-primary">Lihat Alat Tersedia →</a>
     </div>

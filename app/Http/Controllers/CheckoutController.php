@@ -129,19 +129,49 @@ class CheckoutController extends Controller
         $jenisKirim = $request->jenis_pengiriman;
 
         if ($jenisKirim === 'armada') {
-            $zona = OngkirZona::where('kota', 'LIKE', "%{$alamat->kota}%")->first();
-            if ($zona && $zona->tersedia_armada) {
-                $ongkir = (float) ($zona->tarif_pickup ?? 25000);
+            $alamatLengkap = strtolower($alamat->alamat_lengkap ?? '');
+            $kota = strtolower($alamat->kota ?? '');
+
+            if (str_contains($kota, 'jombang') || str_contains($alamatLengkap, 'jombang')) {
+                if (str_contains($alamatLengkap, 'peterongan') || str_contains($alamatLengkap, 'jombang kota') || str_contains($alamatLengkap, 'jombang(kota)') || str_contains($alamatLengkap, 'kec. jombang')) {
+                    $ongkir = 20000;
+                } elseif (str_contains($alamatLengkap, 'sumobito') || str_contains($alamatLengkap, 'budug') || str_contains($alamatLengkap, 'sekitar jombang')) {
+                    $ongkir = 25000;
+                } else {
+                    $ongkir = 35000;
+                }
             } else {
-                $ongkir = 25000;
+                // Luar Jombang dekat: Mojokerto, Nganjuk, Kediri, Lamongan
+                $luarDekat = ['mojokerto', 'nganjuk', 'kediri', 'lamongan'];
+                $isLuarDekat = false;
+                foreach ($luarDekat as $c) {
+                    if (str_contains($kota, $c) || str_contains($alamatLengkap, $c)) {
+                        $isLuarDekat = true;
+                        break;
+                    }
+                }
+                if ($isLuarDekat) {
+                    $ongkir = 75000;
+                } else {
+                    $ongkir = 105000;
+                }
             }
-            $ekspedisiSimpan = null;
+            $ongkir = (int) $ongkir;
+            $ekspedisiSimpan = 'Armada Toko Sinar Alam';
         } else {
-            $ongkir = (float) ($request->ongkir ?? 0);
-            $ekspedisiSimpan = $request->ekspedisi;
+            $exp = $request->ekspedisi;
+            $ongkir = match ($exp) {
+                'jne'     => 25000,
+                'jnt'     => 23000,
+                'sicepat' => 20000,
+                default   => 23000,
+            };
+            $ongkir = (int) $ongkir;
+            $ekspedisiSimpan = $exp;
         }
 
-        $total = $subtotal - $diskonVoucher + $ongkir;
+        $diskonVoucher = (int) $diskonVoucher;
+        $total = (int) ($subtotal - $diskonVoucher + $ongkir);
 
         $pesanan = Pesanan::create([
             'nomor_pesanan'    => Pesanan::generateNomor(),
@@ -212,25 +242,39 @@ class CheckoutController extends Controller
 
     public function hitungOngkir(Request $request)
     {
-        $zona = OngkirZona::where('kota', 'LIKE', "%{$request->kota}%")->first();
+        $kota = strtolower($request->kota ?? '');
+        $alamatLengkap = strtolower($request->alamat_lengkap ?? '');
 
-        if (!$zona || !$zona->tersedia_armada) {
-            return response()->json([
-                'ongkir' => 0,
-                'pesan'  => 'Area tidak tersedia untuk armada sendiri. Gunakan ekspedisi.',
-            ]);
+        // Hitung ongkir berdasarkan aturan lokal Jombang
+        if (str_contains($kota, 'jombang') || str_contains($alamatLengkap, 'jombang')) {
+            if (str_contains($alamatLengkap, 'peterongan') || str_contains($alamatLengkap, 'jombang kota') || str_contains($alamatLengkap, 'jombang(kota)') || str_contains($alamatLengkap, 'kec. jombang')) {
+                $ongkir = 20000;
+            } elseif (str_contains($alamatLengkap, 'sumobito') || str_contains($alamatLengkap, 'budug') || str_contains($alamatLengkap, 'sekitar jombang')) {
+                $ongkir = 25000;
+            } else {
+                $ongkir = 35000;
+            }
+        } else {
+            // Luar Jombang dekat: Mojokerto, Nganjuk, Kediri, Lamongan
+            $luarDekat = ['mojokerto', 'nganjuk', 'kediri', 'lamongan'];
+            $isLuarDekat = false;
+            foreach ($luarDekat as $c) {
+                if (str_contains($kota, $c) || str_contains($alamatLengkap, $c)) {
+                    $isLuarDekat = true;
+                    break;
+                }
+            }
+            if ($isLuarDekat) {
+                $ongkir = 75000;
+            } else {
+                $ongkir = 105000;
+            }
         }
 
-        $tarif = match ($request->jenis_kendaraan ?? 'pickup') {
-            'engkel' => $zona->tarif_engkel,
-            'truk'   => $zona->tarif_truk,
-            default  => $zona->tarif_pickup,
-        };
-
         return response()->json([
-            'ongkir' => $tarif,
-            'zona'   => $zona->zona,
-            'jarak'  => $zona->jarak_km,
+            'ongkir' => (int) $ongkir,
+            'zona'   => 'Lokal',
+            'jarak'  => 0,
         ]);
     }
 

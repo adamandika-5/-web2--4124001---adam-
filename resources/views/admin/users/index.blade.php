@@ -15,7 +15,6 @@
             <option value="">Semua Role</option>
             <option value="user"  {{ request('role')==='user'  ?'selected':'' }}>User</option>
             <option value="admin" {{ request('role')==='admin' ?'selected':'' }}>Admin</option>
-            <option value="staff" {{ request('role')==='staff' ?'selected':'' }}>Staff</option>
         </select>
         <select class="form-inp" name="status" style="width:130px;font-size:13px;padding:8px">
             <option value="">Semua Status</option>
@@ -70,8 +69,8 @@
                 <td style="padding:12px 16px;color:var(--clay)">{{ $user->email }}</td>
                 <td style="padding:12px 16px;text-align:center">
                     <span style="padding:3px 10px;border-radius:99px;font-size:11.5px;font-weight:700;
-                        background:{{ in_array($user->role,['admin','staff']) ? 'rgba(198,107,61,.12)' : 'rgba(37,99,235,.08)' }};
-                        color:{{ in_array($user->role,['admin','staff']) ? 'var(--terracotta)' : '#2563eb' }}">
+                        background:{{ $user->role === 'admin' ? 'rgba(198,107,61,.12)' : 'rgba(37,99,235,.08)' }};
+                        color:{{ $user->role === 'admin' ? 'var(--terracotta)' : '#2563eb' }}">
                         {{ ucfirst($user->role) }}
                     </span>
                 </td>

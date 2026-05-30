@@ -156,19 +156,56 @@
                             @if($alamat->kode_pos) · {{ $alamat->kode_pos }} @endif
                         </div>
 
-                        {{-- Hapus Alamat (jika bukan utama) --}}
-                        @if(!$alamat->is_utama)
+                        {{-- Tombol Lihat di Google Maps --}}
+                        @php
+                            $mapsUrl = null;
+                            if ($alamat->link_google_maps) {
+                                $mapsUrl = $alamat->link_google_maps;
+                            } elseif ($alamat->latitude && $alamat->longitude) {
+                                $mapsUrl = 'https://www.google.com/maps?q=' . $alamat->latitude . ',' . $alamat->longitude;
+                            }
+                        @endphp
+                        @if($mapsUrl)
+                            <a href="{{ $mapsUrl }}" target="_blank" rel="noopener noreferrer"
+                               style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 12px;background:rgba(37,99,235,.08);color:#2563eb;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;text-decoration:none;border:1px solid rgba(37,99,235,.2);transition:all .2s"
+                               onmouseover="this.style.background='rgba(37,99,235,.15)'"
+                               onmouseout="this.style.background='rgba(37,99,235,.08)'">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                                Lihat di Google Maps
+                            </a>
+                        @endif
+                        @if($alamat->latitude && $alamat->longitude)
+                            <div style="font-size:11px;color:var(--clay);margin-top:4px">
+                                📐 {{ number_format($alamat->latitude, 6) }}, {{ number_format($alamat->longitude, 6) }}
+                            </div>
+                        @endif
+
+                        {{-- Tombol Aksi (Jadikan Utama & Hapus Alamat) --}}
+                        <div style="display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap">
+                            @if(!$alamat->is_utama)
+                                <form action="{{ route('profil.alamat.utama', $alamat->id) }}" method="POST" style="margin:0">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit"
+                                            style="background:none;border:1px solid rgba(22,163,74,.4);color:#16a34a;font-size:12px;font-weight:700;cursor:pointer;padding:4px 10px;border-radius:var(--r-sm);font-family:var(--fb);transition:all .2s;display:inline-flex;align-items:center;gap:4px"
+                                            onmouseover="this.style.background='rgba(22,163,74,.1)'"
+                                            onmouseout="this.style.background='none'">
+                                        ⭐ Jadikan Utama
+                                    </button>
+                                </form>
+                            @endif
+
                             <form action="{{ route('profil.alamat.delete', $alamat->id) }}" method="POST"
-                                  style="margin-top:10px"
+                                  style="margin:0"
                                   onsubmit="return confirm('Apakah Anda yakin ingin menghapus alamat ini?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                        style="background:none;border:none;color:#c03030;font-size:12.5px;font-weight:700;cursor:pointer;padding:0;font-family:var(--fb)">
+                                        style="background:none;border:none;color:#c03030;font-size:12.5px;font-weight:700;cursor:pointer;padding:0;font-family:var(--fb);display:inline-flex;align-items:center;gap:4px">
                                     🗑️ Hapus Alamat
                                 </button>
                             </form>
-                        @endif
+                        </div>
                     </div>
                 @empty
                     <div style="text-align:center;padding:32px;color:var(--clay);font-size:13.5px">
@@ -232,6 +269,51 @@
                         </div>
                     </div>
 
+                    {{-- ── Lokasi Maps (Opsional) ── --}}
+                    <div style="border-top:1px dashed rgba(176,139,110,.25);margin:4px 0 16px;padding-top:16px">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--terracotta)" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                            <span style="font-size:12.5px;font-weight:700;color:var(--soil)">Lokasi Maps <span style="font-weight:400;color:var(--clay);font-size:11.5px">(Opsional)</span></span>
+                        </div>
+
+                        <div style="background:rgba(37,99,235,.04);border:1px solid rgba(37,99,235,.12);border-radius:var(--r-sm);padding:10px 13px;margin-bottom:13px;font-size:12px;color:#2563eb;line-height:1.6">
+                            💡 Cara mendapatkan koordinat: Buka <strong>Google Maps</strong> → Klik lokasi Anda → Klik kanan → <strong>"Apa yang ada di sini?"</strong> → Salin angka koordinat (lat, lng) di bagian bawah.
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                            <div class="form-grp" style="margin-bottom:0">
+                                <label class="form-lbl">Latitude</label>
+                                <input type="number" name="latitude" id="input-lat" class="form-inp"
+                                       step="any" placeholder="cth: -7.5566"
+                                       oninput="updateMapsPreview()">
+                                @error('latitude') <div class="invalid-feedback" style="display:block">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="form-grp" style="margin-bottom:0">
+                                <label class="form-lbl">Longitude</label>
+                                <input type="number" name="longitude" id="input-lng" class="form-inp"
+                                       step="any" placeholder="cth: 112.2384"
+                                       oninput="updateMapsPreview()">
+                                @error('longitude') <div class="invalid-feedback" style="display:block">{{ $message }}</div> @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-grp" style="margin-top:12px">
+                            <label class="form-lbl">Link Google Maps <span style="font-weight:400;color:var(--clay)">(paste link share dari Google Maps)</span></label>
+                            <input type="url" name="link_google_maps" id="input-maps-link" class="form-inp"
+                                   placeholder="https://maps.app.goo.gl/...">
+                            @error('link_google_maps') <div class="invalid-feedback" style="display:block">{{ $message }}</div> @enderror
+                        </div>
+
+                        {{-- Preview tombol Maps --}}
+                        <div id="maps-preview" style="display:none;margin-top:8px">
+                            <a id="maps-preview-link" href="#" target="_blank" rel="noopener noreferrer"
+                               style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(37,99,235,.08);color:#2563eb;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;text-decoration:none;border:1px solid rgba(37,99,235,.2)">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                                Preview: Lihat di Google Maps
+                            </a>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">
                         Tambah Alamat Baru
                     </button>
@@ -242,3 +324,22 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function updateMapsPreview() {
+    const lat = document.getElementById('input-lat')?.value;
+    const lng = document.getElementById('input-lng')?.value;
+    const preview = document.getElementById('maps-preview');
+    const link    = document.getElementById('maps-preview-link');
+
+    if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
+        const url = 'https://www.google.com/maps?q=' + parseFloat(lat) + ',' + parseFloat(lng);
+        link.href = url;
+        preview.style.display = 'block';
+    } else {
+        preview.style.display = 'none';
+    }
+}
+</script>
+@endpush

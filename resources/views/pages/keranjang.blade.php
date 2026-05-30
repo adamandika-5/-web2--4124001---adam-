@@ -21,7 +21,7 @@
     @if($itemsList->isEmpty())
         <div style="text-align:center;padding:64px 24px" class="card">
             <div style="font-size:64px;margin-bottom:16px">🛒</div>
-            <h2 style="font-family:var(--fd);font-size:20px;font-weight:600;color:var(--soil);margin-bottom:8px">Keranjang Belanja Kosong</h2>
+            <h2 style="font-family:var(--fs);font-size:20px;font-weight:700;color:var(--soil);margin-bottom:8px">Keranjang Belanja Kosong</h2>
             <p style="font-size:14px;color:var(--clay);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto">
                 Anda belum menambahkan produk apa pun ke dalam keranjang belanja. Jelajahi katalog kami untuk menemukan material berkualitas.
             </p>

@@ -135,9 +135,18 @@
         @empty
         <div style="grid-column:1/-1;text-align:center;padding:80px;background:#fff;border-radius:var(--r-xl)">
             <div style="font-size:48px;margin-bottom:12px">🔧</div>
-            <div style="font-family:var(--fd);font-size:20px;color:var(--soil);margin-bottom:8px">Alat tidak ditemukan</div>
-            <div style="font-size:13.5px;color:var(--clay);margin-bottom:20px">Coba ubah filter atau kata kunci</div>
-            <a href="{{ route('sewa.index') }}" class="btn btn-primary">Lihat Semua Alat</a>
+            @if(request()->filled('q') || request()->filled('kategori') || request()->filled('status'))
+                <div style="font-family:var(--fd);font-size:20px;color:var(--soil);margin-bottom:8px">Alat tidak ditemukan</div>
+                <div style="font-size:13.5px;color:var(--clay);margin-bottom:20px">Coba ubah filter atau kata kunci</div>
+                <a href="{{ route('sewa.index') }}" class="btn btn-primary">Lihat Semua Alat</a>
+            @else
+                <div style="font-family:var(--fd);font-size:20px;color:var(--soil);margin-bottom:8px">Belum ada alat sewa tersedia</div>
+                <div style="font-size:13.5px;color:var(--clay);margin-bottom:20px">Silakan kembali lagi nanti atau cari material lainnya.</div>
+                <div style="display:flex;gap:12px;justify-content:center">
+                    <a href="{{ route('beranda') }}" class="btn btn-primary">Kembali ke Beranda</a>
+                    <a href="{{ route('katalog.index') }}" class="btn btn-secondary">Lihat Katalog Produk</a>
+                </div>
+            @endif
         </div>
         @endforelse
     </div>
@@ -182,7 +191,7 @@
                             style="width:100%;padding:10px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(232,220,199,.2);border-radius:var(--r-md);color:var(--sand);font-family:var(--fb);font-size:13px;outline:none">
                         <option value="">-- Pilih alat --</option>
                         @foreach($alat as $a)
-                        <option value="{{ $a->tarif_harian }}" data-nama="{{ $a->nama }}" data-deposit="{{ $a->deposit }}">
+                        <option value="{{ $a->tarif_harian }}" data-nama="{{ $a->nama }}" data-deposit="{{ $a->deposit }}" data-slug="{{ $a->slug }}">
                             {{ $a->nama }} — Rp {{ number_format($a->tarif_harian, 0, ',', '.') }}/hari
                         </option>
                         @endforeach
@@ -216,7 +225,7 @@
                         <span id="kalTotal" style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--terracotta)">—</span>
                     </div>
                 </div>
-                <a href="{{ route('sewa.index') }}" class="btn btn-primary" style="width:100%;justify-content:center">
+                <a id="btnBookingKalkulator" href="{{ route('sewa.index') }}" class="btn btn-primary" style="width:100%;justify-content:center">
                     Booking Sekarang
                 </a>
             </div>
@@ -229,11 +238,22 @@
 @push('scripts')
 <script>
 function kalkulasi() {
-    const tarif   = parseFloat(document.getElementById('kalkulasiAlat').value);
+    const select  = document.getElementById('kalkulasiAlat');
+    const selectedOption = select.selectedOptions[0];
+    const tarif   = parseFloat(select.value);
     const mulai   = document.getElementById('kalMulai').value;
     const selesai = document.getElementById('kalSelesai').value;
     const hasil   = document.getElementById('kalHasil');
-    const deposit = parseFloat(document.getElementById('kalkulasiAlat').selectedOptions[0]?.dataset.deposit || 0);
+    const deposit = parseFloat(selectedOption?.dataset.deposit || 0);
+    const slug    = selectedOption?.dataset.slug || '';
+    const btn     = document.getElementById('btnBookingKalkulator');
+
+    // Update href button berdasarkan alat yang dipilih
+    if (slug) {
+        btn.href = '{{ url('/sewa-alat') }}/' + slug;
+    } else {
+        btn.href = '{{ route('sewa.index') }}';
+    }
 
     if (!tarif || !mulai || !selesai) { hasil.style.display='none'; return; }
 

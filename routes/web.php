@@ -74,6 +74,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/login/google/callback', [LoginController::class, 'handleGoogleCallback']);
 });
 
+Route::get('/keluar', function () {
+    return redirect()->route('login');
+});
 Route::post('/keluar', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 /*
@@ -90,6 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/profil/sandi', [ProfilController::class, 'updatePassword'])->name('profil.password');
     Route::get('/profil/alamat', [ProfilController::class, 'alamat'])->name('profil.alamat');
     Route::post('/profil/alamat', [ProfilController::class, 'tambahAlamat'])->name('profil.alamat.store');
+    Route::patch('/profil/alamat/{id}/utama', [ProfilController::class, 'jadikanUtama'])->name('profil.alamat.utama');
     Route::delete('/profil/alamat/{id}', [ProfilController::class, 'hapusAlamat'])->name('profil.alamat.delete');
 
     Route::middleware('role:user')->group(function () {
@@ -166,8 +170,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Sewa Alat — custom routes SEBELUM resource agar tidak diambil oleh {sewa} wildcard
     Route::get('sewa/booking', [AdminSewaController::class, 'booking'])->name('sewa.booking');
+    Route::patch('sewa/booking/{booking}/aktif',   [AdminSewaController::class, 'aktifkanBooking'])->name('sewa.booking.aktif');
     Route::patch('sewa/booking/{booking}/selesai', [AdminSewaController::class, 'selesaiBooking'])->name('sewa.booking.selesai');
-    Route::patch('sewa/booking/{booking}/denda', [AdminSewaController::class, 'catatDenda'])->name('sewa.booking.denda');
+    Route::patch('sewa/booking/{booking}/batal',   [AdminSewaController::class, 'batalBooking'])->name('sewa.booking.batal');
+    Route::patch('sewa/booking/{booking}/denda',   [AdminSewaController::class, 'catatDenda'])->name('sewa.booking.denda');
     Route::resource('sewa', AdminSewaController::class);
     Route::patch('sewa/{alat}/toggle-status', [AdminSewaController::class, 'toggleStatus'])->name('sewa.toggleStatus');
 

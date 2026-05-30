@@ -6,18 +6,26 @@
 @section('content')
 
 {{-- Stats --}}
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px">
     @foreach([
-        ['🔧', 'Total Alat',     $stats['total'],         'var(--soil)'],
-        ['✅', 'Tersedia',        $stats['tersedia'],       'var(--terracotta)'],
-        ['⏳', 'Sedang Disewa',  $stats['sedang_disewa'],  '#2563eb'],
-        ['⚠️', 'Terlambat',      $stats['terlambat'],      '#dc2626'],
-    ] as [$ikon, $label, $val, $warna])
-    <div style="background:#fff;border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.07)">
+        ['🔧', 'Total Alat',     $stats['total'],         'var(--soil)',       null],
+        ['✅', 'Tersedia',        $stats['tersedia'],       'var(--terracotta)', null],
+        ['⏳', 'Sedang Disewa',  $stats['sedang_disewa'],  '#2563eb',           null],
+        ['🔔', 'Menunggu Konfirmasi', $stats['pending'],   '#b45309',           route('admin.sewa.booking', ['status'=>'pending'])],
+        ['⚠️', 'Terlambat',      $stats['terlambat'],      '#dc2626',           null],
+    ] as [$ikon, $label, $val, $warna, $href])
+    @if($href)
+    <a href="{{ $href }}" style="text-decoration:none">
+    @endif
+    <div style="background:#fff;border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.07){{ $href ? ';transition:box-shadow .15s' : '' }}"
+         {{ $href ? "onmouseover=\"this.style.boxShadow='var(--sh-md)'\" onmouseout=\"this.style.boxShadow='var(--sh-sm)'\"" : '' }}>
         <div style="font-size:22px;margin-bottom:6px">{{ $ikon }}</div>
         <div style="font-size:26px;font-weight:700;color:{{ $warna }};font-family:var(--fd)">{{ $val }}</div>
         <div style="font-size:12.5px;color:var(--clay);margin-top:2px">{{ $label }}</div>
     </div>
+    @if($href)
+    </a>
+    @endif
     @endforeach
 </div>
 
@@ -92,10 +100,10 @@
     {{-- Booking Aktif --}}
     <div style="background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.07)">
         <div style="padding:20px 24px;border-bottom:1px solid rgba(176,139,110,.07);display:flex;align-items:center;justify-content:space-between">
-            <div style="font-family:var(--fd);font-size:16px;font-weight:500;color:var(--soil)">Booking Aktif</div>
+            <div style="font-family:var(--fd);font-size:16px;font-weight:500;color:var(--soil)">Booking Terkini (Perlu Tindakan)</div>
             <a href="{{ route('admin.sewa.booking') }}"
                style="font-size:13px;color:var(--terracotta);font-weight:600;text-decoration:none">
-                Lihat Semua →
+                Lihat Semua &rarr;
             </a>
         </div>
 
@@ -112,13 +120,20 @@
                             {{ $b->tanggal_mulai?->format('d M') }} – {{ $b->tanggal_selesai?->format('d M Y') }}
                         </div>
                     </div>
-                    @if($b->tanggal_selesai && $b->tanggal_selesai->isPast())
+                    @php
+                        $isLate = $b->status === 'aktif' && $b->tanggal_selesai && $b->tanggal_selesai->isPast();
+                    @endphp
+                    @if($b->status === 'pending')
+                    <span style="padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:rgba(234,179,8,.12);color:#b45309">
+                        ⏳ Pending
+                    </span>
+                    @elseif($isLate)
                     <span style="padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:rgba(220,38,38,.1);color:#dc2626">
-                        Terlambat
+                        ⚠ Terlambat
                     </span>
                     @else
                     <span style="padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:rgba(22,163,74,.1);color:#16a34a">
-                        Aktif
+                        ✅ Aktif
                     </span>
                     @endif
                 </div>

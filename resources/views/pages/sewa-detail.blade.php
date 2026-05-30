@@ -43,7 +43,7 @@
 
         {{-- Info --}}
         <div>
-            <h1 style="font-family:var(--fd);font-size:clamp(22px,2.5vw,32px);font-weight:500;color:var(--soil);line-height:1.2;margin-bottom:16px">
+            <h1 style="font-family:var(--fs);font-size:clamp(22px,2.5vw,32px);font-weight:700;color:var(--soil);line-height:1.2;margin-bottom:16px">
                 {{ $alat->nama }}
             </h1>
 
@@ -58,18 +58,18 @@
                 <div style="font-size:12.5px;font-weight:700;color:var(--clay);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em">Tarif Sewa</div>
                 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
                     <div style="text-align:center;padding:14px;background:#fff;border-radius:var(--r-md);border:1px solid rgba(176,139,110,.1)">
-                        <div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--terracotta)">Rp {{ number_format($alat->tarif_harian,0,',','.') }}</div>
+                        <div style="font-family:var(--fs);font-size:20px;font-weight:700;color:var(--terracotta)">Rp {{ number_format($alat->tarif_harian,0,',','.') }}</div>
                         <div style="font-size:11.5px;color:var(--clay);margin-top:4px">per Hari</div>
                     </div>
                     @if($alat->tarif_mingguan)
                     <div style="text-align:center;padding:14px;background:#fff;border-radius:var(--r-md);border:1px solid rgba(176,139,110,.1)">
-                        <div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--soil)">Rp {{ number_format($alat->tarif_mingguan,0,',','.') }}</div>
+                        <div style="font-family:var(--fs);font-size:20px;font-weight:700;color:var(--soil)">Rp {{ number_format($alat->tarif_mingguan,0,',','.') }}</div>
                         <div style="font-size:11.5px;color:var(--clay);margin-top:4px">per Minggu</div>
                     </div>
                     @endif
                     @if($alat->tarif_bulanan)
                     <div style="text-align:center;padding:14px;background:#fff;border-radius:var(--r-md);border:1px solid rgba(176,139,110,.1)">
-                        <div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--soil)">Rp {{ number_format($alat->tarif_bulanan,0,',','.') }}</div>
+                        <div style="font-family:var(--fs);font-size:20px;font-weight:700;color:var(--soil)">Rp {{ number_format($alat->tarif_bulanan,0,',','.') }}</div>
                         <div style="font-size:11.5px;color:var(--clay);margin-top:4px">per Bulan</div>
                     </div>
                     @endif
@@ -136,7 +136,7 @@
                     @endif
                     <div style="display:flex;justify-content:space-between;font-size:15px;border-top:2px solid rgba(198,107,61,.2);padding-top:10px;margin-top:8px">
                         <span style="font-weight:700;color:var(--soil)">Total Dibayar</span>
-                        <span id="estTotal" style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--terracotta)">—</span>
+                        <span id="estTotal" style="font-family:var(--fs);font-size:20px;font-weight:700;color:var(--terracotta)">—</span>
                     </div>
                 </div>
 

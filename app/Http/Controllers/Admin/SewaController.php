@@ -19,13 +19,14 @@ class SewaController extends Controller
 
         return view('admin.sewa.index', [
             'alat'    => $query->paginate(15)->withQueryString(),
-            'booking' => BookingAlat::with(['user', 'alat'])->where('status', 'aktif')->latest()->take(20)->get(),
+            'booking' => BookingAlat::with(['user', 'alat'])->whereIn('status', ['pending', 'aktif'])->latest()->take(20)->get(),
             'stats'   => [
                 'total'         => AlatBangunan::count(),
                 'sedang_disewa' => BookingAlat::where('status', 'aktif')->count(),
                 'tersedia'      => AlatBangunan::aktif()->sum('tersedia'),
                 'terlambat'     => BookingAlat::where('status', 'aktif')
                                     ->where('tanggal_selesai', '<', today())->count(),
+                'pending'       => BookingAlat::where('status', 'pending')->count(),
             ],
         ]);
     }
@@ -98,11 +99,76 @@ class SewaController extends Controller
         return back()->with('success', 'Status alat diperbarui.');
     }
 
-    public function booking()
+    public function booking(Request $request)
     {
+        $query = BookingAlat::with(['user', 'alat'])->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('q')) {
+            $q = $request->q;
+            $query->where(function ($sub) use ($q) {
+                $sub->where('nomor_booking', 'like', "%{$q}%")
+                    ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$q}%"));
+            });
+        }
+        if ($request->filled('tgl')) {
+            $query->whereDate('tanggal_mulai', $request->tgl);
+        }
+
         return view('admin.sewa.booking', [
-            'bookings' => BookingAlat::with(['user', 'alat'])->latest()->paginate(20),
+            'bookings' => $query->paginate(20)->withQueryString(),
         ]);
+    }
+
+    public function aktifkanBooking(BookingAlat $booking)
+    {
+        if ($booking->status !== 'pending') {
+            return back()->with('error', 'Hanya booking berstatus pending yang dapat diaktifkan.');
+        }
+
+        // Cek stok tersedia
+        if ($booking->alat->tersedia <= 0) {
+            return back()->with('error', 'Stok alat tidak tersedia saat ini.');
+        }
+
+        $booking->update(['status' => 'aktif']);
+        $booking->alat->decrement('tersedia');
+
+        ActivityLog::catat(
+            'aktif_sewa',
+            "Booking {$booking->nomor_booking} diaktifkan",
+            '✅',
+            $booking
+        );
+
+        return back()->with('success', "Booking {$booking->nomor_booking} berhasil diaktifkan.");
+    }
+
+    public function batalBooking(BookingAlat $booking)
+    {
+        if (in_array($booking->status, ['selesai', 'batal'])) {
+            return back()->with('error', 'Booking ini tidak dapat dibatalkan.');
+        }
+
+        $wasAktif = $booking->status === 'aktif';
+
+        $booking->update(['status' => 'batal']);
+
+        // Kembalikan stok jika sebelumnya aktif
+        if ($wasAktif) {
+            $booking->alat->increment('tersedia');
+        }
+
+        ActivityLog::catat(
+            'batal_sewa',
+            "Booking {$booking->nomor_booking} dibatalkan",
+            '❌',
+            $booking
+        );
+
+        return back()->with('success', "Booking {$booking->nomor_booking} dibatalkan.");
     }
 
     public function selesaiBooking(BookingAlat $booking)

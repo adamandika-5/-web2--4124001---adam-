@@ -98,27 +98,58 @@
                 </td>
                 <td>
                     <div class="act-btns">
+                        {{-- AKTIFKAN: hanya untuk pending --}}
+                        @if($b->status === 'pending')
+                        <form action="{{ route('admin.sewa.booking.aktif', $b->id) }}" method="POST"
+                              onsubmit="return confirm('Setujui dan aktifkan booking {{ $b->nomor_booking }}?')">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="act-btn" title="Aktifkan / Setujui"
+                                    style="background:rgba(96,108,56,.1)">
+                                <svg viewBox="0 0 24 24" stroke="var(--moss)" fill="none" stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                            </button>
+                        </form>
+                        @endif
+
+                        {{-- SELESAIKAN: hanya untuk aktif --}}
                         @if($b->status === 'aktif')
                         <form action="{{ route('admin.sewa.booking.selesai', $b->id) }}" method="POST"
                               onsubmit="return confirm('Tandai booking {{ $b->nomor_booking }} selesai?')">
                             @csrf @method('PATCH')
                             <button type="submit" class="act-btn" title="Selesaikan"
-                                    style="background:rgba(96,108,56,.08)">
-                                <svg viewBox="0 0 24 24" stroke="var(--moss)">
-                                    <polyline points="20 6 9 17 4 12"/>
+                                    style="background:rgba(59,130,246,.08)">
+                                <svg viewBox="0 0 24 24" stroke="#2563eb" fill="none" stroke-width="2.5">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
                                 </svg>
                             </button>
                         </form>
                         <button onclick="modalDenda({{ $b->id }}, '{{ $b->nomor_booking }}')"
                                 class="act-btn" title="Catat Denda">
-                            <svg viewBox="0 0 24 24">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="var(--clay)" stroke-width="2">
                                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
                             </svg>
                         </button>
                         @endif
-                        <a href="https://wa.me/{{ $b->user->telepon ?? '' }}" target="_blank"
-                           class="act-btn" title="WA Pelanggan">
-                            <svg viewBox="0 0 24 24">
+
+                        {{-- BATALKAN: untuk pending atau aktif --}}
+                        @if(in_array($b->status, ['pending', 'aktif']))
+                        <form action="{{ route('admin.sewa.booking.batal', $b->id) }}" method="POST"
+                              onsubmit="return confirm('Batalkan booking {{ $b->nomor_booking }}? Tindakan ini tidak dapat diurungkan.')">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="act-btn" title="Batalkan"
+                                    style="background:rgba(192,48,48,.07)">
+                                <svg viewBox="0 0 24 24" stroke="#c03030" fill="none" stroke-width="2.5">
+                                    <path d="M18 6L6 18M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </form>
+                        @endif
+
+                        {{-- WA Pelanggan --}}
+                        <a href="https://wa.me/{{ preg_replace('/\D/', '', $b->user->telepon ?? '') }}" target="_blank"
+                           class="act-btn" title="WhatsApp Pelanggan">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="var(--clay)" stroke-width="2">
                                 <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
                             </svg>
                         </a>

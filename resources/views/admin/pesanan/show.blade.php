@@ -250,12 +250,14 @@
                 @if($pesanan->jenis_pengiriman === 'armada')
                 <div style="display:flex;justify-content:space-between;font-size:13px">
                     <span style="color:var(--clay)">Kurir</span>
-                    <span style="font-weight:700;color:var(--soil)">Pihak Toko / Armada Sinar Alam</span>
+                    <span style="font-weight:700;color:var(--soil)">{{ $pesanan->ekspedisi ?? 'Armada Toko Sinar Alam' }}</span>
                 </div>
                 @elseif($pesanan->ekspedisi)
                 <div style="display:flex;justify-content:space-between;font-size:13px">
                     <span style="color:var(--clay)">Kurir</span>
-                    <span style="font-weight:700;color:var(--soil)">{{ strtoupper($pesanan->ekspedisi) }}</span>
+                    <span style="font-weight:700;color:var(--soil)">
+                        {{ $pesanan->ekspedisi === 'jnt' ? 'J&T Express' : ($pesanan->ekspedisi === 'jne' ? 'JNE Regular' : ($pesanan->ekspedisi === 'sicepat' ? 'SiCepat HALU' : strtoupper($pesanan->ekspedisi))) }}
+                    </span>
                 </div>
                 @endif
                 <div style="display:flex;justify-content:space-between;font-size:13px">

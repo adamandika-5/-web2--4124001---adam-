@@ -47,8 +47,7 @@
                     <label class="form-lbl">Role *</label>
                     <select class="form-inp" name="role" required>
                         <option value="user"  {{ old('role', $user->role ?? 'user') === 'user'  ? 'selected' : '' }}>Pelanggan (User)</option>
-                        <option value="staff" {{ old('role', $user->role ?? '') === 'staff' ? 'selected' : '' }}>Staff Admin</option>
-                        <option value="admin" {{ old('role', $user->role ?? '') === 'admin' ? 'selected' : '' }}>Super Admin</option>
+                        <option value="admin" {{ old('role', $user->role ?? '') === 'admin' ? 'selected' : '' }}>Administrator</option>
                     </select>
                     @error('role') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>

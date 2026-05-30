@@ -142,7 +142,7 @@
                 @endif
                 <div>
                     <div class="adm-user-name" style="color:var(--sand)">{{ auth()->user()->name }}</div>
-                    <div class="adm-user-role" style="color:rgba(232,220,199,.32)">{{ auth()->user()->role === 'admin' ? 'Administrator' : 'Staff' }}</div>
+                    <div class="adm-user-role" style="color:rgba(232,220,199,.32)">Administrator</div>
                 </div>
             </a>
             <form action="{{ route('logout') }}" method="POST" style="margin-top:4px">

@@ -6,6 +6,7 @@ class AlamatUser extends Model {
     protected $fillable = [
         'user_id','label','penerima','telepon','alamat_lengkap',
         'kelurahan','kecamatan','kota','provinsi','kode_pos','is_utama',
+        'latitude','longitude','link_google_maps',
     ];
     protected $casts = ['is_utama' => 'boolean'];
     public function user() { return $this->belongsTo(User::class); }

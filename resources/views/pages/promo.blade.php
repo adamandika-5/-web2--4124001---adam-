@@ -9,7 +9,7 @@
     <div class="grain"></div>
     <div style="max-width:1280px;margin:0 auto;position:relative;z-index:2;text-align:center">
         <div class="section-label" style="color:var(--clay-light);justify-content:center;display:flex">Penawaran Terbaik</div>
-        <h1 style="font-family:var(--fd);font-size:clamp(28px,4vw,48px);font-weight:500;color:var(--sand);margin:10px 0 12px;line-height:1.1">
+        <h1 style="font-family:var(--fs);font-size:clamp(28px,4vw,48px);font-weight:700;color:var(--sand);margin:10px 0 12px;line-height:1.1">
             Promo & <em style="font-style:italic;color:var(--terracotta)">Diskon</em> Aktif
         </h1>
         <p style="font-size:15px;color:rgba(232,220,199,.5);max-width:480px;margin:0 auto">
@@ -24,7 +24,7 @@
     @if($promos->isEmpty())
         <div style="text-align:center;padding:80px 40px;background:#fff;border-radius:var(--r-xl);border:1px solid rgba(176,139,110,.1)">
             <div style="font-size:56px;margin-bottom:14px">🏷️</div>
-            <div style="font-family:var(--fd);font-size:22px;color:var(--soil);margin-bottom:8px">Belum ada promo aktif</div>
+            <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:var(--soil);margin-bottom:8px">Belum ada promo aktif</div>
             <div style="font-size:14px;color:var(--clay);margin-bottom:22px">Pantau terus halaman ini untuk penawaran terbaru</div>
             <a href="{{ route('katalog.index') }}" class="btn btn-primary">Belanja Tanpa Promo →</a>
         </div>
@@ -43,7 +43,7 @@
                             {{ $promo->label }}
                         </div>
                     @endif
-                    <div style="font-family:var(--fd);font-size:22px;font-weight:500;color:var(--sand);line-height:1.3;margin-bottom:14px">
+                    <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:var(--sand);line-height:1.3;margin-bottom:14px">
                         @if($promo->judul_html)
                             {!! $promo->judul_html !!}
                         @else

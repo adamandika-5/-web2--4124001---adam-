@@ -69,13 +69,16 @@ class ProfilController extends Controller
     public function tambahAlamat(Request $request)
     {
         $request->validate([
-            'label'          => 'required|string|max:50',
-            'penerima'       => 'required|string|max:100',
-            'telepon'        => 'required|string|max:20',
-            'alamat_lengkap' => 'required|string',
-            'kota'           => 'required|string',
-            'provinsi'       => 'required|string',
-            'kode_pos'       => 'nullable|string|max:10',
+            'label'            => 'required|string|max:50',
+            'penerima'         => 'required|string|max:100',
+            'telepon'          => 'required|string|max:20',
+            'alamat_lengkap'   => 'required|string',
+            'kota'             => 'required|string',
+            'provinsi'         => 'required|string',
+            'kode_pos'         => 'nullable|string|max:10',
+            'latitude'         => 'nullable|numeric|between:-90,90',
+            'longitude'        => 'nullable|numeric|between:-180,180',
+            'link_google_maps' => 'nullable|url|max:500',
         ]);
 
         $user = auth()->user();
@@ -86,22 +89,43 @@ class ProfilController extends Controller
         }
 
         $user->alamat()->create([
-            ...$request->only('label', 'penerima', 'telepon', 'alamat_lengkap', 'kelurahan', 'kecamatan', 'kota', 'provinsi', 'kode_pos'),
+            ...$request->only('label', 'penerima', 'telepon', 'alamat_lengkap', 'kelurahan', 'kecamatan', 'kota', 'provinsi', 'kode_pos', 'latitude', 'longitude', 'link_google_maps'),
             'is_utama' => $request->boolean('is_utama') || $user->alamat()->count() === 0,
         ]);
 
         return back()->with('success', 'Alamat baru berhasil ditambahkan.');
     }
 
+    public function jadikanUtama(int $id)
+    {
+        $user = auth()->user();
+        $alamat = $user->alamat()->findOrFail($id);
+
+        // Reset semua alamat milik user ini agar tidak utama
+        $user->alamat()->update(['is_utama' => false]);
+
+        // Set alamat yang dipilih menjadi utama
+        $alamat->update(['is_utama' => true]);
+
+        return back()->with('success', 'Alamat utama berhasil diperbarui.');
+    }
+
     public function hapusAlamat(int $id)
     {
-        $alamat = auth()->user()->alamat()->findOrFail($id);
-
-        if ($alamat->is_utama) {
-            return back()->with('error', 'Tidak dapat menghapus alamat utama. Jadikan alamat lain sebagai utama terlebih dahulu.');
-        }
+        $user = auth()->user();
+        $alamat = $user->alamat()->findOrFail($id);
+        $wasUtama = $alamat->is_utama;
 
         $alamat->delete();
+
+        // Jika alamat yang dihapus adalah alamat utama dan masih ada alamat lain, jadikan salah satu alamat lain sebagai utama
+        if ($wasUtama) {
+            $lain = $user->alamat()->first();
+            if ($lain) {
+                $lain->update(['is_utama' => true]);
+            }
+        }
+
         return back()->with('success', 'Alamat berhasil dihapus.');
     }
 }

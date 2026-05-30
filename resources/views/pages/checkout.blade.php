@@ -72,7 +72,7 @@
                     @foreach($alamats as $alamat)
                     <label style="display:flex;gap:14px;padding:16px;border:2px solid {{ $alamat->is_utama ? 'var(--terracotta)' : 'var(--sand)' }};border-radius:var(--r-lg);cursor:pointer;transition:border-color .2s;background:{{ $alamat->is_utama ? 'rgba(198,107,61,.04)' : '#fff' }}"
                            onmouseover="this.style.borderColor='var(--terracotta)'" onmouseout="this.style.borderColor='{{ $alamat->is_utama ? 'var(--terracotta)' : 'var(--sand)' }}'">
-                        <input type="radio" name="alamat_id" value="{{ $alamat->id }}" data-kota="{{ $alamat->kota }}"
+                        <input type="radio" name="alamat_id" value="{{ $alamat->id }}" data-kota="{{ $alamat->kota }}" data-alamat="{{ $alamat->alamat_lengkap }}"
                                {{ $alamat->is_utama || $loop->first ? 'checked' : '' }}
                                style="accent-color:var(--terracotta);margin-top:3px;flex-shrink:0">
                         <div style="flex:1">
@@ -272,13 +272,13 @@
 @push('scripts')
 <script>
 const subtotal = Math.round(Number({{ $checkoutSubtotal }})) || 0;
-const ONGKIR_ARMADA_DEFAULT = 25000; // default ongkir lokal jika zona tidak ditemukan di database
+const ONGKIR_ARMADA_DEFAULT = 25000; // default ongkir jika zona tidak ditemukan
 
 function tampilkanOngkir(ongkirNum) {
-    document.getElementById('ongkirVal').value = ongkirNum;
-    document.getElementById('ongkirDisplay').textContent = 'Rp ' + ongkirNum.toLocaleString('id-ID');
+    document.getElementById('ongkirVal').value = Math.round(ongkirNum);
+    document.getElementById('ongkirDisplay').textContent = 'Rp ' + Math.round(ongkirNum).toLocaleString('id-ID');
     document.getElementById('ongkirDisplay').style.color = 'var(--soil)';
-    document.getElementById('totalDisplay').textContent = 'Rp ' + (subtotal + ongkirNum).toLocaleString('id-ID');
+    document.getElementById('totalDisplay').textContent = 'Rp ' + (subtotal + Math.round(ongkirNum)).toLocaleString('id-ID');
 }
 
 async function hitungOngkir(kota, jenis) {
@@ -291,18 +291,27 @@ async function hitungOngkir(kota, jenis) {
         const res = await fetch('{{ route("checkout.ongkir") }}', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-            body: JSON.stringify({ kota, jenis_kendaraan: 'pickup' })
+            body: JSON.stringify({
+                kota,
+                alamat_lengkap: document.querySelector('[name="alamat_id"]:checked')?.getAttribute('data-alamat') || '',
+                jenis_kendaraan: 'pickup'
+            })
         });
         const data = await res.json();
-        // Gunakan ongkir dari database jika > 0, jika tidak tetap pakai default
         const ongkirFinal = (data.ongkir && data.ongkir > 0)
             ? Math.round(Number(data.ongkir))
             : ONGKIR_ARMADA_DEFAULT;
         tampilkanOngkir(ongkirFinal);
     } catch (e) {
-        // Jika API gagal, tetap tampilkan default
         tampilkanOngkir(ONGKIR_ARMADA_DEFAULT);
     }
+}
+
+function getEkspedisiFee(val) {
+    if (val === 'jne') return 25000;
+    if (val === 'jnt') return 23000;
+    if (val === 'sicepat') return 20000;
+    return 23000;
 }
 
 function updatePengiriman(radio) {
@@ -310,20 +319,15 @@ function updatePengiriman(radio) {
     const ekspedisiOptions = document.getElementById('ekspedisiOptions');
 
     if (radio.value === 'ekspedisi') {
-        // Reset ongkir — ekspedisi dihitung saat konfirmasi admin
-        document.getElementById('ongkirVal').value = 0;
-        document.getElementById('ongkirDisplay').textContent = 'Dihitung saat konfirmasi';
-        document.getElementById('ongkirDisplay').style.color = 'var(--ochre)';
-        document.getElementById('totalDisplay').textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
         if (ekspedisiOptions) ekspedisiOptions.style.display = 'grid';
+        const activeEkspedisi = document.querySelector('[name="ekspedisi"]:checked')?.value || 'jnt';
+        tampilkanOngkir(getEkspedisiFee(activeEkspedisi));
     } else {
-        // Armada: sembunyikan opsi ekspedisi, langsung hitung ongkir armada
         if (ekspedisiOptions) ekspedisiOptions.style.display = 'none';
         if (selectedAlamat) {
             const kota = selectedAlamat.getAttribute('data-kota');
             hitungOngkir(kota, radio.value);
         } else {
-            // Tidak ada alamat terpilih, pakai default
             tampilkanOngkir(ONGKIR_ARMADA_DEFAULT);
         }
     }
@@ -332,7 +336,20 @@ function updatePengiriman(radio) {
 document.querySelectorAll('[name="alamat_id"]').forEach(r => {
     r.addEventListener('change', () => {
         const jenis = document.querySelector('[name="jenis_pengiriman"]:checked')?.value;
-        if (jenis === 'armada') updatePengiriman({value:'armada'});
+        if (jenis === 'armada') {
+            updatePengiriman({value:'armada'});
+        } else if (jenis === 'ekspedisi') {
+            updatePengiriman({value:'ekspedisi'});
+        }
+    });
+});
+
+document.querySelectorAll('[name="ekspedisi"]').forEach(r => {
+    r.addEventListener('change', () => {
+        const jenis = document.querySelector('[name="jenis_pengiriman"]:checked')?.value;
+        if (jenis === 'ekspedisi') {
+            tampilkanOngkir(getEkspedisiFee(r.value));
+        }
     });
 });
 

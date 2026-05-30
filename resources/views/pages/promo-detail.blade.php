@@ -25,7 +25,7 @@
                         {{ $promo->label }}
                     </div>
                 @endif
-                <h1 style="font-family:var(--fd);font-size:clamp(28px,3.5vw,44px);font-weight:500;color:var(--sand);line-height:1.1;margin-bottom:14px">
+                <h1 style="font-family:var(--fs);font-size:clamp(28px,3.5vw,44px);font-weight:700;color:var(--sand);line-height:1.1;margin-bottom:14px">
                     @if($promo->judul_html)
                         {!! $promo->judul_html !!}
                     @else
@@ -50,7 +50,7 @@
             {{-- Badge diskon besar --}}
             <div style="text-align:center">
                 <div style="width:160px;height:160px;border-radius:50%;background:rgba(198,107,61,.15);border:2px solid rgba(198,107,61,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto">
-                    <div style="font-family:var(--fd);font-size:44px;font-weight:700;color:var(--terracotta);line-height:1">
+                    <div style="font-family:var(--fs);font-size:44px;font-weight:700;color:var(--terracotta);line-height:1">
                         @if($promo->tipe === 'persentase')
                             {{ $promo->nilai }}%
                         @elseif($promo->tipe === 'nominal')
@@ -68,7 +68,7 @@
     {{-- Syarat & Ketentuan --}}
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:36px">
         <div style="background:#fff;border-radius:var(--r-lg);padding:28px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
-            <div style="font-family:var(--fd);font-size:18px;font-weight:500;color:var(--soil);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--sand)">
+            <div style="font-family:var(--fs);font-size:18px;font-weight:700;color:var(--soil);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--sand)">
                 Syarat & Ketentuan Promo
             </div>
             <div style="display:flex;flex-direction:column;gap:12px">
@@ -120,7 +120,7 @@
                     <div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px">
                         @foreach([[$hari, 'Hari'], [$jam, 'Jam']] as [$val, $lbl])
                         <div style="background:rgba(255,255,255,.07);border-radius:var(--r-sm);padding:10px 14px;min-width:56px">
-                            <div style="font-family:var(--fd);font-size:28px;font-weight:700;color:var(--sand)">{{ str_pad($val, 2, '0', STR_PAD_LEFT) }}</div>
+                            <div style="font-family:var(--fs);font-size:28px;font-weight:700;color:var(--sand)">{{ str_pad($val, 2, '0', STR_PAD_LEFT) }}</div>
                             <div style="font-size:10px;color:rgba(232,220,199,.4);margin-top:3px;font-weight:700;text-transform:uppercase">{{ $lbl }}</div>
                         </div>
                         @endforeach

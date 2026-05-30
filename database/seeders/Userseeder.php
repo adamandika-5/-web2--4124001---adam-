@@ -20,10 +20,10 @@ class UserSeeder extends Seeder
                 'aktif'    => true,
             ],
             [
-                'name'     => 'Staff Toko',
+                'name'     => 'Admin Toko',
                 'email'    => 'staff@sinaralam.id',
                 'telepon'  => '08234567890',
-                'role'     => 'staff',
+                'role'     => 'admin',
                 'password' => Hash::make('password'),
                 'aktif'    => true,
             ],

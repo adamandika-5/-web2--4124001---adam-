@@ -120,13 +120,12 @@
                         <div id="userDropdown" style="display:none;position:absolute;right:0;top:calc(100%+8px);background:#fff;border:1px solid var(--sand);border-radius:var(--r-md);box-shadow:var(--sh-md);min-width:160px;overflow:hidden;z-index:200">
                             @if(in_array(auth()->user()->role, ['admin', 'super_admin']))
                                 <a href="{{ route('admin.dashboard') }}" style="display:block;padding:10px 16px;font-size:13px;color:var(--soil);text-decoration:none;border-bottom:1px solid var(--sand)" onmouseover="this.style.background='var(--oat)'" onmouseout="this.style.background='#fff'">📊 Dashboard Admin</a>
-                            @elseif(auth()->user()->role === 'staff')
-                                <a href="{{ route('admin.dashboard') }}" style="display:block;padding:10px 16px;font-size:13px;color:var(--soil);text-decoration:none;border-bottom:1px solid var(--sand)" onmouseover="this.style.background='var(--oat)'" onmouseout="this.style.background='#fff'">📋 Panel Staff</a>
                             @endif
                             <a href="{{ route('profil') }}" style="display:block;padding:10px 16px;font-size:13px;color:var(--soil);text-decoration:none;border-bottom:1px solid var(--sand)" onmouseover="this.style.background='var(--oat)'" onmouseout="this.style.background='#fff'">👤 Profil Saya</a>
                             @if(auth()->user()->role === 'user')
                                 <a href="{{ route('pesanan.index') }}" style="display:block;padding:10px 16px;font-size:13px;color:var(--soil);text-decoration:none;border-bottom:1px solid var(--sand)" onmouseover="this.style.background='var(--oat)'" onmouseout="this.style.background='#fff'">📦 Pesanan Saya</a>
                                 <a href="{{ route('wishlist.index') }}" style="display:block;padding:10px 16px;font-size:13px;color:var(--soil);text-decoration:none;border-bottom:1px solid var(--sand)" onmouseover="this.style.background='var(--oat)'" onmouseout="this.style.background='#fff'">❤️ Wishlist Saya</a>
+                                <a href="{{ route('sewa.riwayat') }}" style="display:block;padding:10px 16px;font-size:13px;color:var(--soil);text-decoration:none;border-bottom:1px solid var(--sand)" onmouseover="this.style.background='var(--oat)'" onmouseout="this.style.background='#fff'">🔧 Sewa Saya</a>
                             @endif
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
@@ -154,6 +153,7 @@
             @auth
                 @if(auth()->user()->role === 'user')
                 <a href="{{ route('wishlist.index') }}" class="{{ request()->routeIs('wishlist.*') ? 'active' : '' }}">❤️ Wishlist Saya</a>
+                <a href="{{ route('sewa.riwayat') }}" class="{{ request()->routeIs('sewa.riwayat') ? 'active' : '' }}">🔧 Sewa Saya</a>
                 @endif
             @endauth
             <div class="nav-mobile-search">

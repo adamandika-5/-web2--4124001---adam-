@@ -25,7 +25,6 @@
             <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
                 @php $roleStyle = match($user->role) {
                     'admin' => 'background:rgba(198,107,61,.12);color:var(--terra-dark)',
-                    'staff' => 'background:rgba(192,142,58,.12);color:var(--ochre)',
                     default => 'background:rgba(96,108,56,.1);color:var(--moss)',
                 }; @endphp
                 <span class="badge" style="{{ $roleStyle }};font-size:12px">{{ ucfirst($user->role) }}</span>

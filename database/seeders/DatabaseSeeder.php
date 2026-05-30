@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info('');
         $this->command->info('Akun default:');
         $this->command->info('  Admin   → admin@sinaralam.id  / password');
-        $this->command->info('  Staff   → staff@sinaralam.id  / password');
+        $this->command->info('  Admin2  → staff@sinaralam.id  / password');
         $this->command->info('  User    → user@sinaralam.id   / password');
         $this->command->info('');
         $this->command->info('Jalankan: php artisan serve');

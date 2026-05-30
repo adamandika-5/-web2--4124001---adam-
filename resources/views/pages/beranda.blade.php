@@ -54,13 +54,13 @@
                     <div class="h-float-sub">Pasir, semen massal, batu bata — langsung ke lokasi proyek</div>
                 </div>
             </div>
-            <div class="h-float">
+            <a href="{{ route('sewa.index') }}" class="h-float" style="text-decoration:none">
                 <div class="h-float-icon" style="background:rgba(192,142,58,.2)">🔧</div>
                 <div>
-                    <div class="h-float-title">Sewa Alat Bangunan</div>
+                    <div class="h-float-title" style="color:var(--sand)">Sewa Alat Bangunan</div>
                     <div class="h-float-sub">Scaffolding, concrete mixer — harga harian & mingguan</div>
                 </div>
-            </div>
+            </a>
             <div class="h-float">
                 <div class="h-float-icon" style="background:rgba(96,108,56,.2)">📋</div>
                 <div>
