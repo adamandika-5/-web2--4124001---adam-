@@ -61,8 +61,25 @@
             @foreach($pesanan->items as $item)
             <div style="display:flex;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(176,139,110,.07)">
                 <div style="width:54px;height:54px;background:var(--oat);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;overflow:hidden">
-                    @if($item->produk && $item->produk->gambar->isNotEmpty())
-                        <img src="{{ asset('storage/'.$item->produk->gambar->first()->path) }}" style="width:100%;height:100%;object-fit:cover" alt="{{ $item->nama_produk }}">
+                    @php
+                        // Parsing gambar aman — bisa string, JSON string, array, collection, atau null
+                        $gambarRaw = $item->produk->gambar ?? null;
+                        if ($gambarRaw instanceof \Illuminate\Database\Eloquent\Collection || $gambarRaw instanceof \Illuminate\Support\Collection) {
+                            $gambarList = $gambarRaw->pluck('path')->filter()->values()->all();
+                        } elseif (is_array($gambarRaw)) {
+                            $gambarList = array_filter(array_map(fn($g) => is_object($g) ? ($g->path ?? null) : $g, $gambarRaw));
+                        } elseif (is_string($gambarRaw) && !empty($gambarRaw)) {
+                            $decoded = json_decode($gambarRaw, true);
+                            $gambarList = (json_last_error() === JSON_ERROR_NONE && is_array($decoded))
+                                ? array_filter($decoded)
+                                : [$gambarRaw];
+                        } else {
+                            $gambarList = [];
+                        }
+                        $gambarUtama = array_values($gambarList)[0] ?? null;
+                    @endphp
+                    @if($item->produk && $gambarUtama)
+                        <img src="{{ asset('storage/' . $gambarUtama) }}" style="width:100%;height:100%;object-fit:cover" alt="{{ $item->nama_produk }}">
                     @else
                         📦
                     @endif
@@ -230,7 +247,12 @@
                         {{ $pesanan->jenis_pengiriman==='armada' ? '🚛 Armada Sendiri' : '📦 Ekspedisi' }}
                     </span>
                 </div>
-                @if($pesanan->ekspedisi)
+                @if($pesanan->jenis_pengiriman === 'armada')
+                <div style="display:flex;justify-content:space-between;font-size:13px">
+                    <span style="color:var(--clay)">Kurir</span>
+                    <span style="font-weight:700;color:var(--soil)">Pihak Toko / Armada Sinar Alam</span>
+                </div>
+                @elseif($pesanan->ekspedisi)
                 <div style="display:flex;justify-content:space-between;font-size:13px">
                     <span style="color:var(--clay)">Kurir</span>
                     <span style="font-weight:700;color:var(--soil)">{{ strtoupper($pesanan->ekspedisi) }}</span>

@@ -9,7 +9,7 @@
     <div class="grain"></div>
     <div style="max-width:1280px;margin:0 auto;position:relative;z-index:2">
         <div class="section-label" style="color:var(--clay-light)">Layanan Penyewaan</div>
-        <h1 style="font-family:var(--fd);font-size:clamp(28px,4vw,48px);font-weight:500;color:var(--sand);margin:10px 0 12px;line-height:1.1">
+        <h1 style="font-family:var(--fs);font-size:clamp(28px,4vw,48px);font-weight:700;color:var(--sand);margin:10px 0 12px;line-height:1.1">
             Sewa Alat Bangunan,<br><em style="color:var(--terracotta);font-style:italic">Harga Harian.</em>
         </h1>
         <p style="font-size:15px;color:rgba(232,220,199,.55);max-width:480px;margin-bottom:28px">
@@ -168,7 +168,7 @@
         <div class="sewa-kalkulator-inner">
             <div>
                 <div class="section-label" style="color:var(--clay-light)">Kalkulator Biaya</div>
-                <h3 style="font-family:var(--fd);font-size:28px;font-weight:500;color:var(--sand);margin:8px 0 12px">
+                <h3 style="font-family:var(--fs);font-size:28px;font-weight:700;color:var(--sand);margin:8px 0 12px">
                     Hitung <em style="color:var(--terracotta);font-style:italic">Biaya Sewa</em> Sebelum Booking
                 </h3>
                 <p style="font-size:13.5px;color:rgba(232,220,199,.5);line-height:1.7">

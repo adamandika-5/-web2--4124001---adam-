@@ -107,12 +107,19 @@
     <div class="home-prod-grid">
         @foreach($produkUnggulan as $produk)
             <div class="prod-card">
+                <form action="{{ route('wishlist.toggle') }}" method="POST" style="display:inline;z-index:10">
+                    @csrf
+                    <input type="hidden" name="produk_id" value="{{ $produk->id }}">
+                    <button type="submit" class="prod-wish">
+                        {{ auth()->check() && auth()->user()->wishlist->contains($produk->id) ? '❤️' : '♡' }}
+                    </button>
+                </form>
                 <a href="{{ route('produk.show', $produk->slug) }}" style="text-decoration:none;color:inherit">
-                    <div class="prod-img" style="background:{{ $produk->warna_bg ?? '#F4EDE0' }}">
+                    <div class="prod-img">
                         @if($produk->gambar_utama)
-                            <img src="{{ asset('storage/'.$produk->gambar_utama) }}" alt="{{ $produk->nama }}" style="width:100%;height:100%;object-fit:cover">
+                            <img src="{{ asset('storage/'.$produk->gambar_utama) }}" alt="{{ $produk->nama }}" onerror="this.onerror=null; this.src='{{ asset('gambar/placeholder.svg') }}';">
                         @else
-                            <span style="font-size:52px">{{ $produk->ikon ?? '📦' }}</span>
+                            <img src="{{ asset('gambar/placeholder.svg') }}" alt="{{ $produk->nama }}">
                         @endif
                         <div class="prod-img-badge">
                             @if($produk->harga_promo)
@@ -121,13 +128,6 @@
                                 <span class="badge badge-new">Baru</span>
                             @endif
                         </div>
-                        <form action="{{ route('wishlist.toggle') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="produk_id" value="{{ $produk->id }}">
-                            <button type="submit" class="prod-wish">
-                                {{ auth()->check() && auth()->user()->wishlist->contains($produk->id) ? '❤️' : '♡' }}
-                            </button>
-                        </form>
                     </div>
                     <div class="prod-body">
                         <div class="prod-cat">{{ $produk->kategori->nama }}</div>
@@ -214,19 +214,21 @@
     <div class="home-prod-grid">
         @foreach($produkTerbaru as $produk)
             <div class="prod-card">
+                <form action="{{ route('wishlist.toggle') }}" method="POST" style="display:inline;z-index:10">
+                    @csrf
+                    <input type="hidden" name="produk_id" value="{{ $produk->id }}">
+                    <button type="submit" class="prod-wish">
+                        {{ auth()->check() && auth()->user()->wishlist->contains($produk->id) ? '❤️' : '♡' }}
+                    </button>
+                </form>
                 <a href="{{ route('produk.show', $produk->slug) }}" style="text-decoration:none;color:inherit">
-                    <div class="prod-img" style="background:{{ $produk->warna_bg ?? '#F4EDE0' }}">
+                    <div class="prod-img">
                         @if($produk->gambar_utama)
-                            <img src="{{ asset('storage/'.$produk->gambar_utama) }}" alt="{{ $produk->nama }}" style="width:100%;height:100%;object-fit:cover">
+                            <img src="{{ asset('storage/'.$produk->gambar_utama) }}" alt="{{ $produk->nama }}" onerror="this.onerror=null; this.src='{{ asset('gambar/placeholder.svg') }}';">
                         @else
-                            <span style="font-size:52px">{{ $produk->ikon ?? '📦' }}</span>
+                            <img src="{{ asset('gambar/placeholder.svg') }}" alt="{{ $produk->nama }}">
                         @endif
                         <div class="prod-img-badge"><span class="badge badge-new">Baru</span></div>
-                        <form action="{{ route('wishlist.toggle') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="produk_id" value="{{ $produk->id }}">
-                            <button type="submit" class="prod-wish">♡</button>
-                        </form>
                     </div>
                     <div class="prod-body">
                         <div class="prod-cat">{{ $produk->kategori->nama }}</div>

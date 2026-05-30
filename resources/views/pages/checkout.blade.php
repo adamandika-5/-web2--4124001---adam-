@@ -57,7 +57,7 @@
 
         {{-- Alamat Pengiriman --}}
         <div style="background:#fff;border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
-            <div style="font-family:var(--fd);font-size:17px;font-weight:500;color:var(--soil);margin-bottom:18px;display:flex;align-items:center;justify-content:space-between">
+            <div style="font-family:var(--fs);font-size:17px;font-weight:700;color:var(--soil);margin-bottom:18px;display:flex;align-items:center;justify-content:space-between">
                 📍 Alamat Pengiriman
                 <a href="{{ route('profil.alamat') }}" style="font-size:12px;color:var(--terracotta);font-weight:600;text-decoration:none;font-family:var(--fb)">+ Tambah Alamat</a>
             </div>
@@ -97,15 +97,24 @@
 
         {{-- Metode Pengiriman --}}
         <div style="background:#fff;border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
-            <div style="font-family:var(--fd);font-size:17px;font-weight:500;color:var(--soil);margin-bottom:18px">
+            <div style="font-family:var(--fs);font-size:17px;font-weight:700;color:var(--soil);margin-bottom:18px">
                 🚚 Metode Pengiriman
             </div>
 
+            @if(!$tampilArmada && !$tampilEkspedisi)
+                {{-- Fallback jika tidak ada opsi (tidak seharusnya terjadi) --}}
+                <div style="padding:14px;background:var(--oat);border-radius:var(--r-md);font-size:13px;color:var(--clay)">
+                    ⚠️ Tidak ada metode pengiriman yang tersedia untuk produk ini.
+                </div>
+            @else
             <div style="display:flex;flex-direction:column;gap:10px">
+
+                @if($tampilArmada)
                 {{-- Armada --}}
-                <label style="display:flex;gap:14px;padding:16px;border:2px solid var(--sand);border-radius:var(--r-lg);cursor:pointer;transition:border-color .2s"
+                <label id="labelArmada" style="display:flex;gap:14px;padding:16px;border:2px solid {{ $defaultPengiriman==='armada' ? 'var(--terracotta)' : 'var(--sand)' }};border-radius:var(--r-lg);cursor:pointer;transition:border-color .2s;background:{{ $defaultPengiriman==='armada' ? 'rgba(198,107,61,.04)' : '#fff' }}"
                        onmouseover="this.style.borderColor='var(--terracotta)'" onmouseout="if(!this.querySelector('input').checked)this.style.borderColor='var(--sand)'">
                     <input type="radio" name="jenis_pengiriman" value="armada" onchange="updatePengiriman(this)"
+                           {{ $defaultPengiriman==='armada' ? 'checked' : '' }}
                            style="accent-color:var(--terracotta);margin-top:3px;flex-shrink:0">
                     <div style="flex:1">
                         <div style="font-size:14px;font-weight:700;color:var(--soil);margin-bottom:3px">
@@ -120,21 +129,24 @@
                         Rp —
                     </div>
                 </label>
+                @endif
 
+                @if($tampilEkspedisi)
                 {{-- Ekspedisi --}}
-                <div style="border:2px solid var(--sand);border-radius:var(--r-lg);overflow:hidden">
+                <div id="wrapEkspedisi" style="border:2px solid {{ $defaultPengiriman==='ekspedisi' ? 'var(--terracotta)' : 'var(--sand)' }};border-radius:var(--r-lg);overflow:hidden">
                     <label style="display:flex;gap:14px;padding:16px;cursor:pointer;background:#fff;transition:background .2s"
                            onmouseover="this.style.background='rgba(198,107,61,.03)'" onmouseout="this.style.background='#fff'">
-                        <input type="radio" name="jenis_pengiriman" value="ekspedisi" checked onchange="updatePengiriman(this)"
+                        <input type="radio" name="jenis_pengiriman" value="ekspedisi" onchange="updatePengiriman(this)"
+                               {{ $defaultPengiriman==='ekspedisi' ? 'checked' : '' }}
                                style="accent-color:var(--terracotta);margin-top:3px;flex-shrink:0">
                         <div>
                             <div style="font-size:14px;font-weight:700;color:var(--soil);margin-bottom:3px">📦 Ekspedisi</div>
-                            <div style="font-size:12.5px;color:var(--clay)">J&T Express · JNE · SiCepat — barang ringan & sedang</div>
+                            <div style="font-size:12.5px;color:var(--clay)">J&T Express · JNE · SiCepat — barang ringan &amp; sedang</div>
                         </div>
                     </label>
 
                     {{-- Sub-pilihan ekspedisi --}}
-                    <div id="ekspedisiOptions" style="padding:0 16px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+                    <div id="ekspedisiOptions" style="padding:0 16px 16px;display:{{ $defaultPengiriman==='ekspedisi' ? 'grid' : 'none' }};grid-template-columns:1fr 1fr 1fr;gap:8px">
                         @foreach([
                             ['jnt','J&T Express','2-4 hari'],
                             ['jne','JNE Regular','2-5 hari'],
@@ -151,12 +163,15 @@
                         @endforeach
                     </div>
                 </div>
+                @endif
+
             </div>
+            @endif
         </div>
 
         {{-- Metode Pembayaran --}}
         <div style="background:#fff;border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
-            <div style="font-family:var(--fd);font-size:17px;font-weight:500;color:var(--soil);margin-bottom:18px">
+            <div style="font-family:var(--fs);font-size:17px;font-weight:700;color:var(--soil);margin-bottom:18px">
                 💳 Metode Pembayaran
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -197,10 +212,10 @@
         {{-- Ringkasan Item --}}
         <div style="background:#fff;border-radius:var(--r-lg);padding:20px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08);margin-bottom:14px">
             <div style="font-size:13.5px;font-weight:700;color:var(--soil);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--sand)">
-                Ringkasan Pesanan ({{ class_exists('\Cart') ? \Cart::getTotalQuantity() : 0 }} produk)
+                Ringkasan Pesanan ({{ $checkoutQuantity }} produk)
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto;margin-bottom:14px">
-                @foreach(\Cart::getContent() as $item)
+                @foreach($items as $item)
                 <div style="display:flex;gap:10px;align-items:center">
                     <div style="width:36px;height:36px;background:var(--oat);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden">
                         @if($item->attributes->gambar)
@@ -219,7 +234,7 @@
             </div>
 
             {{-- Totals --}}
-            @php $subtotal = \Cart::getTotal(); @endphp
+            @php $subtotal = $checkoutSubtotal; @endphp
             <div style="border-top:1px solid var(--sand);padding-top:12px;display:flex;flex-direction:column;gap:8px">
                 <div style="display:flex;justify-content:space-between;font-size:13px">
                     <span style="color:var(--clay)">Subtotal</span>
@@ -229,19 +244,20 @@
                     <span style="color:var(--clay)">Ongkos Kirim</span>
                     <span id="ongkirDisplay" style="font-weight:600;color:var(--ochre)">Pilih pengiriman</span>
                 </div>
-                <div style="border-top:2px solid var(--sand);padding-top:10px;display:flex;justify-content:space-between;margin-top:4px">
-                    <span style="font-size:15px;font-weight:700;color:var(--soil)">Total</span>
-                    <span id="totalDisplay" style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--terracotta)">
-                        Rp {{ number_format($subtotal, 0, ',', '.') }}
-                    </span>
+                <div style="display:flex;justify-content:space-between;font-size:13px">
+                    <span style="color:var(--clay)">Potongan Voucher</span>
+                    <span id="voucherDisplay" style="font-weight:600;color:var(--moss)">- Rp 0</span>
+                </div>
+                <div style="border-top:1.5px solid var(--sand);padding-top:10px;display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:var(--soil)">
+                    <span>Total Bayar</span>
+                    <span id="totalDisplay" style="color:var(--terracotta)">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
                 </div>
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;font-size:15px;padding:14px">
-            ✓ Buat Pesanan
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:15px">
+            Buat Pesanan
         </button>
-        <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--clay)">🔒 Transaksi aman & terenkripsi</div>
 
         <a href="{{ route('keranjang.index') }}" style="display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--terracotta);font-weight:600;text-decoration:none">
             ← Kembali ke keranjang
@@ -255,38 +271,60 @@
 
 @push('scripts')
 <script>
-const subtotal = {{ \Cart::getTotal() }};
+const subtotal = Math.round(Number({{ $checkoutSubtotal }})) || 0;
+const ONGKIR_ARMADA_DEFAULT = 25000; // default ongkir lokal jika zona tidak ditemukan di database
+
+function tampilkanOngkir(ongkirNum) {
+    document.getElementById('ongkirVal').value = ongkirNum;
+    document.getElementById('ongkirDisplay').textContent = 'Rp ' + ongkirNum.toLocaleString('id-ID');
+    document.getElementById('ongkirDisplay').style.color = 'var(--soil)';
+    document.getElementById('totalDisplay').textContent = 'Rp ' + (subtotal + ongkirNum).toLocaleString('id-ID');
+}
 
 async function hitungOngkir(kota, jenis) {
     if (!kota || jenis !== 'armada') return;
-    const res = await fetch('{{ route("checkout.ongkir") }}', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-        body: JSON.stringify({ kota, jenis_kendaraan: 'pickup' })
-    });
-    const data = await res.json();
-    if (data.ongkir > 0) {
-        document.getElementById('ongkirVal').value = data.ongkir;
-        document.getElementById('ongkirDisplay').textContent = 'Rp ' + Number(data.ongkir).toLocaleString('id-ID');
-        document.getElementById('ongkirDisplay').style.color = 'var(--soil)';
-        document.getElementById('totalDisplay').textContent = 'Rp ' + (subtotal + data.ongkir).toLocaleString('id-ID');
+
+    // Tampilkan estimasi sementara agar user tidak bingung
+    tampilkanOngkir(ONGKIR_ARMADA_DEFAULT);
+
+    try {
+        const res = await fetch('{{ route("checkout.ongkir") }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            body: JSON.stringify({ kota, jenis_kendaraan: 'pickup' })
+        });
+        const data = await res.json();
+        // Gunakan ongkir dari database jika > 0, jika tidak tetap pakai default
+        const ongkirFinal = (data.ongkir && data.ongkir > 0)
+            ? Math.round(Number(data.ongkir))
+            : ONGKIR_ARMADA_DEFAULT;
+        tampilkanOngkir(ongkirFinal);
+    } catch (e) {
+        // Jika API gagal, tetap tampilkan default
+        tampilkanOngkir(ONGKIR_ARMADA_DEFAULT);
     }
 }
 
 function updatePengiriman(radio) {
     const selectedAlamat = document.querySelector('[name="alamat_id"]:checked');
     const ekspedisiOptions = document.getElementById('ekspedisiOptions');
+
     if (radio.value === 'ekspedisi') {
+        // Reset ongkir — ekspedisi dihitung saat konfirmasi admin
         document.getElementById('ongkirVal').value = 0;
         document.getElementById('ongkirDisplay').textContent = 'Dihitung saat konfirmasi';
         document.getElementById('ongkirDisplay').style.color = 'var(--ochre)';
         document.getElementById('totalDisplay').textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
         if (ekspedisiOptions) ekspedisiOptions.style.display = 'grid';
     } else {
+        // Armada: sembunyikan opsi ekspedisi, langsung hitung ongkir armada
         if (ekspedisiOptions) ekspedisiOptions.style.display = 'none';
         if (selectedAlamat) {
             const kota = selectedAlamat.getAttribute('data-kota');
             hitungOngkir(kota, radio.value);
+        } else {
+            // Tidak ada alamat terpilih, pakai default
+            tampilkanOngkir(ONGKIR_ARMADA_DEFAULT);
         }
     }
 }
@@ -306,4 +344,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
-@endpush
+@endpush

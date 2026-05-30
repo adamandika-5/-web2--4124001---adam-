@@ -38,7 +38,7 @@
         {{-- Empty State --}}
         <div style="text-align:center;padding:72px 24px;background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
             <div style="font-size:64px;margin-bottom:16px">📦</div>
-            <h2 style="font-family:var(--fd);font-size:20px;font-weight:600;color:var(--soil);margin-bottom:8px">
+            <h2 style="font-family:var(--fs);font-size:20px;font-weight:700;color:var(--soil);margin-bottom:8px">
                 Belum Ada Pesanan
             </h2>
             <p style="font-size:14px;color:var(--clay);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto">
@@ -92,10 +92,21 @@
                                 {{-- Gambar produk --}}
                                 @php
                                     $gambarPath = null;
+                                    // Coba gambar_utama accessor dulu (paling efisien)
                                     if ($item->produk?->gambar_utama) {
                                         $gambarPath = $item->produk->gambar_utama;
-                                    } elseif ($item->produk?->gambar && $item->produk->gambar->count() > 0) {
-                                        $gambarPath = $item->produk->gambar->first()?->path;
+                                    } else {
+                                        // Fallback: parsing gambar secara aman
+                                        $gRaw = $item->produk->gambar ?? null;
+                                        if ($gRaw instanceof \Illuminate\Database\Eloquent\Collection || $gRaw instanceof \Illuminate\Support\Collection) {
+                                            $gambarPath = $gRaw->pluck('path')->filter()->first();
+                                        } elseif (is_array($gRaw)) {
+                                            $first = reset($gRaw);
+                                            $gambarPath = is_object($first) ? ($first->path ?? null) : ($first ?: null);
+                                        } elseif (is_string($gRaw) && !empty($gRaw)) {
+                                            $dec = json_decode($gRaw, true);
+                                            $gambarPath = (json_last_error() === JSON_ERROR_NONE && is_array($dec)) ? ($dec[0] ?? null) : $gRaw;
+                                        }
                                     }
                                 @endphp
                                 <div style="width:48px;height:48px;border-radius:var(--r-sm);background:var(--oat);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;flex-shrink:0;border:1px solid rgba(176,139,110,.1)">

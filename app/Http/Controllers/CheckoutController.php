@@ -8,6 +8,19 @@ use Cart;
 
 class CheckoutController extends Controller
 {
+    public function selectItems(Request $request)
+    {
+        $selected = $request->input('selected_items', []);
+        if (empty($selected)) {
+            return redirect()->route('keranjang.index')
+                ->with('error', 'Pilih minimal 1 produk untuk checkout.');
+        }
+
+        session(['checkout_items' => $selected]);
+
+        return redirect()->route('checkout.index');
+    }
+
     public function index()
     {
         if (Cart::isEmpty()) {
@@ -15,9 +28,56 @@ class CheckoutController extends Controller
                 ->with('error', 'Keranjang belanja masih kosong.');
         }
 
+        $selectedIds = session('checkout_items', []);
+        if (empty($selectedIds)) {
+            return redirect()->route('keranjang.index')
+                ->with('error', 'Pilih minimal 1 produk untuk checkout.');
+        }
+
+        $items = Cart::getContent()->filter(function ($item) use ($selectedIds) {
+            return in_array($item->id, $selectedIds);
+        });
+
+        if ($items->isEmpty()) {
+            return redirect()->route('keranjang.index')
+                ->with('error', 'Pilih minimal 1 produk untuk checkout.');
+        }
+
+        $checkoutSubtotal = 0;
+        $checkoutQuantity = 0;
+        foreach ($items as $item) {
+            $checkoutSubtotal += (float)$item->price * $item->quantity;
+            $checkoutQuantity += $item->quantity;
+        }
+
         $alamats = auth()->user()->alamat()->get();
 
-        return view('pages.checkout', compact('alamats'));
+        // Tentukan metode pengiriman yang tersedia berdasarkan produk terpilih
+        $produkIds   = $items->pluck('id')->unique()->all();
+        $produks     = \App\Models\Produk::whereIn('id', $produkIds)->pluck('jenis_pengiriman', 'id');
+
+        // Kumpulkan semua nilai jenis_pengiriman dari produk terpilih
+        $jenisList   = $produks->values()->unique()->all();
+
+        $adaArmada   = in_array('armada',    $jenisList) || in_array('keduanya', $jenisList);
+        $adaEkspedisi= in_array('ekspedisi', $jenisList) || in_array('keduanya', $jenisList);
+        $hanyaArmada = in_array('armada', $jenisList);
+        $hanyaEksp   = in_array('ekspedisi', $jenisList) && !in_array('armada', $jenisList);
+
+        if ($hanyaArmada) {
+            $tampilArmada   = true;
+            $tampilEkspedisi = false;
+        } elseif ($hanyaEksp) {
+            $tampilArmada   = false;
+            $tampilEkspedisi = true;
+        } else {
+            $tampilArmada   = $adaArmada;
+            $tampilEkspedisi = $adaEkspedisi;
+        }
+
+        $defaultPengiriman = $tampilArmada ? 'armada' : 'ekspedisi';
+
+        return view('pages.checkout', compact('items', 'checkoutSubtotal', 'checkoutQuantity', 'alamats', 'tampilArmada', 'tampilEkspedisi', 'defaultPengiriman'));
     }
 
     public function proses(Request $request)
@@ -29,9 +89,27 @@ class CheckoutController extends Controller
             'ekspedisi'        => 'required_if:jenis_pengiriman,ekspedisi|nullable|in:jnt,jne,sicepat',
         ]);
 
+        $selectedIds = session('checkout_items', []);
+        if (empty($selectedIds)) {
+            return redirect()->route('keranjang.index')
+                ->with('error', 'Pilih minimal 1 produk untuk checkout.');
+        }
+
+        $items = Cart::getContent()->filter(function ($item) use ($selectedIds) {
+            return in_array($item->id, $selectedIds);
+        });
+
+        if ($items->isEmpty()) {
+            return redirect()->route('keranjang.index')
+                ->with('error', 'Pilih minimal 1 produk untuk checkout.');
+        }
+
         $alamat   = auth()->user()->alamat()->findOrFail($request->alamat_id);
-        $items    = Cart::getContent();
-        $subtotal = (float) Cart::getTotal();
+        
+        $subtotal = 0;
+        foreach ($items as $item) {
+            $subtotal += (float)$item->price * $item->quantity;
+        }
 
         // Hitung diskon voucher
         $diskonVoucher = 0;
@@ -48,10 +126,23 @@ class CheckoutController extends Controller
             }
         }
 
-        $ongkir = (float) ($request->ongkir ?? 0);
-        $total  = $subtotal - $diskonVoucher + $ongkir;
+        $jenisKirim = $request->jenis_pengiriman;
 
-        // Buat pesanan
+        if ($jenisKirim === 'armada') {
+            $zona = OngkirZona::where('kota', 'LIKE', "%{$alamat->kota}%")->first();
+            if ($zona && $zona->tersedia_armada) {
+                $ongkir = (float) ($zona->tarif_pickup ?? 25000);
+            } else {
+                $ongkir = 25000;
+            }
+            $ekspedisiSimpan = null;
+        } else {
+            $ongkir = (float) ($request->ongkir ?? 0);
+            $ekspedisiSimpan = $request->ekspedisi;
+        }
+
+        $total = $subtotal - $diskonVoucher + $ongkir;
+
         $pesanan = Pesanan::create([
             'nomor_pesanan'    => Pesanan::generateNomor(),
             'user_id'          => auth()->id(),
@@ -62,18 +153,18 @@ class CheckoutController extends Controller
             'kota_tujuan'      => $alamat->kota,
             'provinsi_tujuan'  => $alamat->provinsi,
             'kode_pos'         => $alamat->kode_pos,
-            'jenis_pengiriman' => $request->jenis_pengiriman,
-            'ekspedisi'        => $request->ekspedisi,
+            'jenis_pengiriman' => $jenisKirim,
+            'ekspedisi'        => $ekspedisiSimpan,
             'ongkir'           => $ongkir,
             'subtotal'         => $subtotal,
             'diskon_voucher'   => $diskonVoucher,
             'total'            => $total,
+            'metode_bayar'     => $request->metode_bayar,
             'catatan'          => $request->catatan,
             'status'           => 'pending',
             'status_pembayaran'=> 'menunggu',
         ]);
 
-        // Simpan item & kurangi stok
         foreach ($items as $item) {
             $produk = \App\Models\Produk::find($item->id);
             PesananItem::create([
@@ -90,12 +181,14 @@ class CheckoutController extends Controller
             $produk->increment('terjual', $item->quantity);
         }
 
-        // Tambah pemakaian voucher
         if ($voucherId) {
             Voucher::find($voucherId)->increment('terpakai');
         }
 
-        Cart::clear();
+        foreach ($selectedIds as $id) {
+            Cart::remove($id);
+        }
+        session()->forget('checkout_items');
 
         ActivityLog::catat(
             'pesanan_dibuat',

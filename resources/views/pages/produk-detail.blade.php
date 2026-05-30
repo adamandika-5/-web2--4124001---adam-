@@ -22,14 +22,51 @@
 
 <div style="max-width:1280px;margin:0 auto;padding:28px 48px 64px">
 
+    {{-- ── Normalisasi gambar produk ── --}}
+    @php
+        // Coba ambil dari relasi yang sudah eager-loaded dulu
+        $gambarRaw = null;
+        if ($produk->relationLoaded('gambar')) {
+            $rel = $produk->getRelation('gambar');
+            if ($rel instanceof \Illuminate\Support\Collection) {
+                $gambarRaw = $rel;
+            }
+        }
+        // Fallback ke kolom string/JSON jika relasi tidak tersedia
+        if ($gambarRaw === null) {
+            $gambarRaw = $produk->attributes['gambar'] ?? null;
+        }
+
+        // Normalisasi ke array string path
+        if ($gambarRaw instanceof \Illuminate\Support\Collection) {
+            $gambarList = $gambarRaw->map(fn($g) => is_object($g) ? ($g->path ?? null) : (string)$g)
+                                    ->filter(fn($v) => !empty($v))
+                                    ->values()
+                                    ->toArray();
+        } elseif (is_string($gambarRaw) && $gambarRaw !== '') {
+            $decoded = json_decode($gambarRaw, true);
+            $gambarList = (json_last_error() === JSON_ERROR_NONE && is_array($decoded))
+                ? array_values(array_filter($decoded))
+                : [$gambarRaw];
+        } elseif (is_array($gambarRaw)) {
+            $gambarList = array_values(array_filter(
+                array_map(fn($g) => is_object($g) ? ($g->path ?? null) : $g, $gambarRaw)
+            ));
+        } else {
+            $gambarList = [];
+        }
+
+        $gambarUtama = $gambarList[0] ?? null;
+    @endphp
+
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start">
 
         {{-- ── GALERI ── --}}
         <div>
             {{-- Gambar utama --}}
             <div style="background:linear-gradient(135deg,#F5EFE6,#EDE4D5);border-radius:var(--r-xl);aspect-ratio:1;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(176,139,110,.12);box-shadow:var(--sh-md);margin-bottom:14px;position:relative;overflow:hidden" id="mainImgWrap">
-                @if($produk->gambar->isNotEmpty())
-                    <img id="mainImg" src="{{ asset('storage/'.$produk->gambarUtama->path) }}"
+                @if($gambarUtama)
+                    <img id="mainImg" src="{{ asset('storage/' . $gambarUtama) }}"
                          alt="{{ $produk->nama }}"
                          style="width:100%;height:100%;object-fit:cover;transition:opacity .25s">
                 @else
@@ -48,13 +85,13 @@
             </div>
 
             {{-- Thumbnail strip --}}
-            @if($produk->gambar->count() > 1)
+            @if(count($gambarList) > 1)
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
-                @foreach($produk->gambar as $i => $gambar)
-                    <div onclick="gantiGambar('{{ asset('storage/'.$gambar->path) }}', this)"
+                @foreach($gambarList as $i => $gambarPath)
+                    <div onclick="gantiGambar('{{ asset('storage/' . $gambarPath) }}', this)"
                          style="background:#F5EFE6;border-radius:var(--r-md);aspect-ratio:1;cursor:pointer;border:2.5px solid {{ $i===0 ? 'var(--terracotta)' : 'rgba(176,139,110,.2)' }};overflow:hidden;transition:border-color .2s"
                          class="thumb-item">
-                        <img src="{{ asset('storage/'.$gambar->path) }}" alt="{{ $produk->nama }} foto {{ $i+1 }}"
+                        <img src="{{ asset('storage/' . $gambarPath) }}" alt="{{ $produk->nama }} foto {{ $i+1 }}"
                              style="width:100%;height:100%;object-fit:cover">
                     </div>
                 @endforeach
@@ -76,7 +113,7 @@
                 @endif
             </div>
 
-            <h1 style="font-family:var(--fd);font-size:clamp(22px,2.5vw,30px);font-weight:500;color:var(--soil);line-height:1.2;margin-bottom:10px">
+            <h1 style="font-family:var(--fs);font-size:clamp(22px,2.5vw,30px);font-weight:700;color:var(--soil);line-height:1.2;margin-bottom:10px">
                 {{ $produk->nama }}
             </h1>
 
@@ -165,27 +202,27 @@
                         </strong>
                     </div>
                 </div>
-
-                <div style="display:flex;gap:10px;margin-bottom:16px">
-                    <button type="submit" class="btn btn-primary" style="flex:2;justify-content:center;padding:14px;font-size:15px">
-                        🛒 Tambah ke Keranjang
-                    </button>
-                    <a href="{{ route('checkout.index') }}" class="btn btn-secondary" style="flex:1;justify-content:center">
-                        ⚡ Beli Sekarang
-                    </a>
-                    <form action="{{ route('wishlist.toggle') }}" method="POST" style="flex-shrink:0">
-                        @csrf
-                        <input type="hidden" name="produk_id" value="{{ $produk->id }}">
-                        <button type="submit" class="btn btn-secondary" style="width:48px;height:50px;padding:0;justify-content:center;border-radius:var(--r-md);font-size:18px">
-                            @auth
-                                {{ auth()->user()->wishlist->contains($produk->id) ? '❤️' : '♡' }}
-                            @else
-                                ♡
-                            @endauth
-                        </button>
-                    </form>
-                </div>
             </form>
+
+            <div style="display:flex;gap:10px;margin-bottom:16px">
+                <button type="submit" form="formTambah" class="btn btn-primary" style="flex:2;justify-content:center;padding:14px;font-size:15px">
+                    🛒 Tambah ke Keranjang
+                </button>
+                <a href="{{ route('checkout.index') }}" class="btn btn-secondary" style="flex:1;justify-content:center;align-items:center;display:flex">
+                    ⚡ Beli Sekarang
+                </a>
+                <form action="{{ route('wishlist.toggle') }}" method="POST" style="flex-shrink:0">
+                    @csrf
+                    <input type="hidden" name="produk_id" value="{{ $produk->id }}">
+                    <button type="submit" class="btn btn-secondary" style="width:48px;height:50px;padding:0;justify-content:center;border-radius:var(--r-md);font-size:18px">
+                        @auth
+                            {{ auth()->user()->wishlist->contains($produk->id) ? '❤️' : '♡' }}
+                        @else
+                            ♡
+                        @endauth
+                    </button>
+                </form>
+            </div>
             @endif
 
             {{-- WA Konsultasi --}}
@@ -271,13 +308,38 @@
         <h2 class="section-title" style="margin-bottom:24px">Mungkin <em>kamu suka</em></h2>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
             @foreach($rekomendasi as $p)
+            @php
+                // Normalisasi gambar rekomendasi secara aman
+                $pGambarRaw = null;
+                if ($p->relationLoaded('gambar')) {
+                    $pRel = $p->getRelation('gambar');
+                    if ($pRel instanceof \Illuminate\Support\Collection) {
+                        $pGambarRaw = $pRel;
+                    }
+                }
+                if ($pGambarRaw === null) {
+                    $pGambarRaw = $p->attributes['gambar'] ?? null;
+                }
+                if ($pGambarRaw instanceof \Illuminate\Support\Collection) {
+                    $pGambarUtama = $pGambarRaw->map(fn($g) => is_object($g) ? ($g->path ?? null) : $g)
+                                               ->filter()->first();
+                } elseif (is_string($pGambarRaw) && $pGambarRaw !== '') {
+                    $pDecoded = json_decode($pGambarRaw, true);
+                    $pArr = (json_last_error() === JSON_ERROR_NONE && is_array($pDecoded)) ? $pDecoded : [$pGambarRaw];
+                    $pGambarUtama = array_values(array_filter($pArr))[0] ?? null;
+                } elseif (is_array($pGambarRaw)) {
+                    $pGambarUtama = array_values(array_filter(array_map(fn($g) => is_object($g) ? ($g->path ?? null) : $g, $pGambarRaw)))[0] ?? null;
+                } else {
+                    $pGambarUtama = null;
+                }
+            @endphp
             <div class="prod-card">
                 <a href="{{ route('produk.show', $p->slug) }}" style="text-decoration:none;color:inherit">
-                    <div class="prod-img" style="background:{{ $p->warna_bg ?? '#F4EDE0' }}">
-                        @if($p->gambar->isNotEmpty())
-                            <img src="{{ asset('storage/'.$p->gambar->first()->path) }}" alt="{{ $p->nama }}" style="width:100%;height:100%;object-fit:cover">
+                    <div class="prod-img">
+                        @if($pGambarUtama)
+                            <img src="{{ asset('storage/' . $pGambarUtama) }}" alt="{{ $p->nama }}" onerror="this.onerror=null; this.src='{{ asset('gambar/placeholder.svg') }}';">
                         @else
-                            <span style="font-size:52px">{{ $p->ikon ?? '📦' }}</span>
+                            <img src="{{ asset('gambar/placeholder.svg') }}" alt="{{ $p->nama }}">
                         @endif
                         @if($p->harga_promo)
                             <div class="prod-img-badge"><span class="badge badge-sale">−{{ $p->diskon_persen }}%</span></div>

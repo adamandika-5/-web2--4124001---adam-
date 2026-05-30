@@ -143,7 +143,7 @@
 
             @if($produkList->isEmpty())
                 <div style="text-align:center;padding:72px 32px;background:#fff;border-radius:var(--r-lg);border:1px dashed rgba(176,139,110,.2)">
-                    <div style="font-family:var(--fd);font-size:20px;color:var(--soil);margin-bottom:8px">
+                    <div style="font-family:var(--fs);font-size:20px;font-weight:600;color:var(--soil);margin-bottom:8px">
                         Produk tidak ditemukan
                     </div>
 
@@ -186,14 +186,22 @@
                         @endphp
 
                         <div class="prod-card">
+                            <form action="{{ route('wishlist.toggle') }}" method="POST" style="display:inline;z-index:10">
+                                @csrf
+                                <input type="hidden" name="produk_id" value="{{ $p->id }}">
+                                <button type="submit" class="prod-wish">
+                                    {{ auth()->check() && auth()->user()->wishlist->contains($p->id) ? '❤️' : '♡' }}
+                                </button>
+                            </form>
                             <a href="{{ route('produk.show', $p->slug) }}" style="text-decoration:none;color:inherit">
-                                <div class="prod-img" style="background:{{ $p->warna_bg ?? '#F4EDE0' }}">
+                                <div class="prod-img">
                                     @if($gambarPath)
                                         <img src="{{ asset('storage/' . $gambarPath) }}"
                                              alt="{{ $p->nama }}"
-                                             style="width:100%;height:100%;object-fit:cover">
+                                             onerror="this.onerror=null; this.src='{{ asset('gambar/placeholder.svg') }}';">
                                     @else
-                                        <span style="font-size:48px">{{ $p->ikon ?? 'Produk' }}</span>
+                                        <img src="{{ asset('gambar/placeholder.svg') }}"
+                                             alt="{{ $p->nama }}">
                                     @endif
 
                                     <div class="prod-img-badge">

@@ -73,6 +73,31 @@
                 </a>
                 @endif
 
+                {{-- Wishlist Icon (hanya untuk user yang login) --}}
+                @auth
+                    @if(auth()->user()->role === 'user')
+                    @php
+                        try {
+                            $wishlistCount = auth()->user()->wishlist()->count();
+                        } catch (\Throwable $e) {
+                            $wishlistCount = 0;
+                        }
+                    @endphp
+                    <a href="{{ route('wishlist.index') }}"
+                       title="Wishlist Saya"
+                       style="position:relative;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:var(--r-md);background:var(--oat);border:1.5px solid var(--sand);text-decoration:none;transition:all .2s;color:var(--clay)"
+                       onmouseover="this.style.background='rgba(198,107,61,.08)';this.style.borderColor='var(--terracotta)';this.style.color='var(--terracotta)'"
+                       onmouseout="this.style.background='var(--oat)';this.style.borderColor='var(--sand)';this.style.color='var(--clay)'">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="{{ request()->routeIs('wishlist.*') ? 'var(--terracotta)' : 'none' }}" stroke="{{ request()->routeIs('wishlist.*') ? 'var(--terracotta)' : 'currentColor' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                        @if($wishlistCount > 0)
+                            <div style="position:absolute;top:-4px;right:-4px;background:var(--terracotta);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--fb)">{{ $wishlistCount > 9 ? '9+' : $wishlistCount }}</div>
+                        @endif
+                    </a>
+                    @endif
+                @endauth
+
                 {{-- Auth --}}
                 @guest
                     <a href="{{ route('login') }}" class="btn btn-secondary btn-sm">Masuk</a>
@@ -101,6 +126,7 @@
                             <a href="{{ route('profil') }}" style="display:block;padding:10px 16px;font-size:13px;color:var(--soil);text-decoration:none;border-bottom:1px solid var(--sand)" onmouseover="this.style.background='var(--oat)'" onmouseout="this.style.background='#fff'">👤 Profil Saya</a>
                             @if(auth()->user()->role === 'user')
                                 <a href="{{ route('pesanan.index') }}" style="display:block;padding:10px 16px;font-size:13px;color:var(--soil);text-decoration:none;border-bottom:1px solid var(--sand)" onmouseover="this.style.background='var(--oat)'" onmouseout="this.style.background='#fff'">📦 Pesanan Saya</a>
+                                <a href="{{ route('wishlist.index') }}" style="display:block;padding:10px 16px;font-size:13px;color:var(--soil);text-decoration:none;border-bottom:1px solid var(--sand)" onmouseover="this.style.background='var(--oat)'" onmouseout="this.style.background='#fff'">❤️ Wishlist Saya</a>
                             @endif
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
@@ -125,6 +151,11 @@
             <a href="{{ route('sewa.index') }}" class="{{ request()->routeIs('sewa.*') ? 'active' : '' }}">🔧 Sewa Alat</a>
             <a href="{{ route('promo') }}" class="{{ request()->routeIs('promo') ? 'active' : '' }}">🏷️ Promo</a>
             <a href="{{ route('lacak') }}" class="{{ request()->routeIs('lacak') ? 'active' : '' }}">📍 Lacak Pesanan</a>
+            @auth
+                @if(auth()->user()->role === 'user')
+                <a href="{{ route('wishlist.index') }}" class="{{ request()->routeIs('wishlist.*') ? 'active' : '' }}">❤️ Wishlist Saya</a>
+                @endif
+            @endauth
             <div class="nav-mobile-search">
                 <form action="{{ route('katalog.index') }}" method="GET" style="display:flex;gap:8px">
                     <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari produk..." class="form-inp" style="flex:1;font-size:13px;padding:9px 12px">

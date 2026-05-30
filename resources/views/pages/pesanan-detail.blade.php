@@ -20,7 +20,7 @@
         <div style="position:relative;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
             <div>
                 <div style="font-size:11px;color:rgba(232,220,199,.5);font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px">Nomor Pesanan</div>
-                <div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--sand)">{{ $pesanan->nomor_pesanan }}</div>
+                <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:var(--sand)">{{ $pesanan->nomor_pesanan }}</div>
                 <div style="font-size:13px;color:rgba(232,220,199,.5);margin-top:5px">{{ $pesanan->created_at->isoFormat('dddd, D MMMM Y · HH:mm') }} WIB</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
@@ -54,18 +54,36 @@
 
             {{-- Item --}}
             <div style="background:#fff;border-radius:var(--r-lg);padding:22px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
-                <div style="font-family:var(--fd);font-size:16px;font-weight:500;color:var(--soil);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--sand)">
+                <div style="font-family:var(--fs);font-size:16px;font-weight:700;color:var(--soil);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--sand)">
                     Produk Dipesan
                 </div>
                 @foreach($pesanan->items as $item)
                 <div style="display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(176,139,110,.06)">
                     <div style="width:52px;height:52px;background:var(--oat);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden">
-                        @if($item->produk && $item->produk->gambar->isNotEmpty())
-                            <img src="{{ asset('storage/'.$item->produk->gambar->first()->path) }}"
-                                 style="width:100%;height:100%;object-fit:cover" alt="{{ $item->nama_produk }}">
-                        @else
-                            📦
-                        @endif
+                    @php
+                        // Parsing gambar produk secara aman — bisa berupa string, JSON, array, collection, atau null
+                        $gambarRaw = $item->produk->gambar ?? null;
+                        if ($gambarRaw instanceof \Illuminate\Database\Eloquent\Collection || $gambarRaw instanceof \Illuminate\Support\Collection) {
+                            // Relasi hasMany → ambil path dari tiap object
+                            $gambarList = $gambarRaw->pluck('path')->filter()->values()->all();
+                        } elseif (is_array($gambarRaw)) {
+                            $gambarList = array_filter(array_map(fn($g) => is_object($g) ? ($g->path ?? null) : $g, $gambarRaw));
+                        } elseif (is_string($gambarRaw) && !empty($gambarRaw)) {
+                            $decoded = json_decode($gambarRaw, true);
+                            $gambarList = (json_last_error() === JSON_ERROR_NONE && is_array($decoded))
+                                ? array_filter($decoded)
+                                : [$gambarRaw];
+                        } else {
+                            $gambarList = [];
+                        }
+                        $gambarUtama = array_values($gambarList)[0] ?? null;
+                    @endphp
+                    @if($item->produk && $gambarUtama)
+                        <img src="{{ asset('storage/' . $gambarUtama) }}"
+                             style="width:100%;height:100%;object-fit:cover" alt="{{ $item->nama_produk }}">
+                    @else
+                        📦
+                    @endif
                     </div>
                     <div style="flex:1">
                         @if($item->produk)
@@ -112,7 +130,7 @@
                     </div>
                     <div style="display:flex;justify-content:space-between;padding-top:10px;border-top:2px solid var(--sand)">
                         <span style="font-size:15px;font-weight:700;color:var(--soil)">Total Pembayaran</span>
-                        <span style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--terracotta)">
+                        <span style="font-family:var(--fs);font-size:20px;font-weight:700;color:var(--terracotta)">
                             Rp {{ number_format($pesanan->total,0,',','.') }}
                         </span>
                     </div>
@@ -122,7 +140,7 @@
             {{-- Upload Bukti Bayar --}}
             @if($pesanan->status_pembayaran === 'menunggu' && $pesanan->status !== 'batal')
             <div style="background:#fff;border-radius:var(--r-lg);padding:22px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
-                <div style="font-family:var(--fd);font-size:16px;font-weight:500;color:var(--soil);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--sand)">
+                <div style="font-family:var(--fs);font-size:16px;font-weight:700;color:var(--soil);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--sand)">
                     💳 Upload Bukti Pembayaran
                 </div>
                 <form action="{{ route('pesanan.bayar', $pesanan->nomor_pesanan) }}" method="POST" enctype="multipart/form-data">
@@ -159,7 +177,7 @@
             {{-- Riwayat Pembayaran --}}
             @if($pesanan->pembayaran->isNotEmpty())
             <div style="background:#fff;border-radius:var(--r-lg);padding:22px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
-                <div style="font-family:var(--fd);font-size:16px;font-weight:500;color:var(--soil);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--sand)">
+                <div style="font-family:var(--fs);font-size:16px;font-weight:700;color:var(--soil);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--sand)">
                     Riwayat Pembayaran
                 </div>
                 @foreach($pesanan->pembayaran as $bayar)
@@ -219,7 +237,12 @@
                             {{ $pesanan->jenis_pengiriman==='armada' ? '🚛 Armada Sendiri' : '📦 Ekspedisi' }}
                         </span>
                     </div>
-                    @if($pesanan->ekspedisi)
+                    @if($pesanan->jenis_pengiriman === 'armada')
+                    <div style="display:flex;justify-content:space-between">
+                        <span style="color:var(--clay)">Kurir</span>
+                        <span style="font-weight:700;color:var(--soil)">Pihak Toko / Armada Sinar Alam</span>
+                    </div>
+                    @elseif($pesanan->ekspedisi)
                     <div style="display:flex;justify-content:space-between">
                         <span style="color:var(--clay)">Kurir</span>
                         <span style="font-weight:700;color:var(--soil)">{{ strtoupper($pesanan->ekspedisi) }}</span>

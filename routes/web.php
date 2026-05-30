@@ -101,6 +101,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/keranjang', [KeranjangController::class, 'kosongkan'])->name('keranjang.kosongkan');
 
         // Checkout
+        Route::post('/checkout/select', [CheckoutController::class, 'selectItems'])->name('checkout.select');
         Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
         Route::post('/checkout', [CheckoutController::class, 'proses'])->name('checkout.proses');
         Route::get('/checkout/selesai/{nomor}', [CheckoutController::class, 'selesai'])->name('checkout.selesai');

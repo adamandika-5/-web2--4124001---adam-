@@ -178,15 +178,17 @@ body { font-family: var(--fb); background: var(--parchment); color: var(--soil);
 .cat-chip.c8::before { background: var(--ochre); } .cat-chip.c8:hover { border-color: var(--ochre); } .cat-chip.c8 .cat-icon { background: rgba(192,142,58,.1); }
 
 /* ── PRODUCT CARDS ── */
-.prod-card { background: #fff; border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--sh-sm); transition: all .3s var(--ease); cursor: pointer; border: 1px solid rgba(176,139,110,.08); }
+.prod-card { position: relative; display: flex; flex-direction: column; height: 100%; background: #fff; border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--sh-sm); transition: all .3s var(--ease); cursor: pointer; border: 1px solid rgba(176,139,110,.08); }
 .prod-card:hover { transform: translateY(-5px); box-shadow: var(--sh-lg); }
-.prod-img { aspect-ratio: 4/3; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 52px; }
+.prod-card a { display: flex; flex-direction: column; flex: 1; text-decoration: none; color: inherit; }
+.prod-img { height: 180px; background: #ffffff !important; padding: 16px !important; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 52px; border-bottom: 1px solid rgba(176,139,110,.05); border-top-left-radius: var(--r-lg); border-top-right-radius: var(--r-lg); }
+.prod-img img { width: 100%; height: 100%; object-fit: contain !important; border-radius: var(--r-md); }
 .prod-img-badge { position: absolute; top: 10px; left: 10px; }
 .prod-wish { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; background: #fff; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; box-shadow: var(--sh-sm); transition: all .2s; color: var(--clay); }
 .prod-wish:hover { color: var(--terracotta); transform: scale(1.12); }
-.prod-body { padding: 14px 16px 8px; }
+.prod-body { padding: 14px 16px 8px; display: flex; flex-direction: column; flex: 1; }
 .prod-cat { font-size: 10.5px; color: var(--clay); font-weight: 700; letter-spacing: .05em; margin-bottom: 5px; text-transform: uppercase; }
-.prod-name { font-family: var(--fd); font-size: 14.5px; font-weight: 500; color: var(--soil); line-height: 1.3; margin-bottom: 10px; }
+.prod-name { font-family: var(--fs); font-size: 14.5px; font-weight: 600; color: var(--soil); line-height: 1.3; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 38px; }
 .prod-price-row { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
 .prod-price { font-size: 16.5px; font-weight: 700; color: var(--terracotta); }
 .prod-unit { font-size: 11px; color: var(--clay); }
@@ -197,7 +199,7 @@ body { font-family: var(--fb); background: var(--parchment); color: var(--soil);
 
 /* ── FILTER SIDEBAR ── */
 .filter-box { background: #fff; border-radius: var(--r-lg); box-shadow: var(--sh-sm); overflow: hidden; border: 1px solid rgba(176,139,110,.08); margin-bottom: 14px; }
-.filter-hdr { padding: 14px 18px; border-bottom: 1px solid rgba(176,139,110,.09); font-family: var(--fd); font-size: 14.5px; font-weight: 500; color: var(--soil); display: flex; align-items: center; justify-content: space-between; }
+.filter-hdr { padding: 14px 18px; border-bottom: 1px solid rgba(176,139,110,.09); font-family: var(--fs); font-size: 14.5px; font-weight: 600; color: var(--soil); display: flex; align-items: center; justify-content: space-between; }
 .filter-clear { font-size: 11px; color: var(--terracotta); cursor: pointer; font-weight: 600; background: none; border: none; font-family: var(--fb); }
 .filter-body { padding: 14px 18px; }
 .filter-opt { display: flex; align-items: center; gap: 9px; padding: 6px 0; font-size: 13px; color: var(--soil-light); cursor: pointer; transition: color .2s; }
@@ -239,7 +241,7 @@ body { font-family: var(--fb); background: var(--parchment); color: var(--soil);
 .adm-user-role { font-size: 10.5px; color: rgba(232,220,199,.32); }
 .adm-main { flex: 1; background: var(--oat); min-width: 0; }
 .adm-topbar { background: #fff; border-bottom: 1px solid rgba(176,139,110,.13); padding: 0 28px; height: 57px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 10; }
-.adm-topbar-title { font-family: var(--fd); font-size: 17px; font-weight: 500; color: var(--soil); flex: 1; }
+.adm-topbar-title { font-family: var(--fs); font-size: 17px; font-weight: 600; color: var(--soil); flex: 1; }
 .adm-content { padding: 24px 28px; }
 
 /* ── STAT CARDS ── */
@@ -301,7 +303,7 @@ body { font-family: var(--fb); background: var(--parchment); color: var(--soil);
 
 /* ── CARD UTILITY ── */
 .card { background: #fff; border-radius: var(--r-lg); padding: 24px; box-shadow: var(--sh-sm); border: 1px solid rgba(176,139,110,.08); }
-.card-hdr { font-family: var(--fd); font-size: 18px; font-weight: 700; color: var(--soil); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1.5px solid var(--sand); display: flex; align-items: center; gap: 8px; }
+.card-hdr { font-family: var(--fs); font-size: 18px; font-weight: 700; color: var(--soil); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1.5px solid var(--sand); display: flex; align-items: center; gap: 8px; }
 
 /* ── PAGE HEADER ── */
 .page-hdr { margin-bottom: 28px; }
@@ -310,7 +312,7 @@ body { font-family: var(--fb); background: var(--parchment); color: var(--soil);
 .cat-card { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 28px 16px; background: #fff; border: 1.5px solid rgba(176,139,110,.1); border-radius: var(--r-lg); text-align: center; box-shadow: var(--sh-sm); text-decoration: none; transition: all .25s var(--ease); color: inherit; }
 .cat-card:hover { transform: translateY(-3px); box-shadow: var(--sh-md); border-color: var(--terracotta); }
 .cat-card-icon { width: 56px; height: 56px; background: rgba(198,107,61,.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
-.cat-card-name { font-family: var(--fd); font-size: 15px; font-weight: 500; color: var(--soil); margin-bottom: 4px; }
+.cat-card-name { font-family: var(--fs); font-size: 15px; font-weight: 600; color: var(--soil); margin-bottom: 4px; }
 .cat-card-desc { font-size: 12.5px; color: var(--clay); line-height: 1.4; }
 
 /* ── LARAVEL PAGINATION OVERRIDE ── */
@@ -362,20 +364,20 @@ nav[aria-label="pagination"] ul li span.cursor-default,
 .step-line.upcoming { background: var(--sand); }
 
 /* ── SECTION CARD HEADER (Checkout) ── */
-.section-card-hdr { font-family: var(--fd); font-size: 17px; font-weight: 500; color: var(--soil); margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
+.section-card-hdr { font-family: var(--fs); font-size: 17px; font-weight: 600; color: var(--soil); margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
 .section-card-hdr a { font-size: 12px; color: var(--terracotta); font-weight: 600; text-decoration: none; font-family: var(--fb); }
 .section-card-hdr a:hover { text-decoration: underline; }
 
 /* ── ADMIN CARD UTILITY ── */
 .adm-card { background: #fff; border-radius: var(--r-lg); box-shadow: var(--sh-sm); border: 1px solid rgba(176,139,110,.08); }
 .adm-card-body { padding: 24px; }
-.adm-card-hdr { font-family: var(--fd); font-size: 15.5px; font-weight: 500; color: var(--soil); display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.adm-card-hdr { font-family: var(--fs); font-size: 15.5px; font-weight: 600; color: var(--soil); display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .adm-card-hdr a { font-size: 12.5px; color: var(--terracotta); text-decoration: none; font-weight: 700; font-family: var(--fb); }
 .adm-card-hdr a:hover { text-decoration: underline; }
 
 /* ── ADMIN PAGE HEADER ── */
 .adm-page-hdr { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
-.adm-page-hdr-title { font-family: var(--fd); font-size: 17px; font-weight: 500; color: var(--soil); }
+.adm-page-hdr-title { font-family: var(--fs); font-size: 17px; font-weight: 700; color: var(--soil); }
 
 /* ── ADMIN TOOLBAR ── */
 .adm-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
@@ -458,6 +460,7 @@ nav[aria-label="pagination"] ul li span.cursor-default,
     .sewa-kalkulator-inner { grid-template-columns: 1fr; gap: 28px; }
     /* Katalog product grid: 2-column on tablet */
     .prod-grid           { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .prod-img            { height: 150px !important; padding: 12px !important; }
     /* Admin dashboard grid: 1-col on tablet */
     .adm-dash-grid       { grid-template-columns: 1fr; }
     /* hero-content: stack on tablet */
@@ -521,6 +524,7 @@ nav[aria-label="pagination"] ul li span.cursor-default,
     .katalog-aside.open  { display: block; position: static; }
     /* Katalog product grid: 2-column on mobile */
     .prod-grid           { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .prod-img            { height: 140px !important; padding: 12px !important; }
     /* Home product grid: 2-col on mobile */
     .home-prod-grid      { grid-template-columns: repeat(2, 1fr); gap: 14px; }
     /* Home trust section: 1-col mobile */
@@ -593,7 +597,17 @@ nav[aria-label="pagination"] ul li span.cursor-default,
 
 /* ── LEGAL PAGE STYLES ── */
 .legal-page,
-.legal-page *,
+.legal-page * {
+    font-family: var(--fs), Arial, sans-serif !important;
+}
+.legal-page h1,
+.legal-page h2,
+.legal-page h3,
+.legal-page .section-title {
+    font-family: var(--fs), Arial, sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em;
+}
 .legal-content,
 .legal-content * {
     font-family: var(--fs), Arial, sans-serif !important;
@@ -615,4 +629,62 @@ nav[aria-label="pagination"] ul li span.cursor-default,
 .legal-content li {
     margin-bottom: 8px !important;
     font-size: 14px !important;
+}
+
+/* ── GLOBAL FONT NORMALIZATION ── */
+/* Product names on cards — always sans-serif */
+.prod-name,
+.prod-card .prod-name,
+.prod-grid .prod-name,
+.home-prod-grid .prod-name {
+    font-family: var(--fs), Arial, sans-serif !important;
+    font-weight: 600 !important;
+}
+
+/* Admin page & card headings — always sans-serif */
+.adm-topbar-title,
+.adm-page-hdr-title,
+.adm-card-hdr,
+.adm-layout [style*="font-family:var(--fd)"],
+.adm-layout [style*="font-family: var(--fd)"] {
+    font-family: var(--fs), Arial, sans-serif !important;
+}
+
+/* Card headers (universal) — sans-serif */
+.card-hdr,
+.section-card-hdr,
+.filter-hdr {
+    font-family: var(--fs), Arial, sans-serif !important;
+}
+
+/* Legal / static pages — all text sans-serif */
+.legal-page [style*="font-family:var(--fd)"],
+.legal-page [style*="font-family: var(--fd)"],
+.legal-content [style*="font-family:var(--fd)"],
+.legal-content [style*="font-family: var(--fd)"] {
+    font-family: var(--fs), Arial, sans-serif !important;
+}
+
+/* section-title inside legal pages — override the class-level var(--fd) */
+.legal-page .section-title {
+    font-family: var(--fs), Arial, sans-serif !important;
+    font-weight: 700 !important;
+}
+
+.page-title,
+.page-heading,
+.public-page-title,
+.hero-title,
+.section-title,
+.cart-title,
+.profile-title,
+.katalog-title,
+.produk-title,
+.checkout-title,
+.wishlist-title,
+.order-title,
+main h1 {
+    font-family: var(--fs), Arial, sans-serif !important;
+    font-weight: 700;
+    letter-spacing: -0.02em;
 }

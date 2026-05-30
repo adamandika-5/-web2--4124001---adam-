@@ -35,8 +35,11 @@
                 <div class="card">
                     
                     {{-- Header Tabel / List --}}
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:1.5px solid var(--sand);margin-bottom:20px">
-                        <span style="font-size:14px;font-weight:700;color:var(--soil)">Daftar Item</span>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:1.5px solid var(--sand);margin-bottom:20px;gap:12px;flex-wrap:wrap">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <input type="checkbox" id="selectAll" checked style="width:18px;height:18px;accent-color:var(--terracotta);cursor:pointer">
+                            <label for="selectAll" style="font-size:14px;font-weight:700;color:var(--soil);cursor:pointer">Pilih Semua</label>
+                        </div>
                         
                         <form action="{{ route('keranjang.kosongkan') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mengosongkan keranjang belanja?')">
                             @csrf
@@ -62,7 +65,10 @@
                                     $gambar = $item->attributes->gambar ?? null;
                                     $satuan = $item->attributes->satuan ?? ($produk ? $produk->satuan : 'pcs');
                                 @endphp
-                                <div style="display:flex;gap:18px;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--sand)">
+                                <div style="display:flex;gap:14px;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--sand)">
+                                    {{-- Checkbox Pilihan --}}
+                                    <input type="checkbox" name="selected_items[]" value="{{ $item->id }}" form="checkoutSelectForm" class="item-checkbox" data-price="{{ $harga }}" data-qty="{{ $item->quantity }}" data-has-error="{{ ($produk && $produk->stok < $item->quantity) ? 'true' : 'false' }}" checked style="width:18px;height:18px;accent-color:var(--terracotta);cursor:pointer;flex-shrink:0">
+
                                     {{-- Gambar Produk --}}
                                     <a href="{{ $produk ? route('produk.show', $produk->slug) : '#' }}" style="width:80px;height:80px;border-radius:var(--r-md);background:var(--oat);display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid rgba(176,139,110,.12);flex-shrink:0">
                                         @if($gambar)
@@ -143,7 +149,7 @@
                     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
                         <div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--clay)">
                             <span>Subtotal</span>
-                            <span style="font-weight:600;color:var(--soil)">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                            <span id="subtotalDisplay" style="font-weight:600;color:var(--soil)">Rp {{ number_format($total, 0, ',', '.') }}</span>
                         </div>
                         <div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--clay)">
                             <span>Diskon</span>
@@ -151,34 +157,26 @@
                         </div>
                         <div style="border-top:1px dashed var(--sand);padding-top:12px;display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:var(--soil)">
                             <span>Total Harga</span>
-                            <span style="color:var(--terracotta)">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                            <span id="totalDisplay" style="color:var(--terracotta);font-weight:700">Rp {{ number_format($total, 0, ',', '.') }}</span>
                         </div>
                     </div>
 
-                    @php
-                        $hasStokError = false;
-                        foreach($itemsList as $entry) {
-                            $item = $entry['item'] ?? null;
-                            $produk = $entry['produk'] ?? null;
-                            if($item && $produk && $produk->stok < $item->quantity) {
-                                $hasStokError = true;
-                                break;
-                            }
-                        }
-                    @endphp
+                    {{-- Form untuk mengirim item terpilih ke Checkout --}}
+                    <form action="{{ route('checkout.select') }}" method="POST" id="checkoutSelectForm">
+                        @csrf
+                    </form>
 
-                    @if($hasStokError)
-                        <div style="background:#fee2e2;border:1.5px solid #fca5a5;padding:12px;border-radius:var(--r-md);color:#991b1b;font-size:12.5px;margin-bottom:16px;line-height:1.5">
-                            ⚠️ Terdapat produk dengan jumlah melebihi stok yang tersedia. Harap sesuaikan jumlah produk terlebih dahulu.
-                        </div>
-                        <button class="btn btn-primary" style="width:100%;justify-content:center;font-size:14px;padding:12px;opacity:0.6;cursor:not-allowed" disabled>
-                            Lanjut ke Checkout
-                        </button>
-                    @else
-                        <a href="{{ route('checkout.index') }}" class="btn btn-primary" style="width:100%;justify-content:center;font-size:14px;padding:12px;text-align:center;text-decoration:none">
-                            Lanjut ke Checkout
-                        </a>
-                    @endif
+                    <div id="validationWarning" style="background:#fee2e2;border:1.5px solid #fca5a5;padding:12px;border-radius:var(--r-md);color:#991b1b;font-size:12.5px;margin-bottom:16px;line-height:1.5;display:none">
+                        ⚠️ Pilih minimal 1 produk untuk checkout.
+                    </div>
+
+                    <div id="stokWarning" style="background:#fee2e2;border:1.5px solid #fca5a5;padding:12px;border-radius:var(--r-md);color:#991b1b;font-size:12.5px;margin-bottom:16px;line-height:1.5;display:none">
+                        ⚠️ Terdapat produk pilihan dengan jumlah melebihi stok yang tersedia. Harap sesuaikan jumlah produk terlebih dahulu.
+                    </div>
+
+                    <button type="submit" id="checkoutBtn" form="checkoutSelectForm" class="btn btn-primary" style="width:100%;justify-content:center;font-size:14px;padding:12px;text-align:center;text-decoration:none">
+                        Lanjut ke Checkout
+                    </button>
                 </div>
             </div>
 
@@ -207,5 +205,87 @@
             input.form.submit();
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectAll = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+        const subtotalDisplay = document.getElementById('subtotalDisplay');
+        const totalDisplay = document.getElementById('totalDisplay');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const validationWarning = document.getElementById('validationWarning');
+        const stokWarning = document.getElementById('stokWarning');
+
+        function updateSummary() {
+            let total = 0;
+            let hasCheckedError = false;
+            let checkedCount = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    checkedCount++;
+                    const price = parseFloat(cb.getAttribute('data-price')) || 0;
+                    const qty = parseInt(cb.getAttribute('data-qty')) || 0;
+                    total += price * qty;
+                    if (cb.getAttribute('data-has-error') === 'true') {
+                        hasCheckedError = true;
+                    }
+                }
+            });
+
+            // Update display harga
+            const formattedTotal = 'Rp ' + total.toLocaleString('id-ID');
+            if (subtotalDisplay) subtotalDisplay.textContent = formattedTotal;
+            if (totalDisplay) totalDisplay.textContent = formattedTotal;
+
+            // Kontrol tombol checkout & validasi
+            if (checkedCount === 0) {
+                if (validationWarning) validationWarning.style.display = 'block';
+                if (stokWarning) stokWarning.style.display = 'none';
+                if (checkoutBtn) {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.style.opacity = '0.6';
+                    checkoutBtn.style.cursor = 'not-allowed';
+                }
+            } else {
+                if (validationWarning) validationWarning.style.display = 'none';
+                if (hasCheckedError) {
+                    if (stokWarning) stokWarning.style.display = 'block';
+                    if (checkoutBtn) {
+                        checkoutBtn.disabled = true;
+                        checkoutBtn.style.opacity = '0.6';
+                        checkoutBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (stokWarning) stokWarning.style.display = 'none';
+                    if (checkoutBtn) {
+                        checkoutBtn.disabled = false;
+                        checkoutBtn.style.opacity = '1';
+                        checkoutBtn.style.cursor = 'pointer';
+                    }
+                }
+            }
+
+            // Sync status checkbox "Pilih Semua"
+            if (selectAll) {
+                selectAll.checked = (checkedCount === checkboxes.length);
+            }
+        }
+
+        if (selectAll) {
+            selectAll.addEventListener('change', function () {
+                checkboxes.forEach(cb => {
+                    cb.checked = selectAll.checked;
+                });
+                updateSummary();
+            });
+        }
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', updateSummary);
+        });
+
+        // Hitung ulang pertama kali halaman dimuat
+        updateSummary();
+    });
 </script>
 @endpush

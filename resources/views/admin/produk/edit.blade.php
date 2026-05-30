@@ -161,41 +161,66 @@
                     @enderror
                 </div>
 
-                {{-- Existing Gambar --}}
-                @if(collect($produk->gambar ?? [])->count() > 0)
-                    <div style="grid-column: 1 / -1; margin-top: 12px">
-                        <label class="form-lbl" style="margin-bottom:12px">Gambar Produk Saat Ini</label>
-                        <div style="display:flex; flex-wrap:wrap; gap:16px">
-                            @foreach(collect($produk->gambar ?? []) as $index => $g)
-                                @php
-                                    $gambarPath = is_string($g) ? $g : (is_array($g) ? ($g['path'] ?? '') : ($g->path ?? ''));
-                                    $gambarId = is_object($g) && isset($g->id) ? $g->id : (is_array($g) && isset($g['id']) ? $g['id'] : $index);
-                                    $isUtama = is_object($g) ? !empty($g->is_utama) : (is_array($g) ? !empty($g['is_utama']) : false);
-                                    $hasId = (is_object($g) && isset($g->id)) || (is_array($g) && isset($g['id']));
-                                @endphp
-                                @if(!empty($gambarPath))
-                                    <div id="gambar-{{ $gambarId }}" style="position:relative; width:120px; height:120px; border-radius:var(--r-md); border:1.5px solid var(--sand); overflow:hidden; background:var(--oat); display:flex; align-items:center; justify-content:center">
-                                        <img src="{{ asset('storage/' . $gambarPath) }}" style="width:100%; height:100%; object-fit:cover">
-                                        
-                                        {{-- Badge Utama --}}
-                                        @if($isUtama)
-                                            <div style="position:absolute; top:4px; left:4px; background:var(--moss); color:#fff; font-size:9.5px; font-weight:700; padding:2px 6px; border-radius:99px; line-height:1">
-                                                Utama
-                                            </div>
-                                        @endif
+                {{-- Existing Gambar dari relasi ProdukGambar --}}
+                @php
+                    // Ambil gambar dari relasi yang sudah di-eager-load oleh controller edit()
+                    $gambarRelasi = collect();
+                    if ($produk->relationLoaded('gambar')) {
+                        $rel = $produk->getRelation('gambar');
+                        if ($rel instanceof \Illuminate\Support\Collection) {
+                            $gambarRelasi = $rel;
+                        }
+                    }
+                    // Fallback: jika relasi kosong, coba query langsung
+                    if ($gambarRelasi->isEmpty()) {
+                        try {
+                            $gambarRelasi = \App\Models\ProdukGambar::where('produk_id', $produk->id)
+                                ->orderBy('urutan')->get();
+                        } catch (\Exception $e) {
+                            $gambarRelasi = collect();
+                        }
+                    }
+                @endphp
 
-                                        {{-- Tombol Hapus --}}
-                                        @if($hasId)
-                                            <button type="button" onclick="hapusGambar({{ $gambarId }}, 'gambar-{{ $gambarId }}')" 
-                                                    style="position:absolute; top:4px; right:4px; background:#dc2626; color:#fff; border:none; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; font-weight:bold; box-shadow:0 2px 6px rgba(0,0,0,.15)"
-                                                    title="Hapus gambar ini">
-                                                ×
-                                            </button>
-                                        @endif
-                                    </div>
-                                @endif
+                @if($gambarRelasi->isNotEmpty())
+                    <div style="grid-column: 1 / -1; margin-top: 12px">
+                        <label class="form-lbl" style="margin-bottom:12px">
+                            Gambar Produk Saat Ini
+                            <span style="font-size:11px;color:var(--clay);font-weight:400">({{ $gambarRelasi->count() }} foto — klik × untuk hapus)</span>
+                        </label>
+                        <div style="display:flex; flex-wrap:wrap; gap:16px" id="gambarGrid">
+                            @foreach($gambarRelasi as $g)
+                                <div id="gambar-item-{{ $g->id }}"
+                                     style="position:relative; width:120px; height:120px; border-radius:var(--r-md); border:1.5px solid {{ $g->is_utama ? 'var(--terracotta)' : 'var(--sand)' }}; overflow:hidden; background:var(--oat); display:flex; align-items:center; justify-content:center; flex-shrink:0">
+                                    <img src="{{ asset('storage/' . $g->path) }}"
+                                         style="width:100%; height:100%; object-fit:cover"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                                    <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%; font-size:28px">📷</div>
+
+                                    {{-- Badge Utama --}}
+                                    @if($g->is_utama)
+                                        <div style="position:absolute; top:4px; left:4px; background:var(--terracotta); color:#fff; font-size:9px; font-weight:700; padding:2px 6px; border-radius:99px; line-height:1.4; pointer-events:none">
+                                            Utama
+                                        </div>
+                                    @endif
+
+                                    {{-- Tombol Hapus --}}
+                                    <button type="button"
+                                            onclick="hapusGambarProduk({{ $g->id }}, 'gambar-item-{{ $g->id }}')"
+                                            style="position:absolute; top:4px; right:4px; background:#dc2626; color:#fff; border:none; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; font-weight:bold; line-height:1; box-shadow:0 2px 6px rgba(0,0,0,.25); padding:0"
+                                            title="Hapus gambar ini">
+                                        ×
+                                    </button>
+                                </div>
                             @endforeach
                         </div>
+                        <small style="color:var(--clay);font-size:11px;margin-top:8px;display:block">
+                            Gambar bertanda <strong style="color:var(--terracotta)">Utama</strong> akan menjadi foto utama produk. Hapus gambar utama akan otomatis memindahkan status ke gambar berikutnya.
+                        </small>
+                    </div>
+                @else
+                    <div style="grid-column: 1 / -1; margin-top: 4px">
+                        <small style="color:var(--clay);font-size:12px">Belum ada gambar. Upload gambar baru di atas.</small>
                     </div>
                 @endif
 
@@ -219,37 +244,43 @@
 
 @push('scripts')
 <script>
-    function hapusGambar(id, elementId) {
-        if (confirm('Apakah Anda yakin ingin menghapus gambar ini?')) {
-            fetch(`/admin/produk/gambar/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+    function hapusGambarProduk(gambarId, elementId) {
+        if (!confirm('Hapus gambar ini? Tindakan tidak dapat dibatalkan.')) return;
+
+        const btn = document.querySelector(`#${elementId} button`);
+        if (btn) { btn.disabled = true; btn.textContent = '…'; }
+
+        fetch(`/admin/produk/gambar/${gambarId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
+        .then(data => {
+            if (data.ok) {
+                const el = document.getElementById(elementId);
+                if (el) {
+                    el.style.transition = 'opacity .25s, transform .25s';
+                    el.style.opacity   = '0';
+                    el.style.transform = 'scale(.85)';
+                    setTimeout(() => el.remove(), 260);
                 }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Gagal menghapus gambar');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.ok) {
-                    const el = document.getElementById(elementId);
-                    if (el) {
-                        el.remove();
-                    }
-                } else {
-                    alert('Gagal menghapus gambar.');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('Terjadi kesalahan saat menghapus gambar.');
-            });
-        }
+            } else {
+                alert('Gagal menghapus gambar: ' + (data.message ?? 'unknown error'));
+                if (btn) { btn.disabled = false; btn.textContent = '×'; }
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Terjadi kesalahan koneksi saat menghapus gambar.');
+            if (btn) { btn.disabled = false; btn.textContent = '×'; }
+        });
     }
 </script>
 @endpush

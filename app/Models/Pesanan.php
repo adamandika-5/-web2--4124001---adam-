@@ -12,7 +12,7 @@ class Pesanan extends Model {
         'jenis_pengiriman','ekspedisi','layanan_ekspedisi',
         'ongkir','estimasi_jarak_km',
         'subtotal','diskon_produk','diskon_voucher','total','dp_dibayar',
-        'status','status_pembayaran','catatan','catatan_admin',
+        'metode_bayar','status','status_pembayaran','catatan','catatan_admin',
         'dikirim_at','selesai_at',
     ];
     protected $casts = [

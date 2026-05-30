@@ -46,7 +46,7 @@
             <div style="position:relative;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
                 <div>
                     <div style="font-size:11px;color:rgba(232,220,199,.5);font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Nomor Pesanan</div>
-                    <div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--sand)">{{ $pesanan->nomor_pesanan }}</div>
+                    <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:var(--sand)">{{ $pesanan->nomor_pesanan }}</div>
                     <div style="font-size:13px;color:rgba(232,220,199,.5);margin-top:4px">
                         {{ $pesanan->created_at->isoFormat('dddd, D MMMM Y · HH:mm') }} WIB
                     </div>
@@ -142,8 +142,22 @@
                 @foreach($pesanan->items as $item)
                 <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
                     <div style="width:40px;height:40px;background:var(--oat);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;overflow:hidden">
-                        @if($item->produk && $item->produk->gambar->isNotEmpty())
-                            <img src="{{ asset('storage/'.$item->produk->gambar->first()->path) }}"
+                        @php
+                            $gambarRaw = $item->produk->gambar ?? null;
+                            if ($gambarRaw instanceof \Illuminate\Database\Eloquent\Collection || $gambarRaw instanceof \Illuminate\Support\Collection) {
+                                $gambarList = $gambarRaw->pluck('path')->filter()->values()->all();
+                            } elseif (is_array($gambarRaw)) {
+                                $gambarList = array_filter(array_map(fn($g) => is_object($g) ? ($g->path ?? null) : $g, $gambarRaw));
+                            } elseif (is_string($gambarRaw) && !empty($gambarRaw)) {
+                                $decoded = json_decode($gambarRaw, true);
+                                $gambarList = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? array_filter($decoded) : [$gambarRaw];
+                            } else {
+                                $gambarList = [];
+                            }
+                            $gambarUtama = array_values($gambarList)[0] ?? null;
+                        @endphp
+                        @if($item->produk && $gambarUtama)
+                            <img src="{{ asset('storage/' . $gambarUtama) }}"
                                  style="width:100%;height:100%;object-fit:cover">
                         @else
                             📦
@@ -163,7 +177,7 @@
                 <div style="border-top:1px solid var(--sand);padding-top:12px;margin-top:4px">
                     <div style="display:flex;justify-content:space-between;font-size:13.5px">
                         <span style="color:var(--clay)">Total Pembayaran</span>
-                        <span style="font-family:var(--fd);font-size:17px;font-weight:700;color:var(--terracotta)">
+                        <span style="font-family:var(--fs);font-size:17px;font-weight:700;color:var(--terracotta)">
                             Rp {{ number_format($pesanan->total, 0, ',', '.') }}
                         </span>
                     </div>
@@ -234,7 +248,7 @@
     @elseif(request()->has('nomor') || isset($notFound))
     <div style="text-align:center;padding:48px;background:#fff;border-radius:var(--r-xl);border:1px solid rgba(176,139,110,.1)">
         <div style="font-size:48px;margin-bottom:14px">🔍</div>
-        <div style="font-family:var(--fd);font-size:20px;color:var(--soil);margin-bottom:8px">Pesanan tidak ditemukan</div>
+        <div style="font-family:var(--fs);font-size:20px;font-weight:700;color:var(--soil);margin-bottom:8px">Pesanan tidak ditemukan</div>
         <div style="font-size:14px;color:var(--clay)">Pastikan nomor pesanan yang Anda masukkan sudah benar</div>
     </div>
     @endisset
