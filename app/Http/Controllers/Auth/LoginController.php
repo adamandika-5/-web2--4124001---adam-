@@ -47,15 +47,30 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        try {
-            ActivityLog::catat('logout', 'Keluar dari sistem', '🚪');
-        } catch (\Throwable $e) {
-            // Tetap lanjutkan logout meski pencatatan log gagal
-        }
+        // Catat log SEBELUM invalidate session agar user_id masih tersedia
+        // tapi setelah auth sudah aman diproses
+        $userId = auth()->id();
 
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        // Catat log setelah session clear — non-blocking, tidak menghambat redirect
+        try {
+            if ($userId) {
+                \App\Models\ActivityLog::create([
+                    'user_id'    => $userId,
+                    'ikon'       => '🚪',
+                    'aksi'       => 'logout',
+                    'deskripsi'  => 'Keluar dari sistem',
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Tetap lanjutkan meski pencatatan log gagal
+        }
 
         return redirect()->route('login');
     }

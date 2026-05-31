@@ -127,9 +127,13 @@
                                 <a href="{{ route('wishlist.index') }}" style="display:block;padding:10px 16px;font-size:13px;color:var(--soil);text-decoration:none;border-bottom:1px solid var(--sand)" onmouseover="this.style.background='var(--oat)'" onmouseout="this.style.background='#fff'">❤️ Wishlist Saya</a>
                                 <a href="{{ route('sewa.riwayat') }}" style="display:block;padding:10px 16px;font-size:13px;color:var(--soil);text-decoration:none;border-bottom:1px solid var(--sand)" onmouseover="this.style.background='var(--oat)'" onmouseout="this.style.background='#fff'">🔧 Sewa Saya</a>
                             @endif
-                            <form action="{{ route('logout') }}" method="POST">
+                            <form id="formLogout" action="{{ route('logout') }}" method="POST">
                                 @csrf
-                                <button type="submit" style="width:100%;text-align:left;padding:10px 16px;font-size:13px;color:#c03030;background:none;border:none;cursor:pointer;font-family:var(--fb)" onmouseover="this.style.background='rgba(192,48,48,.05)'" onmouseout="this.style.background='none'">🚪 Keluar</button>
+                                <button type="submit"
+                                        onclick="this.disabled=true; this.textContent='Keluar...'; this.closest('form').submit();"
+                                        style="width:100%;text-align:left;padding:10px 16px;font-size:13px;color:#c03030;background:none;border:none;cursor:pointer;font-family:var(--fb)"
+                                        onmouseover="this.style.background='rgba(192,48,48,.05)'"
+                                        onmouseout="this.style.background='none'">🚪 Keluar</button>
                             </form>
                         </div>
                     </div>

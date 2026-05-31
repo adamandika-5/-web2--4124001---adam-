@@ -145,9 +145,13 @@
                     <div class="adm-user-role" style="color:rgba(232,220,199,.32)">Administrator</div>
                 </div>
             </a>
-            <form action="{{ route('logout') }}" method="POST" style="margin-top:4px">
+            <form id="formLogoutAdmin" action="{{ route('logout') }}" method="POST" style="margin-top:4px">
                 @csrf
-                <button type="submit" style="display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;background:transparent;border:none;cursor:pointer;border-radius:var(--r-sm);font-family:var(--fb);font-size:12px;color:rgba(232,220,199,.32);transition:all .2s" onmouseover="this.style.background='rgba(232,220,199,.06)';this.style.color='var(--terracotta)'" onmouseout="this.style.background='transparent';this.style.color='rgba(232,220,199,.32)'">
+                <button type="submit"
+                        onclick="this.disabled=true; this.closest('form').submit();"
+                        style="display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;background:transparent;border:none;cursor:pointer;border-radius:var(--r-sm);font-family:var(--fb);font-size:12px;color:rgba(232,220,199,.32);transition:all .2s"
+                        onmouseover="this.style.background='rgba(232,220,199,.06)';this.style.color='var(--terracotta)'"
+                        onmouseout="this.style.background='transparent';this.style.color='rgba(232,220,199,.32)'">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                     Keluar
                 </button>
