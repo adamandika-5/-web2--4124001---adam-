@@ -60,27 +60,8 @@
                 @foreach($pesanan->items as $item)
                 <div style="display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(176,139,110,.06)">
                     <div style="width:52px;height:52px;background:var(--oat);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden">
-                    @php
-                        // Parsing gambar produk secara aman — bisa berupa string, JSON, array, collection, atau null
-                        $gambarRaw = $item->produk->gambar ?? null;
-                        if ($gambarRaw instanceof \Illuminate\Database\Eloquent\Collection || $gambarRaw instanceof \Illuminate\Support\Collection) {
-                            // Relasi hasMany → ambil path dari tiap object
-                            $gambarList = $gambarRaw->pluck('path')->filter()->values()->all();
-                        } elseif (is_array($gambarRaw)) {
-                            $gambarList = array_filter(array_map(fn($g) => is_object($g) ? ($g->path ?? null) : $g, $gambarRaw));
-                        } elseif (is_string($gambarRaw) && !empty($gambarRaw)) {
-                            $decoded = json_decode($gambarRaw, true);
-                            $gambarList = (json_last_error() === JSON_ERROR_NONE && is_array($decoded))
-                                ? array_filter($decoded)
-                                : [$gambarRaw];
-                        } else {
-                            $gambarList = [];
-                        }
-                        $gambarUtama = array_values($gambarList)[0] ?? null;
-                    @endphp
-                    @if($item->produk && $gambarUtama)
-                        <img src="{{ asset('storage/' . $gambarUtama) }}"
-                             style="width:100%;height:100%;object-fit:cover" alt="{{ $item->nama_produk }}">
+                    @if($item->produk)
+                        @include('partials.produk-img', ['produk' => $item->produk, 'alt' => $item->nama_produk])
                     @else
                         📦
                     @endif

@@ -34,87 +34,6 @@
     --}}
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
         @foreach($wishlist as $produk)
-        @php
-            // Ambil data gambar produk secara aman
-            $gambarData = null;
-            if ($produk->relationLoaded('gambar')) {
-                $gambarData = $produk->getRelation('gambar');
-            }
-            
-            if (!$gambarData || (method_exists($gambarData, 'isEmpty') && $gambarData->isEmpty())) {
-                if (isset($produk->attributes['gambar'])) {
-                    $gambarData = $produk->attributes['gambar'];
-                } elseif (isset($produk->gambar)) {
-                    $gambarData = $produk->gambar;
-                }
-            }
-
-            $path = null;
-            if ($gambarData instanceof \Illuminate\Database\Eloquent\Collection || $gambarData instanceof \Illuminate\Support\Collection) {
-                if (method_exists($gambarData, 'firstWhere')) {
-                    $utama = $gambarData->firstWhere('is_utama', true) ?? $gambarData->first();
-                    $path = $utama?->path ?? null;
-                } else {
-                    $path = $gambarData->first()?->path ?? null;
-                }
-            } elseif (is_array($gambarData)) {
-                $first = collect($gambarData)->first();
-                $path = is_array($first) ? ($first['path'] ?? null) : (is_object($first) ? ($first->path ?? null) : $first);
-            } elseif (is_string($gambarData) && !empty($gambarData)) {
-                $decoded = json_decode($gambarData, true);
-                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                    $firstVal = collect($decoded)->first();
-                    if (is_array($firstVal)) {
-                        $path = $firstVal['path'] ?? null;
-                    } elseif (is_object($firstVal)) {
-                        $path = $firstVal->path ?? null;
-                    } else {
-                        $path = $firstVal;
-                    }
-                } else {
-                    $path = $gambarData;
-                }
-            } elseif (is_object($gambarData)) {
-                $path = $gambarData->path ?? null;
-            }
-
-            if (!$path || $path === '{}' || $path === '[]') {
-                $rawCol = $produk->getAttributes()['gambar'] ?? null;
-                if ($rawCol && is_string($rawCol) && $rawCol !== $gambarData) {
-                    $decoded = json_decode($rawCol, true);
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                        $firstVal = collect($decoded)->first();
-                        if (is_array($firstVal)) {
-                            $path = $firstVal['path'] ?? null;
-                        } else {
-                            $path = $firstVal;
-                        }
-                    } else {
-                        $path = $rawCol;
-                    }
-                }
-            }
-
-            if ($path === '{}' || $path === '[]' || empty($path)) {
-                $path = null;
-            }
-
-            $imageUrl = null;
-            if ($path) {
-                $path = trim($path);
-                if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-                    $imageUrl = $path;
-                } elseif (str_starts_with($path, 'storage/')) {
-                    $imageUrl = asset($path);
-                } elseif (str_starts_with($path, 'gambar/')) {
-                    $imageUrl = asset($path);
-                } else {
-                    $imageUrl = asset('storage/' . $path);
-                }
-            } else {
-                $imageUrl = asset('gambar/placeholder.svg');
-            }
-        @endphp
         <div class="prod-card" style="position:relative">
 
             {{-- Hapus dari wishlist --}}
@@ -132,9 +51,7 @@
 
             <a href="{{ route('produk.show', $produk->slug) }}" style="text-decoration:none;color:inherit">
                 <div class="prod-img">
-                    <img src="{{ $imageUrl }}"
-                         alt="{{ $produk->nama }}"
-                         onerror="this.onerror=null; this.src='{{ asset('gambar/placeholder.svg') }}';">
+                    @include('partials.produk-img', ['produk' => $produk])
                     @if($produk->harga_promo)
                         <div class="prod-img-badge">
                             <span class="badge badge-sale">−{{ $produk->diskon_persen }}%</span>
@@ -193,87 +110,6 @@
         <h2 class="section-title" style="margin-bottom:24px">Produk <em>Rekomendasi</em></h2>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
             @foreach($rekomendasi as $p)
-            @php
-                // Ambil data gambar produk secara aman
-                $gambarData2 = null;
-                if ($p->relationLoaded('gambar')) {
-                    $gambarData2 = $p->getRelation('gambar');
-                }
-                
-                if (!$gambarData2 || (method_exists($gambarData2, 'isEmpty') && $gambarData2->isEmpty())) {
-                    if (isset($p->attributes['gambar'])) {
-                        $gambarData2 = $p->attributes['gambar'];
-                    } elseif (isset($p->gambar)) {
-                        $gambarData2 = $p->gambar;
-                    }
-                }
-
-                $path2 = null;
-                if ($gambarData2 instanceof \Illuminate\Database\Eloquent\Collection || $gambarData2 instanceof \Illuminate\Support\Collection) {
-                    if (method_exists($gambarData2, 'firstWhere')) {
-                        $utama2 = $gambarData2->firstWhere('is_utama', true) ?? $gambarData2->first();
-                        $path2 = $utama2?->path ?? null;
-                    } else {
-                        $path2 = $gambarData2->first()?->path ?? null;
-                    }
-                } elseif (is_array($gambarData2)) {
-                    $first2 = collect($gambarData2)->first();
-                    $path2 = is_array($first2) ? ($first2['path'] ?? null) : (is_object($first2) ? ($first2->path ?? null) : $first2);
-                } elseif (is_string($gambarData2) && !empty($gambarData2)) {
-                    $decoded2 = json_decode($gambarData2, true);
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded2)) {
-                        $firstVal2 = collect($decoded2)->first();
-                        if (is_array($firstVal2)) {
-                            $path2 = $firstVal2['path'] ?? null;
-                        } elseif (is_object($firstVal2)) {
-                            $path2 = $firstVal2->path ?? null;
-                        } else {
-                            $path2 = $firstVal2;
-                        }
-                    } else {
-                        $path2 = $gambarData2;
-                    }
-                } elseif (is_object($gambarData2)) {
-                    $path2 = $gambarData2->path ?? null;
-                }
-
-                if (!$path2 || $path2 === '{}' || $path2 === '[]') {
-                    $rawCol2 = $p->getAttributes()['gambar'] ?? null;
-                    if ($rawCol2 && is_string($rawCol2) && $rawCol2 !== $gambarData2) {
-                        $decoded2 = json_decode($rawCol2, true);
-                        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded2)) {
-                            $firstVal2 = collect($decoded2)->first();
-                            if (is_array($firstVal2)) {
-                                $path2 = $firstVal2['path'] ?? null;
-                            } else {
-                                $path2 = $firstVal2;
-                            }
-                        } else {
-                            $path2 = $rawCol2;
-                        }
-                    }
-                }
-
-                if ($path2 === '{}' || $path2 === '[]' || empty($path2)) {
-                    $path2 = null;
-                }
-
-                $imageUrl2 = null;
-                if ($path2) {
-                    $path2 = trim($path2);
-                    if (str_starts_with($path2, 'http://') || str_starts_with($path2, 'https://')) {
-                        $imageUrl2 = $path2;
-                    } elseif (str_starts_with($path2, 'storage/')) {
-                        $imageUrl2 = asset($path2);
-                    } elseif (str_starts_with($path2, 'gambar/')) {
-                        $imageUrl2 = asset($path2);
-                    } else {
-                        $imageUrl2 = asset('storage/' . $path2);
-                    }
-                } else {
-                    $imageUrl2 = asset('gambar/placeholder.svg');
-                }
-            @endphp
             <div class="prod-card">
                 <form action="{{ route('wishlist.toggle') }}" method="POST" style="display:inline;z-index:10">
                     @csrf
@@ -284,9 +120,7 @@
                 </form>
                 <a href="{{ route('produk.show', $p->slug) }}" style="text-decoration:none;color:inherit">
                     <div class="prod-img">
-                        <img src="{{ $imageUrl2 }}"
-                             alt="{{ $p->nama }}"
-                             onerror="this.onerror=null; this.src='{{ asset('gambar/placeholder.svg') }}';">
+                        @include('partials.produk-img', ['produk' => $p])
                     </div>
                     <div class="prod-body">
                         <div class="prod-cat">{{ $p->kategori->nama }}</div>

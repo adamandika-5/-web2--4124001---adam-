@@ -158,33 +158,6 @@
             @else
                 <div class="prod-grid">
                     @foreach($produkList as $p)
-                        @php
-                            $gambarPath = null;
-                            $gambarData = null;
-
-                            if ($p->relationLoaded('gambar')) {
-                                $gambarData = $p->getRelation('gambar');
-                            } elseif (method_exists($p, 'gambar')) {
-                                $gambarData = $p->gambar;
-                            } elseif (isset($p->gambar)) {
-                                $gambarData = $p->gambar;
-                            }
-
-                            if (is_string($gambarData)) {
-                                $gambarPath = $gambarData;
-                            } elseif (is_object($gambarData) && method_exists($gambarData, 'first')) {
-                                $gambarPertama = $gambarData->first();
-                                $gambarPath = $gambarPertama->path ?? null;
-                            } elseif (is_array($gambarData)) {
-                                $gambarPertama = collect($gambarData)->first();
-                                $gambarPath = is_array($gambarPertama)
-                                    ? ($gambarPertama['path'] ?? null)
-                                    : ($gambarPertama->path ?? null);
-                            } elseif (is_object($gambarData)) {
-                                $gambarPath = $gambarData->path ?? null;
-                            }
-                        @endphp
-
                         <div class="prod-card">
                             <form action="{{ route('wishlist.toggle') }}" method="POST" style="display:inline;z-index:10">
                                 @csrf
@@ -195,14 +168,7 @@
                             </form>
                             <a href="{{ route('produk.show', $p->slug) }}" style="text-decoration:none;color:inherit">
                                 <div class="prod-img">
-                                    @if($gambarPath)
-                                        <img src="{{ asset('storage/' . $gambarPath) }}"
-                                             alt="{{ $p->nama }}"
-                                             onerror="this.onerror=null; this.src='{{ asset('gambar/placeholder.svg') }}';">
-                                    @else
-                                        <img src="{{ asset('gambar/placeholder.svg') }}"
-                                             alt="{{ $p->nama }}">
-                                    @endif
+                                    @include('partials.produk-img', ['produk' => $p, 'alt' => $p->nama])
 
                                     <div class="prod-img-badge">
                                         @if($p->harga_promo)

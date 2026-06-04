@@ -111,6 +111,40 @@ class Produk extends Model
         return $this->attributes['gambar'] ?? null;
     }
 
+    /**
+     * Return a fully-qualified asset URL for the product's main image.
+     * Safe to use directly in any Blade view: {{ $produk->gambar_url }}
+     */
+    public function getGambarUrlAttribute(): string
+    {
+        $path = $this->gambar_utama;
+
+        if (!$path || trim($path) === '' || $path === '{}' || $path === '[]') {
+            return asset('gambar/placeholder.svg');
+        }
+
+        $path = trim($path);
+
+        // Already an absolute URL (e.g. Google OAuth avatar)
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        // Already prefixed with storage/
+        if (str_starts_with($path, 'storage/')) {
+            return asset($path);
+        }
+
+        // Public folder path (e.g. gambar/...)
+        if (str_starts_with($path, 'gambar/')) {
+            return asset($path);
+        }
+
+        // Relative path stored in storage/app/public
+        return asset('storage/' . $path);
+    }
+
+
     public function getHargaFinalAttribute(): float
     {
         return (float) ($this->harga_promo ?? $this->harga);

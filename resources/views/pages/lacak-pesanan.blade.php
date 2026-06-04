@@ -142,23 +142,8 @@
                 @foreach($pesanan->items as $item)
                 <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
                     <div style="width:40px;height:40px;background:var(--oat);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;overflow:hidden">
-                        @php
-                            $gambarRaw = $item->produk->gambar ?? null;
-                            if ($gambarRaw instanceof \Illuminate\Database\Eloquent\Collection || $gambarRaw instanceof \Illuminate\Support\Collection) {
-                                $gambarList = $gambarRaw->pluck('path')->filter()->values()->all();
-                            } elseif (is_array($gambarRaw)) {
-                                $gambarList = array_filter(array_map(fn($g) => is_object($g) ? ($g->path ?? null) : $g, $gambarRaw));
-                            } elseif (is_string($gambarRaw) && !empty($gambarRaw)) {
-                                $decoded = json_decode($gambarRaw, true);
-                                $gambarList = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? array_filter($decoded) : [$gambarRaw];
-                            } else {
-                                $gambarList = [];
-                            }
-                            $gambarUtama = array_values($gambarList)[0] ?? null;
-                        @endphp
-                        @if($item->produk && $gambarUtama)
-                            <img src="{{ asset('storage/' . $gambarUtama) }}"
-                                 style="width:100%;height:100%;object-fit:cover">
+                        @if($item->produk)
+                            @include('partials.produk-img', ['produk' => $item->produk])
                         @else
                             📦
                         @endif
