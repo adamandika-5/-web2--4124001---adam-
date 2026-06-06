@@ -62,15 +62,68 @@ class DashboardController extends Controller
     public function exportPdf()
     {
         $pesanans = Pesanan::with(['user', 'items'])->where('status', 'selesai')->latest()->get();
-        $pdf      = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.laporan', compact('pesanans'));
-        return $pdf->download('Laporan-Sinar-Alam-' . date('Ymd') . '.pdf');
+        return view('pdf.laporan', compact('pesanans'));
     }
 
     public function exportExcel()
     {
-        return \Maatwebsite\Excel\Facades\Excel::download(
-            new \App\Exports\LaporanExport(),
-            'Laporan-Sinar-Alam-' . date('Ymd') . '.xlsx'
-        );
+        $filename = 'Laporan-Sinar-Alam-' . date('Ymd-His') . '.csv';
+
+        $totalProduk     = Produk::count();
+        $totalPesanan    = Pesanan::count();
+        $totalPendapatan = Pesanan::where('status', 'selesai')->sum('total');
+        $totalUser       = User::where('role', 'user')->count();
+        $totalBooking    = BookingAlat::count();
+
+        $callback = function () use ($totalProduk, $totalPesanan, $totalPendapatan, $totalUser, $totalBooking) {
+            $handle = fopen('php://output', 'w');
+
+            // BOM UTF-8 agar Excel baca tanpa mojibake
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Judul
+            fputcsv($handle, ['LAPORAN RINGKASAN — SINAR ALAM']);
+            fputcsv($handle, ['Tanggal Export', now()->format('d/m/Y H:i:s')]);
+            fputcsv($handle, []);
+
+            // Header tabel ringkasan
+            fputcsv($handle, ['Keterangan', 'Nilai']);
+            fputcsv($handle, ['Total Produk Aktif',      $totalProduk]);
+            fputcsv($handle, ['Total Pesanan',           $totalPesanan]);
+            fputcsv($handle, ['Total Pendapatan (Selesai)', 'Rp ' . number_format($totalPendapatan, 0, ',', '.')]);
+            fputcsv($handle, ['Total User/Pelanggan',    $totalUser]);
+            fputcsv($handle, ['Total Booking Sewa Alat', $totalBooking]);
+            fputcsv($handle, []);
+
+            // Detail pesanan per bulan (6 bulan terakhir)
+            fputcsv($handle, ['Pendapatan per Bulan (Status: Selesai)']);
+            fputcsv($handle, ['Bulan', 'Jumlah Pesanan', 'Total Pendapatan (Rp)']);
+            for ($i = 5; $i >= 0; $i--) {
+                $bln = now()->subMonths($i);
+                $jumlah = Pesanan::where('status', 'selesai')
+                    ->whereYear('created_at', $bln->year)
+                    ->whereMonth('created_at', $bln->month)
+                    ->count();
+                $total = Pesanan::where('status', 'selesai')
+                    ->whereYear('created_at', $bln->year)
+                    ->whereMonth('created_at', $bln->month)
+                    ->sum('total');
+                fputcsv($handle, [
+                    $bln->format('F Y'),
+                    $jumlah,
+                    number_format($total, 0, ',', '.'),
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ]);
     }
 }

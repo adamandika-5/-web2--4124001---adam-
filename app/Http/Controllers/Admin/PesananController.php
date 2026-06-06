@@ -80,9 +80,44 @@ class PesananController extends Controller
 
     public function export()
     {
-        return \Maatwebsite\Excel\Facades\Excel::download(
-            new \App\Exports\PesananExport(),
-            'pesanan-sinar-alam-' . date('Ymd') . '.xlsx'
-        );
+        $filename  = 'pesanan-sinar-alam-' . date('Ymd-His') . '.csv';
+        $pesanans  = Pesanan::with('user')->latest()->get();
+
+        $callback = function () use ($pesanans) {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM UTF-8
+
+            fputcsv($handle, ['No', 'Nomor Pesanan', 'Pelanggan', 'Email', 'Tanggal', 'Status', 'Pembayaran', 'Pengiriman', 'Total (Rp)']);
+
+            foreach ($pesanans as $i => $p) {
+                fputcsv($handle, [
+                    $i + 1,
+                    $p->nomor_pesanan,
+                    $p->user?->name ?? $p->penerima ?? '-',
+                    $p->user?->email ?? '-',
+                    $p->created_at?->format('d/m/Y H:i'),
+                    ucfirst($p->status),
+                    ucfirst($p->status_pembayaran ?? '-'),
+                    ucfirst($p->jenis_pengiriman ?? '-'),
+                    number_format($p->total, 0, ',', '.'),
+                ]);
+            }
+
+            // Baris total
+            fputcsv($handle, []);
+            fputcsv($handle, ['', '', '', '', '', '', '', 'TOTAL',
+                number_format($pesanans->sum('total'), 0, ',', '.'),
+            ]);
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ]);
     }
 }

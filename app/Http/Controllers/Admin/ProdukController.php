@@ -158,9 +158,40 @@ class ProdukController extends Controller
 
     public function export()
     {
-        return \Maatwebsite\Excel\Facades\Excel::download(
-            new \App\Exports\ProdukExport(),
-            'produk-sinar-alam-' . date('Ymd') . '.xlsx'
-        );
+        $filename = 'produk-sinar-alam-' . date('Ymd-His') . '.csv';
+        $produks  = Produk::with('kategori')->orderBy('nama')->get();
+
+        $callback = function () use ($produks) {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM UTF-8
+
+            fputcsv($handle, ['No', 'SKU', 'Nama Produk', 'Kategori', 'Stok', 'Satuan', 'Harga (Rp)', 'Harga Promo (Rp)', 'Status Stok', 'Aktif']);
+
+            foreach ($produks as $i => $p) {
+                $statusStok = $p->stok <= 0 ? 'Habis' : ($p->stok < 20 ? 'Rendah' : 'Aman');
+                fputcsv($handle, [
+                    $i + 1,
+                    $p->sku ?? '-',
+                    $p->nama,
+                    optional($p->kategori)->nama ?? '-',
+                    $p->stok,
+                    $p->satuan,
+                    number_format($p->harga, 0, ',', '.'),
+                    $p->harga_promo ? number_format($p->harga_promo, 0, ',', '.') : '-',
+                    $statusStok,
+                    $p->aktif ? 'Ya' : 'Tidak',
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ]);
     }
 }
