@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\{Pesanan, ActivityLog};
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PesananController extends Controller
 {
@@ -76,6 +77,14 @@ class PesananController extends Controller
         );
 
         return back()->with('success', 'Status pesanan berhasil diperbarui.');
+    }
+
+    public function invoice(Pesanan $pesanan)
+    {
+        $pesanan->load(['items.produk', 'user', 'pembayaran', 'voucher']);
+
+        $pdf = Pdf::loadView('pdf.invoice', compact('pesanan'));
+        return $pdf->download("Invoice-{$pesanan->nomor_pesanan}.pdf");
     }
 
     public function export()

@@ -35,7 +35,7 @@
                     <span class="status-pill {{ $statusClass }}" style="font-size:13px;padding:5px 14px">
                         {{ ucfirst($pesanan->status) }}
                     </span>
-                    <a href="{{ route('pesanan.invoice', $pesanan->nomor_pesanan) }}" target="_blank"
+                    <a href="{{ route('admin.pesanan.invoice.admin', $pesanan->id) }}" target="_blank"
                        class="btn btn-secondary btn-sm">📄 Invoice PDF</a>
                 </div>
             </div>
@@ -283,7 +283,7 @@
 
         {{-- Tombol aksi --}}
         <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="{{ route('pesanan.invoice', $pesanan->nomor_pesanan) }}" target="_blank"
+            <a href="{{ route('admin.pesanan.invoice.admin', $pesanan->id) }}" target="_blank"
                class="btn btn-secondary" style="width:100%;justify-content:center">📄 Download Invoice PDF</a>
             <a href="{{ route('admin.pesanan.index') }}"
                class="btn btn-secondary" style="width:100%;justify-content:center">← Kembali ke Daftar Pesanan</a>

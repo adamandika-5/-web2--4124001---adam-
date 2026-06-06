@@ -80,10 +80,16 @@ class PesananController extends Controller
 
     public function invoice(string $nomor)
     {
+        // Cari pesanan berdasarkan nomor_pesanan
         $pesanan = Pesanan::where('nomor_pesanan', $nomor)
-            ->where('user_id', auth()->id())
-            ->with(['items.produk', 'user', 'pembayaran'])
+            ->with(['items.produk', 'user', 'pembayaran', 'voucher'])
             ->firstOrFail();
+
+        // Admin boleh download invoice siapapun, user biasa hanya miliknya sendiri
+        $isAdmin = auth()->user()->role === 'admin';
+        if (!$isAdmin && $pesanan->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak berhak mengakses invoice ini.');
+        }
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.invoice', compact('pesanan'));
         return $pdf->download("Invoice-{$pesanan->nomor_pesanan}.pdf");

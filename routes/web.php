@@ -117,7 +117,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/pesanan/{nomor}', [PesananController::class, 'show'])->name('pesanan.show');
         Route::post('/pesanan/{nomor}/bayar', [PesananController::class, 'uploadBukti'])->name('pesanan.bayar');
         Route::post('/pesanan/{nomor}/batal', [PesananController::class, 'batal'])->name('pesanan.batal');
-        Route::get('/pesanan/{nomor}/invoice', [PesananController::class, 'invoice'])->name('pesanan.invoice');
 
         // Sewa Alat (authenticated)
         Route::post('/sewa-alat/{slug}/booking', [SewaAlatController::class, 'booking'])->name('sewa.booking');
@@ -127,6 +126,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
         Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
     });
+
+    // Invoice pesanan — diakses auth user manapun (admin atau user pemilik)
+    // Akses kontrol dilakukan di controller: admin boleh semua, user hanya miliknya
+    Route::get('/pesanan/{nomor}/invoice', [PesananController::class, 'invoice'])->name('pesanan.invoice');
 
 });
 
@@ -160,6 +163,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Pesanan — custom routes SEBELUM resource agar tidak diambil oleh {pesanan} wildcard
     Route::get('pesanan/export', [AdminPesananController::class, 'export'])->name('pesanan.export');
+    Route::get('pesanan/{pesanan}/invoice', [AdminPesananController::class, 'invoice'])->name('pesanan.invoice.admin');
     Route::resource('pesanan', AdminPesananController::class)->only(['index', 'show', 'update']);
     Route::patch('pesanan/{pesanan}/status', [AdminPesananController::class, 'updateStatus'])->name('pesanan.status');
 

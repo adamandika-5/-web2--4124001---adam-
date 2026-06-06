@@ -316,6 +316,18 @@ body { font-family: var(--fb); background: var(--parchment); color: var(--soil);
 .cat-card-desc { font-size: 12.5px; color: var(--clay); line-height: 1.4; }
 
 /* ── LARAVEL PAGINATION OVERRIDE ── */
+/* Paksa semua SVG di dalam pagination agar tidak tampil besar */
+nav[aria-label="pagination"] svg,
+.pagination svg,
+.ongkir-pagination svg {
+    width: 16px !important;
+    height: 16px !important;
+    max-width: 16px !important;
+    max-height: 16px !important;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 nav[aria-label="pagination"] { display: flex; justify-content: center; margin-top: 8px; }
 nav[aria-label="pagination"] ul, .pagination { display: flex; align-items: center; gap: 4px; list-style: none; padding: 0; margin: 0; }
 nav[aria-label="pagination"] ul li a,
@@ -327,6 +339,22 @@ nav[aria-label="pagination"] ul li span[aria-current="page"],
 .pagination .page-item.active .page-link { background: var(--terracotta); border-color: var(--terracotta); color: #fff; }
 nav[aria-label="pagination"] ul li span.cursor-default,
 .pagination .page-item.disabled .page-link { opacity: .4; cursor: not-allowed; }
+
+/* ── ONGKIR PAGINATION (custom class) ── */
+.ongkir-pagination { display: flex; justify-content: flex-start; margin-top: 6px; }
+.ongkir-pagination ul { display: flex; align-items: center; gap: 4px; list-style: none; padding: 0; margin: 0; }
+.ongkir-pagination ul li a,
+.ongkir-pagination ul li span {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 32px; height: 30px; padding: 0 10px;
+    border: 1.5px solid var(--sand); border-radius: var(--r-sm);
+    background: #fff; font-family: var(--fb); font-size: 13px;
+    font-weight: 500; color: var(--clay); text-decoration: none;
+    transition: all .2s; line-height: 1; white-space: nowrap;
+}
+.ongkir-pagination ul li a:hover { border-color: var(--terracotta); color: var(--terracotta); background: rgba(198,107,61,.04); }
+.ongkir-pagination ul li.active span { background: var(--terracotta); border-color: var(--terracotta); color: #fff; cursor: default; }
+.ongkir-pagination ul li.disabled span { opacity: .4; cursor: not-allowed; background: var(--oat); }
 
 /* ── FILTER SIDEBAR CARD ── */
 .filter-card { background: #fff; border-radius: var(--r-lg); padding: 18px; box-shadow: var(--sh-sm); border: 1px solid rgba(176,139,110,.08); margin-bottom: 14px; }
