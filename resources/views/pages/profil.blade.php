@@ -28,10 +28,19 @@
         </div>
     @endif
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start">
+    @php
+        $isAdmin = in_array(auth()->user()->role, ['admin', 'super_admin']);
+    @endphp
 
-        {{-- KOLOM KIRI: Informasi Profil & Ubah Sandi --}}
+    @if($isAdmin)
+    {{-- Admin: 1 kolom, center, max-width 800px --}}
+    <div style="max-width:800px;margin:0 auto">
         <div style="display:flex;flex-direction:column;gap:24px">
+    @else
+    {{-- User biasa: 2 kolom --}}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:24px">
+    @endif
 
             {{-- Card Informasi Profil --}}
             <div class="card">
@@ -122,9 +131,10 @@
                 </form>
             </div>
 
-        </div>
+        </div>{{-- /kolom kiri flex --}}
 
-        {{-- KOLOM KANAN: Daftar Alamat & Form Tambah Alamat --}}
+        {{-- KOLOM KANAN: hanya untuk user/pelanggan, bukan admin --}}
+        @unless($isAdmin)
         <div style="display:flex;flex-direction:column;gap:24px">
 
             {{-- Daftar Alamat --}}
@@ -320,8 +330,10 @@
                 </form>
             </div>
 
-        </div>
-    </div>
+        </div>{{-- /kolom kanan --}}
+        @endunless
+
+    </div>{{-- /outer container --}}
 </div>
 @endsection
 

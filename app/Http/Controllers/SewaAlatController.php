@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{AlatBangunan, BookingAlat, ActivityLog};
+use App\Models\{AlatBangunan, BookingAlat, ActivityLog, AlamatUser};
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -35,8 +35,18 @@ class SewaAlatController extends Controller
 
     public function show(string $slug)
     {
-        $alat = AlatBangunan::aktif()->where('slug', $slug)->firstOrFail();
-        return view('pages.sewa-detail', compact('alat'));
+        $alat  = AlatBangunan::aktif()->where('slug', $slug)->firstOrFail();
+
+        // Ambil alamat user yang login (hanya untuk user pembeli, bukan admin)
+        $alamats = collect();
+        if (auth()->check()) {
+            $alamats = AlamatUser::where('user_id', auth()->id())
+                ->orderByDesc('is_utama')
+                ->orderBy('id')
+                ->get();
+        }
+
+        return view('pages.sewa-detail', compact('alat', 'alamats'));
     }
 
     public function kalkulasi(Request $request, string $slug)
@@ -58,9 +68,9 @@ class SewaAlatController extends Controller
     public function booking(Request $request, string $slug)
     {
         $request->validate([
-            'tanggal_mulai'   => 'required|date|after_or_equal:today',
-            'tanggal_selesai' => 'required|date|after:tanggal_mulai',
-            'alamat'          => 'nullable|string',
+            'tanggal_mulai'    => 'required|date|after_or_equal:today',
+            'tanggal_selesai'  => 'required|date|after:tanggal_mulai',
+            'alamat_penggunaan'=> 'required|string|max:1000',
         ]);
 
         $alat = AlatBangunan::aktif()->tersedia()->where('slug', $slug)->firstOrFail();
@@ -82,7 +92,7 @@ class SewaAlatController extends Controller
             'deposit'          => $alat->deposit,
             'total_bayar'      => $total + $alat->deposit,
             'status'           => 'pending',
-            'alamat_penggunaan'=> $request->alamat,
+            'alamat_penggunaan'=> $request->alamat_penggunaan,
             'catatan'          => $request->catatan,
         ]);
 

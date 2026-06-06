@@ -8,10 +8,10 @@
 {{-- Tombol Export --}}
 <div style="display:flex;gap:10px;justify-content:flex-end;margin-bottom:16px;flex-wrap:wrap">
     <a href="{{ route('admin.stok.laporan', ['format'=>'excel']) }}" class="btn btn-secondary btn-sm">
-        📊 Export Excel
+        📊 Export Excel (.csv)
     </a>
-    <a href="{{ route('admin.stok.laporan', ['format'=>'pdf']) }}" class="btn btn-secondary btn-sm">
-        📄 Export PDF
+    <a href="{{ route('admin.stok.laporan', ['format'=>'pdf']) }}" target="_blank" class="btn btn-secondary btn-sm">
+        📄 Cetak / Export PDF
     </a>
     <a href="{{ route('admin.stok.index') }}" class="btn btn-secondary btn-sm">
         ← Kembali ke Stok
@@ -76,7 +76,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($produks as $i => $p)
+            @forelse($produks as $i => $p)
             <tr>
                 <td style="color:var(--clay);font-size:12px">{{ $i + 1 }}</td>
                 <td style="font-family:monospace;font-size:12px;color:var(--clay)">{{ $p->sku ?? '—' }}</td>
@@ -105,7 +105,13 @@
                     </span>
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="9" style="text-align:center;padding:32px;color:var(--clay);font-style:italic">
+                    Belum ada data stok produk.
+                </td>
+            </tr>
+            @endforelse
         </tbody>
         <tfoot>
             <tr style="background:var(--oat)">

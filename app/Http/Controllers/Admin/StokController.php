@@ -95,11 +95,68 @@ class StokController extends Controller
 
     public function laporan(Request $request)
     {
-        $produk = Produk::with('kategori')
+        $produks = Produk::with('kategori')
             ->when($request->filled('kategori'), fn($q) => $q->where('kategori_id', $request->kategori))
-            ->orderBy('stok')
+            ->orderBy('nama')
             ->get();
 
-        return view('admin.stok.laporan', compact('produk'));
+        $format = $request->input('format');
+
+        // ── Export Excel (CSV) ──────────────────────────────────────
+        if ($format === 'excel') {
+            $filename = 'laporan-stok-' . now()->format('Ymd-His') . '.csv';
+
+            $callback = function () use ($produks) {
+                $handle = fopen('php://output', 'w');
+
+                // BOM agar Excel bisa baca UTF-8 tanpa mojibake
+                fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+
+                // Header kolom
+                fputcsv($handle, ['No', 'SKU', 'Nama Produk', 'Kategori', 'Stok', 'Satuan', 'Harga (Rp)', 'Nilai Stok (Rp)', 'Status']);
+
+                foreach ($produks as $i => $p) {
+                    $status = $p->stok <= 0 ? 'Habis' : ($p->stok < 20 ? 'Rendah' : 'Aman');
+                    fputcsv($handle, [
+                        $i + 1,
+                        $p->sku ?? '-',
+                        $p->nama,
+                        optional($p->kategori)->nama ?? '-',
+                        $p->stok,
+                        $p->satuan,
+                        number_format($p->harga, 0, ',', '.'),
+                        number_format($p->stok * $p->harga, 0, ',', '.'),
+                        $status,
+                    ]);
+                }
+
+                // Baris total
+                fputcsv($handle, [
+                    '', '', '', 'TOTAL',
+                    $produks->sum('stok'),
+                    '', '',
+                    number_format($produks->sum(fn($p) => $p->stok * $p->harga), 0, ',', '.'),
+                    '',
+                ]);
+
+                fclose($handle);
+            };
+
+            return response()->stream($callback, 200, [
+                'Content-Type'        => 'text/csv; charset=UTF-8',
+                'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+                'Pragma'              => 'no-cache',
+                'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+                'Expires'             => '0',
+            ]);
+        }
+
+        // ── Export PDF (HTML print-ready) ────────────────────────────
+        if ($format === 'pdf') {
+            return view('admin.stok.laporan-pdf', compact('produks'));
+        }
+
+        // ── Tampilan biasa (preview) ─────────────────────────────────
+        return view('admin.stok.laporan', compact('produks'));
     }
 }
