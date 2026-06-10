@@ -188,6 +188,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Supplier
     Route::resource('supplier', SupplierController::class);
+    Route::patch('supplier/{supplier}/toggle', [SupplierController::class, 'toggleStatus'])->name('supplier.toggle');
     Route::post('supplier/{supplier}/barang', [SupplierController::class, 'storeBarang'])->name('supplier.barang.store');
     Route::put('supplier/{supplier}/barang/{barang}', [SupplierController::class, 'updateBarang'])->name('supplier.barang.update');
     Route::delete('supplier/{supplier}/barang/{barang}', [SupplierController::class, 'destroyBarang'])->name('supplier.barang.destroy');

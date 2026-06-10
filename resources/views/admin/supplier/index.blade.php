@@ -75,9 +75,21 @@
                     </span>
                 </td>
                 <td style="padding:12px 16px;text-align:center">
-                    <div style="display:flex;gap:8px;justify-content:center">
+                    <div style="display:flex;gap:8px;justify-content:center;align-items:center">
+                        {{-- Toggle Aktif/Nonaktif --}}
+                        <form action="{{ route('admin.supplier.toggle', $supplier) }}" method="POST"
+                              onsubmit="return confirm('{{ $supplier->aktif ? 'Nonaktifkan' : 'Aktifkan' }} supplier {{ $supplier->nama }}?')">
+                            @csrf @method('PATCH')
+                            <button type="submit"
+                                    style="font-size:12.5px;font-weight:600;background:none;border:none;cursor:pointer;padding:0;
+                                           color:{{ $supplier->aktif ? '#a05a2c' : '#16a34a' }}">
+                                {{ $supplier->aktif ? '⏸ Nonaktifkan' : '▶ Aktifkan' }}
+                            </button>
+                        </form>
+                        <span style="color:var(--sand)">·</span>
                         <a href="{{ route('admin.supplier.edit', $supplier) }}"
                            style="font-size:12.5px;color:var(--terracotta);font-weight:600;text-decoration:none">Edit</a>
+                        <span style="color:var(--sand)">·</span>
                         <form action="{{ route('admin.supplier.destroy', $supplier) }}" method="POST"
                               onsubmit="return confirm('Hapus supplier {{ $supplier->nama }}?')">
                             @csrf @method('DELETE')

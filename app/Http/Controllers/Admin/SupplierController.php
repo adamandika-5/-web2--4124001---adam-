@@ -102,6 +102,14 @@ class SupplierController extends Controller
         return back()->with('success', 'Supplier berhasil dihapus.');
     }
 
+    public function toggleStatus(Supplier $supplier)
+    {
+        $supplier->update(['aktif' => !$supplier->aktif]);
+        $status = $supplier->aktif ? 'diaktifkan' : 'dinonaktifkan';
+        ActivityLog::catat('toggle_supplier', "Supplier '{$supplier->nama}' {$status}", '🔄', $supplier);
+        return back()->with('success', "Supplier {$supplier->nama} berhasil {$status}.");
+    }
+
     /* ═══════════════════════════════════════
      |  BARANG SUPPLIER
     ═══════════════════════════════════════ */
