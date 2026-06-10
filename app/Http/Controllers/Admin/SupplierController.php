@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Supplier, ActivityLog};
+use App\Models\{Supplier, Produk, ProdukSupplier, ActivityLog};
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -59,13 +59,16 @@ class SupplierController extends Controller
 
     public function show(Supplier $supplier)
     {
-        $supplier->load('produk');
-        return view('admin.supplier.form', compact('supplier'));
+        $supplier->load(['barangSupplier.produk']);
+        $produks = Produk::orderBy('nama')->get(['id', 'nama', 'harga', 'harga_promo', 'satuan']);
+        return view('admin.supplier.form', compact('supplier', 'produks'));
     }
 
     public function edit(Supplier $supplier)
     {
-        return view('admin.supplier.form', compact('supplier'));
+        $supplier->load(['barangSupplier.produk']);
+        $produks = Produk::orderBy('nama')->get(['id', 'nama', 'harga', 'harga_promo', 'satuan']);
+        return view('admin.supplier.form', compact('supplier', 'produks'));
     }
 
     public function update(Request $request, Supplier $supplier)
@@ -97,5 +100,73 @@ class SupplierController extends Controller
         }
         $supplier->delete();
         return back()->with('success', 'Supplier berhasil dihapus.');
+    }
+
+    /* ═══════════════════════════════════════
+     |  BARANG SUPPLIER
+    ═══════════════════════════════════════ */
+
+    public function storeBarang(Request $request, Supplier $supplier)
+    {
+        $request->validate([
+            'produk_id'         => 'required|exists:produks,id',
+            'harga_beli'        => 'required|numeric|min:0',
+            'satuan'            => 'required|string|max:30',
+            'minimal_pembelian' => 'required|integer|min:1',
+            'lead_time_hari'    => 'nullable|integer|min:0',
+            'catatan'           => 'nullable|string|max:500',
+        ]);
+
+        // Cek duplikat supplier-produk
+        $exists = ProdukSupplier::where('supplier_id', $supplier->id)
+            ->where('produk_id', $request->produk_id)
+            ->exists();
+
+        if ($exists) {
+            return back()->with('error', 'Produk ini sudah ada di daftar barang supplier.');
+        }
+
+        ProdukSupplier::create([
+            'supplier_id'       => $supplier->id,
+            'produk_id'         => $request->produk_id,
+            'harga_beli'        => $request->harga_beli,
+            'satuan'            => $request->satuan,
+            'minimal_pembelian' => $request->minimal_pembelian,
+            'lead_time_hari'    => $request->lead_time_hari,
+            'catatan'           => $request->catatan,
+            'aktif'             => true,
+        ]);
+
+        ActivityLog::catat('tambah_barang_supplier', "Barang ditambahkan ke supplier '{$supplier->nama}'", '📦', $supplier);
+        return back()->with('success', 'Barang supplier berhasil ditambahkan.');
+    }
+
+    public function updateBarang(Request $request, Supplier $supplier, ProdukSupplier $barang)
+    {
+        $request->validate([
+            'harga_beli'        => 'required|numeric|min:0',
+            'satuan'            => 'required|string|max:30',
+            'minimal_pembelian' => 'required|integer|min:1',
+            'lead_time_hari'    => 'nullable|integer|min:0',
+            'catatan'           => 'nullable|string|max:500',
+        ]);
+
+        $barang->update($request->only('harga_beli', 'satuan', 'minimal_pembelian', 'lead_time_hari', 'catatan'));
+
+        ActivityLog::catat('edit_barang_supplier', "Harga barang supplier '{$supplier->nama}' diperbarui", '✏️', $supplier);
+        return back()->with('success', 'Barang supplier berhasil diperbarui.');
+    }
+
+    public function destroyBarang(Supplier $supplier, ProdukSupplier $barang)
+    {
+        $barang->delete();
+        return back()->with('success', 'Barang supplier berhasil dihapus.');
+    }
+
+    public function toggleBarang(Supplier $supplier, ProdukSupplier $barang)
+    {
+        $barang->update(['aktif' => !$barang->aktif]);
+        $status = $barang->aktif ? 'diaktifkan' : 'dinonaktifkan';
+        return back()->with('success', "Barang supplier berhasil {$status}.");
     }
 }

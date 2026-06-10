@@ -188,6 +188,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Supplier
     Route::resource('supplier', SupplierController::class);
+    Route::post('supplier/{supplier}/barang', [SupplierController::class, 'storeBarang'])->name('supplier.barang.store');
+    Route::put('supplier/{supplier}/barang/{barang}', [SupplierController::class, 'updateBarang'])->name('supplier.barang.update');
+    Route::delete('supplier/{supplier}/barang/{barang}', [SupplierController::class, 'destroyBarang'])->name('supplier.barang.destroy');
+    Route::patch('supplier/{supplier}/barang/{barang}/toggle', [SupplierController::class, 'toggleBarang'])->name('supplier.barang.toggle');
 
     // Promo & Voucher
     Route::resource('promo', PromoController::class);

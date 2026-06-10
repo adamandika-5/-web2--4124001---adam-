@@ -8,4 +8,5 @@ class Supplier extends Model {
     protected $fillable = ['nama','kontak','telepon','email','alamat','kota','catatan','aktif'];
     protected $casts    = ['aktif' => 'boolean'];
     public function produk() { return $this->hasMany(Produk::class); }
+    public function barangSupplier() { return $this->hasMany(ProdukSupplier::class); }
 }
