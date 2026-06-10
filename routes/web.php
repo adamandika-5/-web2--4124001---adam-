@@ -191,7 +191,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Promo & Voucher
     Route::resource('promo', PromoController::class);
+    Route::get('voucher', fn() => redirect()->route('admin.promo.index', ['tab' => 'voucher']))->name('voucher.index');
     Route::post('voucher', [PromoController::class, 'storeVoucher'])->name('voucher.store');
+    Route::patch('voucher/{voucher}/toggle', [PromoController::class, 'toggleVoucher'])->name('voucher.toggle');
     Route::delete('voucher/{voucher}', [PromoController::class, 'destroyVoucher'])->name('voucher.destroy');
 
     // Manajemen User

@@ -97,4 +97,144 @@
     @endif
 </div>
 
+{{-- ── SECTION KODE VOUCHER ── --}}
+<div style="background:var(--oat);border-top:1px solid rgba(176,139,110,.12);padding:56px 48px">
+<div style="max-width:1280px;margin:0 auto">
+
+    <div style="text-align:center;margin-bottom:36px">
+        <div class="section-label" style="justify-content:center;display:flex">Kode Voucher</div>
+        <h2 style="font-family:var(--fs);font-size:clamp(22px,3vw,36px);font-weight:700;color:var(--soil);margin:8px 0 10px">
+            🎫 Voucher Diskon Aktif
+        </h2>
+        <p style="font-size:14px;color:var(--clay);max-width:480px;margin:0 auto">
+            Gunakan kode voucher berikut saat checkout untuk mendapatkan potongan harga.
+        </p>
+    </div>
+
+    @if($vouchers->isEmpty())
+        <div style="text-align:center;padding:48px 32px;background:#fff;border-radius:var(--r-xl);border:1px solid rgba(176,139,110,.1)">
+            <div style="font-size:48px;margin-bottom:12px">🎟️</div>
+            <div style="font-size:16px;font-weight:600;color:var(--soil);margin-bottom:6px">Belum ada kode voucher aktif saat ini</div>
+            <div style="font-size:13px;color:var(--clay)">Pantau terus halaman ini untuk kode voucher terbaru</div>
+        </div>
+    @else
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px">
+            @foreach($vouchers as $v)
+            <div style="background:#fff;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.1);display:flex;flex-direction:column">
+
+                {{-- Header --}}
+                <div style="background:var(--soil);padding:20px 22px;position:relative;overflow:hidden">
+                    <div class="grain" style="opacity:.4"></div>
+                    <div style="position:absolute;top:-10px;right:-10px;font-size:72px;opacity:.06">🎟️</div>
+                    <div style="position:relative;z-index:2">
+                        <div style="font-size:11px;font-weight:700;color:rgba(232,220,199,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">
+                            {{ $v->tipe === 'persentase' ? 'Diskon Persentase' : ($v->tipe === 'gratis_ongkir' ? 'Gratis Ongkir' : 'Diskon Nominal') }}
+                        </div>
+                        <div style="font-family:var(--fs);font-size:20px;font-weight:700;color:var(--sand);margin-bottom:4px">{{ $v->nama }}</div>
+                        <div style="font-size:22px;font-weight:900;color:var(--terracotta)">
+                            @if($v->tipe === 'persentase')
+                                {{ rtrim(rtrim(number_format($v->nilai, 2, '.', ''), '0'), '.') }}%
+                            @elseif($v->tipe === 'gratis_ongkir')
+                                Gratis Ongkir
+                            @else
+                                Rp {{ number_format($v->nilai, 0, ',', '.') }}
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Body --}}
+                <div style="padding:18px 22px;flex:1;display:flex;flex-direction:column;gap:10px">
+                    {{-- Kode salin --}}
+                    <div style="display:flex;align-items:center;gap:8px;background:var(--oat);border:1.5px dashed var(--sand);border-radius:var(--r-md);padding:10px 14px">
+                        <code id="kode-{{ $v->id }}"
+                              style="flex:1;font-size:15px;font-weight:800;color:var(--soil);letter-spacing:.1em;font-family:monospace">{{ $v->kode }}</code>
+                        <button onclick="salинKode('{{ $v->kode }}','{{ $v->id }}')"
+                                style="flex-shrink:0;background:var(--terracotta);color:#fff;border:none;border-radius:var(--r-sm);padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--fb);transition:background .2s"
+                                id="btn-salin-{{ $v->id }}"
+                                onmouseover="this.style.background='var(--soil)'"
+                                onmouseout="this.style.background='var(--terracotta)'">
+                            📋 Salin
+                        </button>
+                    </div>
+
+                    {{-- Detail --}}
+                    <div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--clay)">
+                        @if($v->min_belanja && $v->min_belanja > 0)
+                        <div style="display:flex;justify-content:space-between">
+                            <span>Min. Belanja</span>
+                            <span style="font-weight:600;color:var(--soil)">Rp {{ number_format($v->min_belanja, 0, ',', '.') }}</span>
+                        </div>
+                        @endif
+                        @if($v->maks_diskon && $v->maks_diskon > 0)
+                        <div style="display:flex;justify-content:space-between">
+                            <span>Maks. Diskon</span>
+                            <span style="font-weight:600;color:var(--soil)">Rp {{ number_format($v->maks_diskon, 0, ',', '.') }}</span>
+                        </div>
+                        @endif
+                        @if($v->kuota)
+                        <div style="display:flex;justify-content:space-between">
+                            <span>Sisa Kuota</span>
+                            <span style="font-weight:600;color:{{ ($v->kuota - $v->terpakai) <= 5 ? '#c03030' : 'var(--moss)' }}">
+                                {{ $v->kuota - $v->terpakai }} tersisa
+                            </span>
+                        </div>
+                        @endif
+                        @if($v->berlaku_sampai)
+                        <div style="display:flex;justify-content:space-between">
+                            <span>Berlaku s/d</span>
+                            <span style="font-weight:600;color:var(--soil)">{{ $v->berlaku_sampai->format('d M Y') }}</span>
+                        </div>
+                        @else
+                        <div style="display:flex;justify-content:space-between">
+                            <span>Berlaku</span>
+                            <span style="font-weight:600;color:var(--moss)">Tidak terbatas</span>
+                        </div>
+                        @endif
+                    </div>
+
+                    {{-- CTA --}}
+                    <a href="{{ route('katalog.index') }}"
+                       style="margin-top:auto;display:block;text-align:center;padding:10px;background:var(--soil);color:var(--sand);border-radius:var(--r-md);font-size:13px;font-weight:700;text-decoration:none;transition:background .2s"
+                       onmouseover="this.style.background='var(--terracotta)'"
+                       onmouseout="this.style.background='var(--soil)'">
+                        Belanja Sekarang →
+                    </a>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        <p style="text-align:center;margin-top:28px;font-size:13px;color:var(--clay)">
+            💡 Gunakan kode voucher di halaman <strong>Checkout</strong> pada kolom "Kode Voucher".
+        </p>
+    @endif
+
+</div>
+</div>
+
+@push('scripts')
+<script>
+function salинKode(kode, id) {
+    navigator.clipboard.writeText(kode).then(() => {
+        const btn = document.getElementById('btn-salin-' + id);
+        const ori = btn.textContent;
+        btn.textContent = '✅ Tersalin!';
+        btn.style.background = 'var(--moss)';
+        setTimeout(() => {
+            btn.textContent = ori;
+            btn.style.background = 'var(--terracotta)';
+        }, 2000);
+    }).catch(() => {
+        // Fallback: select text
+        const el = document.getElementById('kode-' + id);
+        const range = document.createRange();
+        range.selectNode(el);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    });
+}
+</script>
+@endpush
+
 @endsection

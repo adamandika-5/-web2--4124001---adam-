@@ -172,6 +172,18 @@
                     </td>
                     <td>
                         <div class="act-btns">
+                            {{-- Toggle Aktif/Nonaktif --}}
+                            <form action="{{ route('admin.voucher.toggle', $v->id) }}" method="POST"
+                                  style="display:inline"
+                                  onsubmit="return confirm('{{ $v->aktif ? 'Nonaktifkan' : 'Aktifkan' }} voucher {{ $v->kode }}?')">
+                                @csrf @method('PATCH')
+                                <button type="submit" class="act-btn"
+                                        title="{{ $v->aktif ? 'Nonaktifkan' : 'Aktifkan' }}"
+                                        style="background:{{ $v->aktif ? 'rgba(176,139,110,.12)' : 'rgba(96,108,56,.12)' }};color:{{ $v->aktif ? '#a05a2c' : 'var(--moss)' }}">
+                                    {{ $v->aktif ? '⏸' : '▶' }}
+                                </button>
+                            </form>
+                            {{-- Hapus --}}
                             <form action="{{ route('admin.voucher.destroy', $v->id) }}" method="POST" onsubmit="return confirm('Hapus voucher {{ $v->kode }}?')">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="act-btn danger">
@@ -289,5 +301,12 @@ function generateKode() {
     for (let i=0; i<6; i++) kode += chars[Math.floor(Math.random()*chars.length)];
     document.getElementById('voucherKode').value = kode;
 }
+
+// Auto-aktifkan tab sesuai ?tab= parameter atau session flash
+document.addEventListener('DOMContentLoaded', function() {
+    const initialTab = '{{ request("tab", session("active_tab", "promo")) }}';
+    const btnEl = document.getElementById('btn-' + initialTab);
+    if (btnEl) gantiPanel(initialTab, btnEl);
+});
 </script>
 @endpush

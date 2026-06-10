@@ -30,11 +30,25 @@
             </select>
         </div>
         <button type="submit" class="btn btn-primary btn-sm" style="align-self:flex-end">Tampilkan</button>
-        <div style="margin-left:auto;display:flex;gap:8px;align-self:flex-end">
+
+        {{-- Tombol Aksi Export --}}
+        <div class="no-print" style="margin-left:auto;display:flex;gap:8px;align-self:flex-end;flex-wrap:wrap">
+            <button type="button" onclick="window.print()"
+                    class="btn btn-secondary btn-sm"
+                    style="display:inline-flex;align-items:center;gap:6px">
+                🖨️ Cetak Laporan
+            </button>
             <a href="{{ route('admin.laporan.pdf', request()->all()) }}"
-               class="btn btn-secondary btn-sm">📄 Export PDF</a>
+               target="_blank"
+               class="btn btn-secondary btn-sm"
+               style="display:inline-flex;align-items:center;gap:6px">
+                📄 Download PDF
+            </a>
             <a href="{{ route('admin.laporan.excel', request()->all()) }}"
-               class="btn btn-secondary btn-sm">📊 Export Excel</a>
+               class="btn btn-secondary btn-sm"
+               style="display:inline-flex;align-items:center;gap:6px">
+                📊 Download Excel
+            </a>
         </div>
     </form>
 </div>
@@ -213,4 +227,40 @@ function setPeriode(v) {
     document.querySelector('[name="sampai"]').value = sampai;
 }
 </script>
+@endpush
+
+@push('styles')
+<style>
+@media print {
+    /* Sembunyikan elemen admin panel saat cetak */
+    .admin-sidebar,
+    .admin-topbar,
+    .admin-navbar,
+    nav.sidebar,
+    aside,
+    header,
+    .no-print,
+    .pagination,
+    form[method="GET"] { display: none !important; }
+
+    body { background: #fff !important; }
+
+    /* Paksa konten full width */
+    main, .admin-content, .page-content, [class*="content"] {
+        margin: 0 !important;
+        padding: 8px !important;
+        width: 100% !important;
+    }
+
+    /* Print header tabel tampil di setiap halaman */
+    thead { display: table-header-group; }
+    tfoot { display: table-footer-group; }
+
+    /* Hindari pemutus halaman di tengah baris */
+    tr { page-break-inside: avoid; }
+
+    /* Status pills tetap berwarna saat print */
+    .status-pill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
 @endpush

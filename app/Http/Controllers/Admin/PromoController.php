@@ -118,12 +118,23 @@ class PromoController extends Controller
         ]);
 
         ActivityLog::catat('tambah_voucher', "Voucher '{$voucher->kode}' ditambahkan", '🎟️', $voucher);
-        return back()->with('success', 'Voucher berhasil ditambahkan.');
+        return redirect()->route('admin.promo.index', ['tab' => 'voucher'])
+            ->with('success', 'Voucher berhasil ditambahkan.');
     }
 
     public function destroyVoucher(Voucher $voucher)
     {
         $voucher->delete();
-        return back()->with('success', 'Voucher berhasil dihapus.');
+        return redirect()->route('admin.promo.index', ['tab' => 'voucher'])
+            ->with('success', 'Voucher berhasil dihapus.');
+    }
+
+    public function toggleVoucher(Voucher $voucher)
+    {
+        $voucher->update(['aktif' => !$voucher->aktif]);
+        $status = $voucher->aktif ? 'diaktifkan' : 'dinonaktifkan';
+        ActivityLog::catat('toggle_voucher', "Voucher '{$voucher->kode}' {$status}", '🔄', $voucher);
+        return redirect()->route('admin.promo.index', ['tab' => 'voucher'])
+            ->with('success', "Voucher {$voucher->kode} berhasil {$status}.");
     }
 }

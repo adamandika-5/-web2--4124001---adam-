@@ -202,8 +202,51 @@
                       placeholder="Contoh: tolong kirim pagi hari, atau titip ke satpam jika tidak ada di rumah..."></textarea>
         </div>
 
+        {{-- Kode Voucher --}}
+        <div style="background:#fff;border-radius:var(--r-lg);padding:20px 24px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
+            <div style="font-family:var(--fs);font-size:16px;font-weight:700;color:var(--soil);margin-bottom:14px">
+                🎫 Kode Voucher
+            </div>
+
+            {{-- Status voucher aktif --}}
+            <div id="voucherAktifBox" style="display:none;background:rgba(96,108,56,.07);border:1.5px solid rgba(96,108,56,.25);border-radius:var(--r-md);padding:12px 14px;margin-bottom:12px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                    <div>
+                        <div style="font-size:13px;font-weight:700;color:var(--moss)" id="voucherAktifLabel">✅ Voucher diterapkan</div>
+                        <div style="font-size:12px;color:var(--clay);margin-top:2px" id="voucherAktifInfo"></div>
+                    </div>
+                    <button type="button" onclick="hapusVoucher()"
+                            style="flex-shrink:0;background:none;border:1px solid var(--sand);border-radius:var(--r-sm);padding:5px 10px;font-size:12px;color:var(--clay);cursor:pointer;font-family:var(--fb);transition:all .2s"
+                            onmouseover="this.style.borderColor='#c03030';this.style.color='#c03030'"
+                            onmouseout="this.style.borderColor='var(--sand)';this.style.color='var(--clay)'">
+                        🗑 Hapus
+                    </button>
+                </div>
+            </div>
+
+            {{-- Input kode --}}
+            <div id="voucherInputBox">
+                <div style="display:flex;gap:8px">
+                    <input type="text" id="inputKodeVoucher"
+                           class="form-inp"
+                           placeholder="Masukkan kode voucher"
+                           style="text-transform:uppercase;font-weight:700;font-family:monospace;letter-spacing:.06em;flex:1"
+                           oninput="this.value=this.value.toUpperCase()">
+                    <button type="button" onclick="terapkanVoucher()"
+                            class="btn btn-primary btn-sm" style="flex-shrink:0;padding:0 18px">
+                        Terapkan
+                    </button>
+                </div>
+                <div id="voucherPesan" style="font-size:12.5px;margin-top:7px;display:none"></div>
+            </div>
+
+            {{-- Hidden inputs untuk form submit --}}
+            <input type="hidden" name="kode_voucher" id="hiddenKodeVoucher">
+        </div>
+
         {{-- Input tersembunyi --}}
         <input type="hidden" name="ongkir" id="ongkirVal" value="0">
+        <input type="hidden" name="diskon_voucher" id="diskonVoucherVal" value="0">
     </div>
 
     {{-- ── KANAN: RINGKASAN ── --}}
@@ -272,21 +315,26 @@
 @push('scripts')
 <script>
 const subtotal = Math.round(Number({{ $checkoutSubtotal }})) || 0;
-const ONGKIR_ARMADA_DEFAULT = 25000; // default ongkir jika zona tidak ditemukan
+const ONGKIR_ARMADA_DEFAULT = 25000;
+let diskonVoucher = 0;
+
+function updateTotal() {
+    const ongkir = parseInt(document.getElementById('ongkirVal').value) || 0;
+    const total  = Math.max(0, subtotal - diskonVoucher + ongkir);
+    document.getElementById('totalDisplay').textContent = 'Rp ' + total.toLocaleString('id-ID');
+}
 
 function tampilkanOngkir(ongkirNum) {
-    document.getElementById('ongkirVal').value = Math.round(ongkirNum);
-    document.getElementById('ongkirDisplay').textContent = 'Rp ' + Math.round(ongkirNum).toLocaleString('id-ID');
+    const o = Math.round(ongkirNum);
+    document.getElementById('ongkirVal').value = o;
+    document.getElementById('ongkirDisplay').textContent = 'Rp ' + o.toLocaleString('id-ID');
     document.getElementById('ongkirDisplay').style.color = 'var(--soil)';
-    document.getElementById('totalDisplay').textContent = 'Rp ' + (subtotal + Math.round(ongkirNum)).toLocaleString('id-ID');
+    updateTotal();
 }
 
 async function hitungOngkir(kota, jenis) {
     if (!kota || jenis !== 'armada') return;
-
-    // Tampilkan estimasi sementara agar user tidak bingung
     tampilkanOngkir(ONGKIR_ARMADA_DEFAULT);
-
     try {
         const res = await fetch('{{ route("checkout.ongkir") }}', {
             method: 'POST',
@@ -315,9 +363,8 @@ function getEkspedisiFee(val) {
 }
 
 function updatePengiriman(radio) {
-    const selectedAlamat = document.querySelector('[name="alamat_id"]:checked');
+    const selectedAlamat   = document.querySelector('[name="alamat_id"]:checked');
     const ekspedisiOptions = document.getElementById('ekspedisiOptions');
-
     if (radio.value === 'ekspedisi') {
         if (ekspedisiOptions) ekspedisiOptions.style.display = 'grid';
         const activeEkspedisi = document.querySelector('[name="ekspedisi"]:checked')?.value || 'jnt';
@@ -325,8 +372,7 @@ function updatePengiriman(radio) {
     } else {
         if (ekspedisiOptions) ekspedisiOptions.style.display = 'none';
         if (selectedAlamat) {
-            const kota = selectedAlamat.getAttribute('data-kota');
-            hitungOngkir(kota, radio.value);
+            hitungOngkir(selectedAlamat.getAttribute('data-kota'), radio.value);
         } else {
             tampilkanOngkir(ONGKIR_ARMADA_DEFAULT);
         }
@@ -336,29 +382,82 @@ function updatePengiriman(radio) {
 document.querySelectorAll('[name="alamat_id"]').forEach(r => {
     r.addEventListener('change', () => {
         const jenis = document.querySelector('[name="jenis_pengiriman"]:checked')?.value;
-        if (jenis === 'armada') {
-            updatePengiriman({value:'armada'});
-        } else if (jenis === 'ekspedisi') {
-            updatePengiriman({value:'ekspedisi'});
-        }
+        if (jenis) updatePengiriman({value: jenis});
     });
 });
 
 document.querySelectorAll('[name="ekspedisi"]').forEach(r => {
     r.addEventListener('change', () => {
         const jenis = document.querySelector('[name="jenis_pengiriman"]:checked')?.value;
-        if (jenis === 'ekspedisi') {
-            tampilkanOngkir(getEkspedisiFee(r.value));
-        }
+        if (jenis === 'ekspedisi') tampilkanOngkir(getEkspedisiFee(r.value));
     });
 });
 
-// Run initially to match current state
 document.addEventListener('DOMContentLoaded', () => {
     const activeJenis = document.querySelector('[name="jenis_pengiriman"]:checked');
-    if (activeJenis) {
-        updatePengiriman(activeJenis);
+    if (activeJenis) updatePengiriman(activeJenis);
+});
+
+// ── Voucher ──────────────────────────────────────────────────────────
+async function terapkanVoucher() {
+    const kode = document.getElementById('inputKodeVoucher').value.trim().toUpperCase();
+    if (!kode) {
+        showVoucherPesan('Masukkan kode voucher terlebih dahulu.', 'error');
+        return;
     }
+    showVoucherPesan('⏳ Memeriksa voucher...', 'info');
+    try {
+        const res = await fetch('{{ route("checkout.voucher") }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            body: JSON.stringify({ kode, subtotal })
+        });
+        const data = await res.json();
+        if (!data.valid) {
+            showVoucherPesan('❌ ' + data.pesan, 'error');
+            return;
+        }
+        // Terapkan diskon
+        diskonVoucher = Math.round(data.diskon);
+        document.getElementById('hiddenKodeVoucher').value = kode;
+        document.getElementById('diskonVoucherVal').value  = diskonVoucher;
+        document.getElementById('voucherDisplay').textContent = '- Rp ' + diskonVoucher.toLocaleString('id-ID');
+        updateTotal();
+        // Tampilkan status aktif
+        document.getElementById('voucherAktifLabel').textContent = '✅ ' + data.nama + ' diterapkan!';
+        document.getElementById('voucherAktifInfo').textContent  =
+            'Kode: ' + kode + ' · Hemat Rp ' + diskonVoucher.toLocaleString('id-ID');
+        document.getElementById('voucherAktifBox').style.display = 'block';
+        document.getElementById('voucherInputBox').style.display = 'none';
+        showVoucherPesan('', 'none');
+    } catch (e) {
+        showVoucherPesan('❌ Gagal memeriksa voucher. Coba lagi.', 'error');
+    }
+}
+
+function hapusVoucher() {
+    diskonVoucher = 0;
+    document.getElementById('hiddenKodeVoucher').value = '';
+    document.getElementById('diskonVoucherVal').value  = 0;
+    document.getElementById('inputKodeVoucher').value  = '';
+    document.getElementById('voucherDisplay').textContent = '- Rp 0';
+    document.getElementById('voucherAktifBox').style.display = 'none';
+    document.getElementById('voucherInputBox').style.display = 'block';
+    updateTotal();
+}
+
+function showVoucherPesan(msg, type) {
+    const el = document.getElementById('voucherPesan');
+    if (!msg) { el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    el.style.color   = type === 'error' ? '#c03030' : type === 'info' ? 'var(--clay)' : 'var(--moss)';
+    el.textContent   = msg;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('inputKodeVoucher')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); terapkanVoucher(); }
+    });
 });
 </script>
-@endpush
+@endpush

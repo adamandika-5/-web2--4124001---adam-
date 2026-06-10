@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Kategori, Produk, Promo, Pesanan};
+use App\Models\{Kategori, Produk, Promo, Pesanan, Voucher};
 
 class BerandaController extends Controller
 {
@@ -40,8 +40,22 @@ class BerandaController extends Controller
 
     public function promo()
     {
+        $vouchers = Voucher::where('aktif', true)
+            ->where(function ($q) {
+                $q->whereNull('berlaku_mulai')->orWhere('berlaku_mulai', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('berlaku_sampai')->orWhere('berlaku_sampai', '>=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('kuota')->orWhereRaw('terpakai < kuota');
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('pages.promo', [
-            'promos' => Promo::aktif()->paginate(12),
+            'promos'   => Promo::aktif()->paginate(12),
+            'vouchers' => $vouchers,
         ]);
     }
 

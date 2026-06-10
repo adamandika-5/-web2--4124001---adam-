@@ -116,8 +116,18 @@ class CheckoutController extends Controller
         $voucherId     = null;
 
         if ($request->filled('kode_voucher')) {
-            $voucher = Voucher::valid()
-                ->where('kode', $request->kode_voucher)
+            $kodeVoucher = strtoupper(trim($request->kode_voucher));
+            $voucher     = Voucher::where('kode', $kodeVoucher)
+                ->where('aktif', true)
+                ->where(function ($q) {
+                    $q->whereNull('berlaku_mulai')->orWhere('berlaku_mulai', '<=', now());
+                })
+                ->where(function ($q) {
+                    $q->whereNull('berlaku_sampai')->orWhere('berlaku_sampai', '>=', now());
+                })
+                ->where(function ($q) {
+                    $q->whereNull('kuota')->orWhereRaw('terpakai < kuota');
+                })
                 ->first();
 
             if ($voucher) {
@@ -280,24 +290,74 @@ class CheckoutController extends Controller
 
     public function cekVoucher(Request $request)
     {
-        $voucher = Voucher::valid()
-            ->where('kode', strtoupper($request->kode))
-            ->first();
+        $kode     = strtoupper(trim($request->kode ?? ''));
+        $subtotal = (float) ($request->subtotal ?? 0);
+
+        if (!$kode) {
+            return response()->json(['valid' => false, 'pesan' => 'Masukkan kode voucher terlebih dahulu.']);
+        }
+
+        // 1. Cari voucher tanpa filter apapun dulu (agar bisa beri pesan spesifik)
+        $voucher = Voucher::where('kode', $kode)->first();
 
         if (!$voucher) {
             return response()->json([
                 'valid' => false,
-                'pesan' => 'Kode voucher tidak valid atau sudah kadaluarsa.',
+                'pesan' => "Kode voucher \"{$kode}\" tidak ditemukan.",
             ]);
         }
 
-        $diskon = $voucher->hitungDiskon((float) ($request->subtotal ?? 0));
+        // 2. Cek aktif
+        if (!$voucher->aktif) {
+            return response()->json([
+                'valid' => false,
+                'pesan' => 'Voucher ini tidak aktif.',
+            ]);
+        }
+
+        // 3. Cek belum mulai
+        if ($voucher->berlaku_mulai && now()->lt($voucher->berlaku_mulai)) {
+            return response()->json([
+                'valid' => false,
+                'pesan' => 'Voucher belum berlaku. Berlaku mulai ' . $voucher->berlaku_mulai->format('d M Y') . '.',
+            ]);
+        }
+
+        // 4. Cek sudah kadaluarsa
+        if ($voucher->berlaku_sampai && now()->gt($voucher->berlaku_sampai)) {
+            return response()->json([
+                'valid' => false,
+                'pesan' => 'Voucher sudah kadaluarsa sejak ' . $voucher->berlaku_sampai->format('d M Y') . '.',
+            ]);
+        }
+
+        // 5. Cek kuota
+        if ($voucher->kuota !== null && $voucher->terpakai >= $voucher->kuota) {
+            return response()->json([
+                'valid' => false,
+                'pesan' => 'Kuota voucher sudah habis.',
+            ]);
+        }
+
+        // 6. Cek minimal belanja
+        $minBelanja = (float) ($voucher->min_belanja ?? 0);
+        if ($subtotal < $minBelanja) {
+            return response()->json([
+                'valid' => false,
+                'pesan' => 'Minimal belanja Rp ' . number_format($minBelanja, 0, ',', '.') . ' untuk menggunakan voucher ini. '
+                         . '(Belanja kamu: Rp ' . number_format($subtotal, 0, ',', '.') . ')',
+            ]);
+        }
+
+        // 7. Hitung diskon
+        $diskon = $voucher->hitungDiskon($subtotal);
 
         return response()->json([
             'valid'  => true,
             'diskon' => $diskon,
             'nama'   => $voucher->nama,
-            'pesan'  => "Voucher {$voucher->kode} berhasil digunakan!",
+            'kode'   => $voucher->kode,
+            'pesan'  => "Voucher {$voucher->kode} berhasil diterapkan! Hemat Rp " . number_format($diskon, 0, ',', '.'),
         ]);
     }
 }

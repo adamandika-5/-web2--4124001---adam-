@@ -13,14 +13,19 @@ class Voucher extends Model {
         'berlaku_sampai' => 'datetime',
         'nilai'          => 'decimal:2',
         'min_belanja'    => 'decimal:2',
+        'maks_diskon'    => 'decimal:2',
     ];
 
     public function hitungDiskon(float $subtotal): float {
-        if ($subtotal < $this->min_belanja) return 0;
-        $diskon = $this->tipe === 'persentase'
-            ? $subtotal * ($this->nilai / 100)
+        $minBelanja = (float) ($this->min_belanja ?? 0);
+        if ($subtotal < $minBelanja) return 0;
+
+        $diskon = strtolower($this->tipe) === 'persentase'
+            ? $subtotal * ((float) $this->nilai / 100)
             : (float) $this->nilai;
-        return $this->maks_diskon ? min($diskon, (float)$this->maks_diskon) : $diskon;
+
+        $maksDisk = $this->maks_diskon ? (float) $this->maks_diskon : null;
+        return $maksDisk ? min($diskon, $maksDisk) : $diskon;
     }
 
     public function scopeValid($q) {
