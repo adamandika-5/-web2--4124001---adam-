@@ -11,7 +11,7 @@
 --}}
 
 {{-- Stat strip --}}
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+<div class="adm-pembayaran-stats">
     @foreach([
         ['⏳','Menunggu Konfirmasi',$menunggu,'rgba(192,142,58,.1)','var(--ochre)'],
         ['✅','Dikonfirmasi Hari Ini',$dikonfirmasiHariIni,'rgba(96,108,56,.1)','var(--moss)'],
@@ -32,8 +32,8 @@
 </div>
 
 {{-- Filter --}}
-<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-    <form method="GET" action="{{ route('admin.pembayaran.index') }}" style="display:flex;gap:10px;flex:1">
+<div class="adm-filter-bar">
+    <form method="GET" action="{{ route('admin.pembayaran.index') }}">
         <select name="status" onchange="this.form.submit()"
                 style="padding:8px 12px;border:1.5px solid var(--sand);border-radius:var(--r-md);background:#fff;font-family:var(--fb);font-size:13px;color:var(--soil);outline:none;cursor:pointer">
             <option value="">Semua Status</option>
@@ -52,8 +52,8 @@
     </form>
 </div>
 
-{{-- Tabel --}}
-<div style="background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;border:1px solid rgba(176,139,110,.07)">
+<div class="adm-table-card">
+    <div class="table-scroll-wrap">
     <table class="data-tbl">
         <thead>
             <tr>
@@ -131,6 +131,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>{{-- /table-scroll-wrap --}}
     <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-top:1px solid rgba(176,139,110,.09);background:var(--oat)">
         <div style="font-size:13px;color:var(--clay)">{{ $pembayarans->total() }} pembayaran</div>
         <div style="display:flex;gap:4px">

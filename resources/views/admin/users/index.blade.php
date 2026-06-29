@@ -5,18 +5,18 @@
 
 @section('content')
 
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+<div class="adm-filter-bar">
     {{-- Filter --}}
-    <form method="GET" style="display:flex;gap:8px;align-items:center">
+    <form method="GET">
         <input class="form-inp" type="text" name="q" value="{{ request('q') }}"
                placeholder="Cari nama atau email..."
-               style="width:240px;padding:8px 12px;font-size:13px">
-        <select class="form-inp" name="role" style="width:120px;font-size:13px;padding:8px">
+               style="padding:8px 12px;font-size:13px">
+        <select class="form-inp" name="role" style="font-size:13px;padding:8px">
             <option value="">Semua Role</option>
             <option value="user"  {{ request('role')==='user'  ?'selected':'' }}>User</option>
             <option value="admin" {{ request('role')==='admin' ?'selected':'' }}>Admin</option>
         </select>
-        <select class="form-inp" name="status" style="width:130px;font-size:13px;padding:8px">
+        <select class="form-inp" name="status" style="font-size:13px;padding:8px">
             <option value="">Semua Status</option>
             <option value="aktif"    {{ request('status')==='aktif'    ?'selected':'' }}>Aktif</option>
             <option value="nonaktif" {{ request('status')==='nonaktif' ?'selected':'' }}>Nonaktif</option>
@@ -33,7 +33,7 @@
 </div>
 
 {{-- Stats mini --}}
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;max-width:500px">
+<div class="adm-users-stats">
     @foreach([['👤','Pelanggan',$totalUser,'var(--soil)'],['⚙️','Admin/Staff',$totalAdmin,'var(--terracotta)'],['🚫','Nonaktif',$nonaktif,'#dc2626']] as [$ikon,$label,$val,$warna])
     <div style="background:#fff;border-radius:var(--r-md);padding:14px 18px;border:1px solid rgba(176,139,110,.08);box-shadow:var(--sh-sm)">
         <div style="font-size:22px;font-weight:700;color:{{ $warna }};font-family:var(--fd)">{{ $val }}</div>
@@ -43,7 +43,8 @@
 </div>
 
 {{-- Tabel --}}
-<div style="background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.07);overflow:hidden">
+<div class="adm-table-card">
+    <div class="table-scroll-wrap">
     <table style="width:100%;border-collapse:collapse;font-size:13.5px">
         <thead>
             <tr style="background:var(--oat)">
@@ -118,6 +119,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>{{-- /table-scroll-wrap --}}
 
     <div style="padding:14px 20px">
         {{ $users->links() }}

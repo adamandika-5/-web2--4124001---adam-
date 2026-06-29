@@ -6,7 +6,7 @@
 @section('content')
 
 {{-- ── STATS CARDS ── --}}
-<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:20px;margin-bottom:28px">
+<div class="adm-stat-cards">
     
     {{-- Card 1: Pendapatan --}}
     <div class="adm-card" style="padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
@@ -136,7 +136,7 @@
                 <span style="font-size:12px;color:var(--clay)">Kontak penyedia →</span>
             </a>
 
-            <div style="border-top:1px dashed rgba(176,139,110,.2);margin:8px 0;padding-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="adm-dash-quick-2col" style="border-top:1px dashed rgba(176,139,110,.2);margin:8px 0;padding-top:12px">
                 <a href="{{ route('admin.laporan') }}" class="btn btn-secondary" style="font-size:12.5px;padding:10px;text-align:center;justify-content:center;text-decoration:none">
                     📈 Laporan Penjualan
                 </a>
@@ -150,7 +150,7 @@
 
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px">
+<div class="adm-dash-bottom">
 
     {{-- ── TABEL PESANAN TERBARU ── --}}
     <div style="background:#fff;border-radius:var(--r-lg);padding:24px;border:1px solid rgba(176,139,110,.08);box-shadow:var(--sh-sm);overflow:hidden">
@@ -159,6 +159,7 @@
             <a href="{{ route('admin.pesanan.index') }}" style="font-size:12.5px;color:var(--terracotta);text-decoration:none;font-weight:700">Lihat Semua →</a>
         </div>
         
+        <div class="adm-dash-tbl-wrap">
         <table style="width:100%;border-collapse:collapse;font-size:13px">
             <thead>
                 <tr style="background:var(--oat);border-bottom:1px solid rgba(176,139,110,.08)">
@@ -200,6 +201,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>{{-- /adm-dash-tbl-wrap --}}
     </div>
 
     {{-- ── ALARM STOK RENDAH ── --}}
@@ -209,6 +211,7 @@
             <a href="{{ route('admin.stok.index') }}?filter=low_stock" style="font-size:12.5px;color:var(--terracotta);text-decoration:none;font-weight:700">Update Stok →</a>
         </div>
         
+        <div class="adm-dash-tbl-wrap">
         <table style="width:100%;border-collapse:collapse;font-size:13px">
             <thead>
                 <tr style="background:var(--oat);border-bottom:1px solid rgba(176,139,110,.08)">
@@ -248,6 +251,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>{{-- /adm-dash-tbl-wrap --}}
     </div>
 
 </div>
@@ -261,13 +265,13 @@
     
     <div style="display:flex;flex-direction:column;gap:12px">
         @forelse($aktivitasTerbaru as $log)
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--oat);border-radius:var(--r-sm);font-size:13px">
-            <div style="display:flex;align-items:center;gap:10px">
-                <span style="font-size:16px">⚡</span>
+        <div class="adm-activity-row">
+            <div class="adm-activity-left">
+                <span style="font-size:16px;flex-shrink:0">⚡</span>
                 <span style="color:var(--soil);font-weight:600">{{ $log->user->name ?? 'System / Anonymous' }}</span>
                 <span style="color:var(--clay)">{{ $log->activity }}</span>
             </div>
-            <span style="font-size:12px;color:var(--clay)">{{ $log->created_at->diffForHumans() }}</span>
+            <span style="font-size:12px;color:var(--clay);flex-shrink:0">{{ $log->created_at->diffForHumans() }}</span>
         </div>
         @empty
         <div style="padding:18px;text-align:center;color:var(--clay);font-size:13.5px">Belum ada log aktivitas masuk.</div>

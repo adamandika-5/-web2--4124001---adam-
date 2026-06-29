@@ -13,7 +13,7 @@
 
         {{-- Tab nav --}}
         <div class="adm-pengaturan-nav">
-            <div style="background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;border:1px solid rgba(176,139,110,.07)">
+            <div class="adm-pengaturan-nav-inner">
                 @foreach([
                     ['umum','🏪','Informasi Toko'],
                     ['kontak','📞','Kontak & Lokasi'],
@@ -24,7 +24,7 @@
                 ] as [$id,$ikon,$label])
                 <button type="button" onclick="gantiTab('{{ $id }}')"
                         id="tab-btn-{{ $id }}"
-                        style="display:flex;align-items:center;gap:10px;padding:12px 16px;width:100%;border:none;background:#fff;cursor:pointer;font-family:var(--fb);font-size:13.5px;font-weight:600;color:var(--soil-light);text-align:left;border-bottom:1px solid rgba(176,139,110,.07);transition:all .2s">
+                        class="adm-pengaturan-tab-btn">
                     <span>{{ $ikon }}</span> {{ $label }}
                 </button>
                 @endforeach
@@ -32,7 +32,7 @@
         </div>
 
         {{-- Konten tab --}}
-        <div>
+        <div style="min-width:0">
 
             {{-- Umum --}}
             <div id="tab-umum" class="tab-panel" style="background:#fff;border-radius:var(--r-lg);padding:28px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.07)">
@@ -130,7 +130,7 @@
                 ] as [$id,$nama])
                 <div style="background:var(--oat);border-radius:var(--r-md);padding:16px;margin-bottom:12px;border:1px solid rgba(176,139,110,.12)">
                     <div style="font-size:13.5px;font-weight:700;color:var(--soil);margin-bottom:12px">🏦 Bank {{ $nama }}</div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+                    <div class="adm-pengaturan-bank-grid">
                         <div class="form-grp" style="margin-bottom:0">
                             <label class="form-lbl">No. Rekening</label>
                             <input class="form-inp" type="text" name="settings[bank_{{ $id }}_norek]"

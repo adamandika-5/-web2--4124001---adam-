@@ -6,7 +6,7 @@
 @section('content')
 
 {{-- Tab --}}
-<div style="display:flex;gap:4px;background:var(--sand);border-radius:var(--r-md);padding:4px;margin-bottom:20px;width:fit-content">
+<div class="adm-promo-tabs">
     <button onclick="gantiPanel('promo',this)" id="btn-promo"
             style="padding:8px 20px;border-radius:10px;font-size:13.5px;font-weight:700;border:none;background:#fff;color:var(--soil);cursor:pointer;font-family:var(--fb);box-shadow:var(--sh-sm)">
         🏷️ Promo Banner
@@ -19,12 +19,13 @@
 
 {{-- ── PANEL PROMO ── --}}
 <div id="panel-promo">
-<div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+<div class="adm-promo-grid">
 
     <div style="background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;border:1px solid rgba(176,139,110,.07)">
         <div style="padding:14px 20px;border-bottom:1px solid rgba(176,139,110,.09);display:flex;align-items:center;justify-content:space-between">
             <div style="font-family:var(--fd);font-size:15.5px;font-weight:500;color:var(--soil)">Daftar Promo</div>
         </div>
+        <div class="table-scroll-wrap">
         <table class="data-tbl">
             <thead>
                 <tr><th>Nama</th><th>Tipe</th><th>Nilai</th><th>Periode</th><th>Status</th><th>Aksi</th></tr>
@@ -68,6 +69,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>{{-- /table-scroll-wrap --}}
     </div>
 
     {{-- Form Promo --}}
@@ -85,7 +87,7 @@
                 <label class="form-lbl">Label Banner</label>
                 <input class="form-inp" type="text" name="label" placeholder="Promo Akhir Pekan">
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="adm-promo-form-2col">
                 <div class="form-grp">
                     <label class="form-lbl">Tipe *</label>
                     <select class="form-inp" name="tipe" required>
@@ -103,7 +105,7 @@
                 <label class="form-lbl">Min. Belanja (Rp)</label>
                 <input class="form-inp" type="number" name="min_belanja" value="0" min="0">
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="adm-promo-form-2col">
                 <div class="form-grp">
                     <label class="form-lbl">Mulai *</label>
                     <input class="form-inp" type="datetime-local" name="mulai_at" required>
@@ -125,12 +127,13 @@
 
 {{-- ── PANEL VOUCHER ── --}}
 <div id="panel-voucher" style="display:none">
-<div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+<div class="adm-promo-grid">
 
     <div style="background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;border:1px solid rgba(176,139,110,.07)">
         <div style="padding:14px 20px;border-bottom:1px solid rgba(176,139,110,.09)">
             <div style="font-family:var(--fd);font-size:15.5px;font-weight:500;color:var(--soil)">Daftar Voucher</div>
         </div>
+        <div class="table-scroll-wrap">
         <table class="data-tbl">
             <thead>
                 <tr><th>Kode</th><th>Nama</th><th>Diskon</th><th>Min. Belanja</th><th>Kuota</th><th>Berlaku</th><th>Status</th><th>Aksi</th></tr>
@@ -198,6 +201,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>{{-- /table-scroll-wrap --}}
     </div>
 
     {{-- Form Voucher --}}
@@ -221,7 +225,7 @@
                 <label class="form-lbl">Nama Voucher *</label>
                 <input class="form-inp" type="text" name="nama" placeholder="Diskon Member Baru" required>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="adm-promo-form-2col">
                 <div class="form-grp">
                     <label class="form-lbl">Tipe *</label>
                     <select class="form-inp" name="tipe" required>
@@ -235,7 +239,7 @@
                     <input class="form-inp" type="number" name="nilai" placeholder="50000" required min="0">
                 </div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="adm-promo-form-2col">
                 <div class="form-grp">
                     <label class="form-lbl">Min. Belanja (Rp)</label>
                     <input class="form-inp" type="number" name="min_belanja" value="0" min="0">
@@ -245,7 +249,7 @@
                     <input class="form-inp" type="number" name="maks_diskon" placeholder="Kosongkan = unlimited" min="0">
                 </div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="adm-promo-form-2col">
                 <div class="form-grp">
                     <label class="form-lbl">Kuota</label>
                     <input class="form-inp" type="number" name="kuota" placeholder="Kosongkan = unlimited" min="1">
@@ -255,7 +259,7 @@
                     <input class="form-inp" type="number" name="maks_per_user" value="1" min="1">
                 </div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="adm-promo-form-2col">
                 <div class="form-grp">
                     <label class="form-lbl">Berlaku Mulai</label>
                     <input class="form-inp" type="date" name="berlaku_mulai">
