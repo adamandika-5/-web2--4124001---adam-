@@ -2,7 +2,7 @@
 @section('title', 'Wishlist Saya')
 
 @section('content')
-<div style="max-width:1100px;margin:0 auto;padding:36px 48px">
+<div class="wishlist-wrap">
 
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px">
         <div>
@@ -32,7 +32,7 @@
           ->with(['kategori', 'gambar' => fn($q) => $q->where('is_utama', true)])
           ->get()
     --}}
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+    <div class="wishlist-grid">
         @foreach($wishlist as $produk)
         <div class="prod-card" style="position:relative">
 
@@ -108,7 +108,7 @@
     <div style="margin-top:56px">
         <div class="section-label">Mungkin Kamu Suka</div>
         <h2 class="section-title" style="margin-bottom:24px">Produk <em>Rekomendasi</em></h2>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+        <div class="wishlist-grid">
             @foreach($rekomendasi as $p)
             <div class="prod-card">
                 <form action="{{ route('wishlist.toggle') }}" method="POST" style="display:inline;z-index:10">

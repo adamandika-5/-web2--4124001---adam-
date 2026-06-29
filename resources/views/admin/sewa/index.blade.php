@@ -6,7 +6,7 @@
 @section('content')
 
 {{-- Stats --}}
-<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px">
+<div class="adm-sewa-stats">
     @foreach([
         ['🔧', 'Total Alat',     $stats['total'],         'var(--soil)',       null],
         ['✅', 'Tersedia',        $stats['tersedia'],       'var(--terracotta)', null],
@@ -29,7 +29,7 @@
     @endforeach
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+<div class="adm-sewa-grid">
 
     {{-- Daftar Alat --}}
     <div style="background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.07)">

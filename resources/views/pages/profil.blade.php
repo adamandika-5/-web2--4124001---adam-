@@ -3,7 +3,7 @@
 @section('title', 'Profil Saya')
 
 @section('content')
-<div style="max-width:1280px;margin:0 auto;padding:32px 48px 64px">
+<div class="profil-wrap">
 
     <div class="page-hdr" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:28px">
         <div>
@@ -38,7 +38,7 @@
         <div style="display:flex;flex-direction:column;gap:24px">
     @else
     {{-- User biasa: 2 kolom --}}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start">
+    <div class="profil-layout">
         <div style="display:flex;flex-direction:column;gap:24px">
     @endif
 
@@ -236,7 +236,7 @@
                         <input type="text" name="label" class="form-inp" required placeholder="Rumah / Kantor">
                     </div>
 
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <div class="profil-form-2col">
                         <div class="form-grp">
                             <label class="form-lbl">Nama Penerima *</label>
                             <input type="text" name="penerima" class="form-inp" required placeholder="Nama penerima">
@@ -254,7 +254,7 @@
                                   style="resize:vertical"></textarea>
                     </div>
 
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <div class="profil-form-2col">
                         <div class="form-grp">
                             <label class="form-lbl">Kota / Kabupaten *</label>
                             <input type="text" name="kota" class="form-inp" required placeholder="cth: Pasuruan">
@@ -265,7 +265,7 @@
                         </div>
                     </div>
 
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+                    <div class="profil-form-2col" style="margin-bottom:16px">
                         <div class="form-grp" style="margin-bottom:0">
                             <label class="form-lbl">Kode Pos</label>
                             <input type="text" name="kode_pos" class="form-inp" placeholder="67xxx">
@@ -290,7 +290,7 @@
                             💡 Cara mendapatkan koordinat: Buka <strong>Google Maps</strong> → Klik lokasi Anda → Klik kanan → <strong>"Apa yang ada di sini?"</strong> → Salin angka koordinat (lat, lng) di bagian bawah.
                         </div>
 
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                        <div class="profil-form-2col">
                             <div class="form-grp" style="margin-bottom:0">
                                 <label class="form-lbl">Latitude</label>
                                 <input type="number" name="latitude" id="input-lat" class="form-inp"

@@ -76,6 +76,10 @@
                     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
                     Stok & Gudang
                 </a>
+                <a href="{{ route('admin.stok.laporan') }}" class="adm-nav-item {{ request()->routeIs('admin.stok.laporan') ? 'active' : '' }}">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    Export Laporan
+                </a>
             </div>
 
             {{-- Layanan --}}
@@ -172,11 +176,11 @@
             <div class="adm-topbar-title">@yield('page_title', 'Dashboard')</div>
 
             {{-- Breadcrumb --}}
-            <div style="font-size:12.5px;color:var(--clay);flex:1;margin-left:12px">
+            <div class="adm-topbar-breadcrumb">
                 @yield('breadcrumb')
             </div>
 
-            <span style="font-size:12.5px;color:var(--clay)">{{ now()->isoFormat('dddd, D MMMM Y') }}</span>
+            <span class="adm-topbar-date">{{ now()->isoFormat('dddd, D MMMM Y') }}</span>
 
             {{-- Notifikasi --}}
             <div style="position:relative;cursor:pointer" onclick="toggleNotif()">

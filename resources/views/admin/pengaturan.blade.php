@@ -9,10 +9,10 @@
 <form action="{{ route('admin.pengaturan.update') }}" method="POST" enctype="multipart/form-data">
     @csrf @method('PUT')
 
-    <div style="display:grid;grid-template-columns:220px 1fr;gap:24px">
+    <div class="adm-pengaturan-grid">
 
         {{-- Tab nav --}}
-        <div style="position:sticky;top:78px;height:fit-content">
+        <div class="adm-pengaturan-nav">
             <div style="background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;border:1px solid rgba(176,139,110,.07)">
                 @foreach([
                     ['umum','🏪','Informasi Toko'],
@@ -39,7 +39,7 @@
                 <div style="font-family:var(--fd);font-size:18px;font-weight:500;color:var(--soil);margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--sand)">
                     🏪 Informasi Toko
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div class="adm-pengaturan-form-2col">
                     <div class="form-grp" style="grid-column:1/-1">
                         <label class="form-lbl">Nama Toko *</label>
                         <input class="form-inp" type="text" name="settings[nama_toko]"
@@ -79,7 +79,7 @@
                 <div style="font-family:var(--fd);font-size:18px;font-weight:500;color:var(--soil);margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--sand)">
                     📞 Kontak & Lokasi
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div class="adm-pengaturan-form-2col">
                     <div class="form-grp">
                         <label class="form-lbl">No. Telepon</label>
                         <input class="form-inp" type="text" name="settings[telepon]"
@@ -166,7 +166,7 @@
                 <div style="font-family:var(--fd);font-size:18px;font-weight:500;color:var(--soil);margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--sand)">
                     🚚 Konfigurasi Pengiriman
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div class="adm-pengaturan-form-2col">
                     <div class="form-grp">
                         <label class="form-lbl">Batas Berat Ekspedisi (gram)</label>
                         <input class="form-inp" type="number" name="settings[batas_berat_ekspedisi]"
@@ -238,12 +238,11 @@
                 @endforeach
             </div>
 
-            {{-- Tombol simpan --}}
-            <div style="margin-top:16px;display:flex;gap:10px">
-                <button type="submit" class="btn btn-primary" style="padding:12px 28px;font-size:15px">
+            <div style="margin-top:16px">
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:12px 28px;font-size:15px">
                     💾 Simpan Pengaturan
                 </button>
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Batal</a>
+                <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary" style="display:block;text-align:center;margin-top:8px">Batal</a>
             </div>
 
         </div>

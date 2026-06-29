@@ -65,21 +65,21 @@
                                     $gambar = $item->attributes->gambar ?? null;
                                     $satuan = $item->attributes->satuan ?? ($produk ? $produk->satuan : 'pcs');
                                 @endphp
-                                <div style="display:flex;gap:14px;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--sand)">
+                                <div class="cart-item-card">
                                     {{-- Checkbox Pilihan --}}
                                     <input type="checkbox" name="selected_items[]" value="{{ $item->id }}" form="checkoutSelectForm" class="item-checkbox" data-price="{{ $harga }}" data-qty="{{ $item->quantity }}" data-has-error="{{ ($produk && $produk->stok < $item->quantity) ? 'true' : 'false' }}" checked style="width:18px;height:18px;accent-color:var(--terracotta);cursor:pointer;flex-shrink:0">
 
                                     {{-- Gambar Produk --}}
                                     <a href="{{ $produk ? route('produk.show', $produk->slug) : '#' }}" style="width:80px;height:80px;border-radius:var(--r-md);background:var(--oat);display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid rgba(176,139,110,.12);flex-shrink:0">
                                         @if($gambar)
-                                            <img src="{{ asset('storage/' . $gambar) }}" alt="{{ $item->name }}" style="width:100%;height:100%;object-fit:cover">
+                                            <img src="{{ asset('storage/' . $gambar) }}" alt="{{ e($item->name) }}" style="width:100%;height:100%;object-fit:cover">
                                         @else
                                             <span style="font-size:24px">📦</span>
                                         @endif
                                     </a>
 
                                     {{-- Informasi Produk --}}
-                                    <div style="flex:1;min-width:0">
+                                    <div class="cart-item-info">
                                         <h3 style="font-family:var(--fb);font-size:15px;font-weight:700;color:var(--soil);margin:0 0 4px">
                                             <a href="{{ $produk ? route('produk.show', $produk->slug) : '#' }}" style="color:inherit;text-decoration:none" onmouseover="this.style.color='var(--terracotta)'" onmouseout="this.style.color='inherit'">
                                                 {{ $item->name }}
@@ -88,7 +88,7 @@
                                         <div style="font-size:13px;color:var(--clay);margin-bottom:8px">
                                             Rp {{ number_format($harga, 0, ',', '.') }} / {{ $satuan }}
                                         </div>
-                                        
+
                                         {{-- Peringatan Stok --}}
                                         @if($produk && $produk->stok < $item->quantity)
                                             <div style="font-size:11.5px;color:#c03030;font-weight:600;margin-top:4px">
@@ -98,7 +98,7 @@
                                     </div>
 
                                     {{-- Qty Update & Hapus --}}
-                                    <div style="display:flex;align-items:center;gap:16px;flex-shrink:0">
+                                    <div class="cart-item-actions">
                                         <form action="{{ route('keranjang.update', $item->id) }}" method="POST">
                                             @csrf
                                             @method('PATCH')
@@ -113,13 +113,13 @@
                                             </div>
                                         </form>
 
-                                        <div style="text-align:right;min-width:110px">
+                                        <div class="cart-item-price-block">
                                             <div style="font-size:14.5px;font-weight:700;color:var(--soil)">
                                                 Rp {{ number_format($subtotal, 0, ',', '.') }}
                                             </div>
                                         </div>
 
-                                        <form action="{{ route('keranjang.hapus', $item->id) }}" method="POST" onsubmit="return confirm('Hapus {{ $item->name }} dari keranjang?')">
+                                        <form action="{{ route('keranjang.hapus', $item->id) }}" method="POST" onsubmit="return confirm('Hapus {{ addslashes($item->name) }} dari keranjang?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" style="background:none;border:none;color:var(--clay);cursor:pointer;padding:6px;font-size:16px" onmouseover="this.style.color='#c03030'" onmouseout="this.style.color='var(--clay)'" title="Hapus produk">

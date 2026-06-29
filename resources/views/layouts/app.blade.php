@@ -85,6 +85,7 @@
                     @endphp
                     <a href="{{ route('wishlist.index') }}"
                        title="Wishlist Saya"
+                       class="nav-wishlist-icon"
                        style="position:relative;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:var(--r-md);background:var(--oat);border:1.5px solid var(--sand);text-decoration:none;transition:all .2s;color:var(--clay)"
                        onmouseover="this.style.background='rgba(198,107,61,.08)';this.style.borderColor='var(--terracotta)';this.style.color='var(--terracotta)'"
                        onmouseout="this.style.background='var(--oat)';this.style.borderColor='var(--sand)';this.style.color='var(--clay)'">
@@ -171,12 +172,12 @@
 
     {{-- ── FLASH MESSAGES ── --}}
     @if(session('success'))
-        <div style="max-width:1280px;margin:14px auto;padding:0 48px">
+        <div class="flash-wrap">
             <div class="alert alert-success">✓ {{ session('success') }}</div>
         </div>
     @endif
     @if(session('error'))
-        <div style="max-width:1280px;margin:14px auto;padding:0 48px">
+        <div class="flash-wrap">
             <div class="alert alert-error">✕ {{ session('error') }}</div>
         </div>
     @endif

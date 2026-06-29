@@ -2,7 +2,7 @@
 @section('title', $alat->nama . ' — Sewa Alat')
 
 @section('content')
-<div style="max-width:1280px;margin:0 auto;padding:28px 48px 64px">
+<div class="sewa-detail-wrap">
 
     {{-- Breadcrumb --}}
     <nav style="font-size:13px;color:var(--clay);display:flex;align-items:center;gap:7px;margin-bottom:28px;flex-wrap:wrap">
@@ -13,7 +13,7 @@
         <span>{{ $alat->nama }}</span>
     </nav>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start">
+    <div class="sewa-detail-grid">
 
         {{-- Gambar --}}
         <div>
@@ -56,7 +56,7 @@
             {{-- Tarif --}}
             <div style="background:var(--oat);border-radius:var(--r-lg);padding:20px;margin-bottom:22px;border:1px solid rgba(176,139,110,.12)">
                 <div style="font-size:12.5px;font-weight:700;color:var(--clay);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em">Tarif Sewa</div>
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+                <div class="tarif-grid">
                     <div style="text-align:center;padding:14px;background:#fff;border-radius:var(--r-md);border:1px solid rgba(176,139,110,.1)">
                         <div style="font-family:var(--fs);font-size:20px;font-weight:700;color:var(--terracotta)">Rp {{ number_format($alat->tarif_harian,0,',','.') }}</div>
                         <div style="font-size:11.5px;color:var(--clay);margin-top:4px">per Hari</div>
@@ -97,7 +97,7 @@
                 @csrf
 
                 {{-- Tanggal --}}
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+                <div class="tanggal-grid">
                     <div class="form-grp" style="margin-bottom:0">
                         <label class="form-lbl">Tanggal Mulai *</label>
                         <input type="date" name="tanggal_mulai" id="tglMulai" class="form-inp"
@@ -139,7 +139,7 @@
 
                     @else
                         {{-- Daftar alamat user --}}
-                        <div style="display:flex;flex-direction:column;gap:10px" id="daftarAlamat">
+                        <div style="display:flex;flex-direction:column;gap:10px" id="daftarAlamat" class="sewa-alamat-list">
                             @foreach($alamats as $idx => $alamat)
                             @php
                                 $terpilih = $alamat->is_utama || $idx === 0;

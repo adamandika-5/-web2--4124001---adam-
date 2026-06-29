@@ -6,7 +6,7 @@
 @section('content')
 
 {{-- Breadcrumb --}}
-<div style="max-width:1280px;margin:0 auto;padding:20px 48px 0">
+<div class="produk-breadcrumb-wrap">
     <nav style="font-size:13px;color:var(--clay);display:flex;align-items:center;gap:7px;flex-wrap:wrap">
         <a href="{{ route('beranda') }}" style="color:var(--terracotta);text-decoration:none;font-weight:600">Beranda</a>
         <span>›</span>
@@ -20,7 +20,7 @@
     </nav>
 </div>
 
-<div style="max-width:1280px;margin:0 auto;padding:28px 48px 64px">
+<div class="produk-detail-wrap">
 
     {{-- ── Normalisasi gambar produk ── --}}
     @php
@@ -59,7 +59,7 @@
         $gambarUtama = $gambarList[0] ?? null;
     @endphp
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start">
+    <div class="produk-detail-grid">
 
         {{-- ── GALERI ── --}}
         <div>
@@ -204,17 +204,17 @@
                 </div>
             </form>
 
-            <div style="display:flex;gap:10px;margin-bottom:16px">
-                <button type="submit" form="formTambah" class="btn btn-primary" style="flex:2;justify-content:center;padding:14px;font-size:15px">
+            <div class="produk-aksi-row">
+                <button type="submit" form="formTambah" class="btn btn-primary btn-keranjang">
                     🛒 Tambah ke Keranjang
                 </button>
-                <a href="{{ route('checkout.index') }}" class="btn btn-secondary" style="flex:1;justify-content:center;align-items:center;display:flex">
+                <a href="{{ route('checkout.index') }}" class="btn btn-secondary btn-beli">
                     ⚡ Beli Sekarang
                 </a>
                 <form action="{{ route('wishlist.toggle') }}" method="POST" style="flex-shrink:0">
                     @csrf
                     <input type="hidden" name="produk_id" value="{{ $produk->id }}">
-                    <button type="submit" class="btn btn-secondary" style="width:48px;height:50px;padding:0;justify-content:center;border-radius:var(--r-md);font-size:18px">
+                    <button type="submit" class="btn btn-secondary btn-wishlist">
                         @auth
                             {{ auth()->user()->wishlist->contains($produk->id) ? '❤️' : '♡' }}
                         @else
@@ -244,7 +244,7 @@
         </div>
 
         {{-- Deskripsi --}}
-        <div id="tab-deskripsi" style="display:grid;grid-template-columns:2fr 1fr;gap:40px">
+        <div id="tab-deskripsi" class="produk-tab-deskripsi-grid">
             <div>
                 <div style="font-size:14.5px;line-height:1.85;color:var(--soil-light)">
                     {!! nl2br(e($produk->deskripsi)) !!}
@@ -306,7 +306,7 @@
     <div style="margin-top:56px">
         <div class="section-label">Produk Serupa</div>
         <h2 class="section-title" style="margin-bottom:24px">Mungkin <em>kamu suka</em></h2>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+        <div class="produk-rekomen-grid">
             @foreach($rekomendasi as $p)
             @php
                 // Normalisasi gambar rekomendasi secara aman
@@ -402,13 +402,20 @@
     }
 
     function gantiTab(tab, btn) {
-        document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+        document.querySelectorAll('[id^="tab-"]').forEach(t => {
+            t.style.display = 'none';
+            t.classList.remove('produk-tab-deskripsi-grid');
+        });
         document.querySelectorAll('.tab-btn').forEach(b => {
             b.style.color = 'var(--clay)';
             b.style.borderBottom = 'none';
             b.style.fontWeight = '600';
         });
-        document.getElementById('tab-' + tab).style.display = tab === 'deskripsi' ? 'grid' : 'block';
+        const tabEl = document.getElementById('tab-' + tab);
+        tabEl.style.display = '';
+        if (tab === 'deskripsi') {
+            tabEl.classList.add('produk-tab-deskripsi-grid');
+        }
         btn.style.color = 'var(--terracotta)';
         btn.style.borderBottom = '2px solid var(--terracotta)';
         btn.style.fontWeight = '700';

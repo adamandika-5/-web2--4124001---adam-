@@ -4,7 +4,7 @@
 @section('breadcrumb','Inventaris › Kategori')
 
 @section('content')
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+<div class="adm-kategori-grid">
 
     {{-- ── KATEGORI UTAMA ── --}}
     <div>
@@ -13,7 +13,8 @@
                 <div style="font-family:var(--fd);font-size:15.5px;font-weight:500;color:var(--soil)">Kategori Utama</div>
                 <span style="font-size:13px;color:var(--clay)">{{ $kategoris->count() }} kategori</span>
             </div>
-            <table class="data-tbl">
+            <div class="table-scroll-wrap">
+            <table class="data-tbl" style="min-width:420px">
                 <thead>
                     <tr>
                         <th>Nama</th><th>Ikon</th><th>Produk</th><th>Status</th><th>Aksi</th>
@@ -68,6 +69,7 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>{{-- /table-scroll-wrap --}}
         </div>
     </div>
 
@@ -84,7 +86,7 @@
                 <input type="hidden" name="_method" id="formKatMethod" value="POST">
                 <input type="hidden" name="kategori_id" id="editKatId" value="">
 
-                <div style="display:grid;grid-template-columns:1fr 60px;gap:10px">
+                <div class="profil-form-2col">
                     <div class="form-grp">
                         <label class="form-lbl">Nama Kategori *</label>
                         <input class="form-inp" type="text" name="nama" id="inputKatNama" placeholder="Material Dasar" required>
@@ -95,7 +97,7 @@
                     </div>
                 </div>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div class="profil-form-2col">
                     <div class="form-grp">
                         <label class="form-lbl">Warna Swatch</label>
                         <input class="form-inp" type="text" name="warna" id="inputKatWarna" placeholder="#8A8A80">

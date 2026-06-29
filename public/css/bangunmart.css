@@ -30,6 +30,7 @@
     --ease: cubic-bezier(.4,0,.2,1);
 }
 
+html, body { overflow-x: hidden; }
 body { font-family: var(--fb); background: var(--parchment); color: var(--soil); line-height: 1.6; font-size: 15px; }
 
 /* ── UTILITIES ── */
@@ -622,6 +623,546 @@ nav[aria-label="pagination"] ul li span.cursor-default,
     /* Katalog prod-grid: 1-column on very small */
     .prod-grid           { grid-template-columns: 1fr; gap: 10px; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   ── NEW RESPONSIVE LAYOUT CLASSES ──
+   Menggantikan inline style grid-template-columns di Blade
+   ═══════════════════════════════════════════════════════ */
+
+/* ── AUTH LAYOUT (Login / Register) ── */
+.auth-layout {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: #fff;
+}
+.auth-panel-left {
+    background: var(--soil);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 64px 56px;
+    position: relative;
+    overflow: hidden;
+}
+.auth-panel-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 64px 56px;
+    overflow-y: auto;
+}
+
+/* ── WISHLIST GRID ── */
+.wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+/* ── PROMO GRID (halaman /promo) ── */
+.promo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* ── PROMO HERO SECTION ── */
+.promo-hero-section {
+    background: var(--soil);
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+}
+.promo-hero-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 48px;
+}
+.promo-grid-section {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 48px;
+}
+.promo-voucher-section {
+    background: var(--oat);
+    border-top: 1px solid rgba(176,139,110,.12);
+    padding: 56px 48px;
+}
+.promo-voucher-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+/* ── PROMO DETAIL: Hero Grid ── */
+.promo-detail-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 36px 48px 64px;
+}
+.promo-detail-hero-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+.promo-detail-sk-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 36px;
+}
+
+/* ── SEWA DETAIL: Main Grid ── */
+.sewa-detail-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 28px 48px 64px;
+}
+.sewa-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 52px;
+    align-items: start;
+}
+.tarif-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+.tanggal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+/* ── CART ITEM CARD ── */
+.cart-item-card {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--sand);
+}
+.cart-item-info {
+    flex: 1;
+    min-width: 0;
+}
+.cart-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+}
+.cart-item-price-block {
+    text-align: right;
+    min-width: 100px;
+}
+
+/* ── ADMIN TOPBAR ELEMENTS ── */
+.adm-topbar-breadcrumb { font-size: 12.5px; color: var(--clay); flex: 1; margin-left: 12px; }
+.adm-topbar-date       { font-size: 12.5px; color: var(--clay); }
+
+/* ── FLASH MESSAGE WRAPPER ── */
+.flash-wrap {
+    max-width: 1280px;
+    margin: 14px auto;
+    padding: 0 48px;
+}
+
+/* ── WISHLIST WRAPPER ── */
+.wishlist-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 36px 48px;
+}
+
+/* ═══════════════════════════════════
+   ── RESPONSIVE: TABLET (≤1024px) ──
+   ═══════════════════════════════════ */
+@media (max-width: 1024px) {
+    .auth-panel-left  { padding: 48px 36px; }
+    .auth-panel-right { padding: 48px 36px; }
+
+    .wishlist-wrap    { padding: 28px 28px; }
+    .wishlist-grid    { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+    .promo-hero-section  { padding: 36px 28px; }
+    .promo-grid-section  { padding: 36px 28px; }
+    .promo-grid          { grid-template-columns: repeat(2, 1fr); }
+    .promo-voucher-section { padding: 44px 28px; }
+
+    .promo-detail-wrap   { padding: 28px 28px 48px; }
+
+    .sewa-detail-wrap    { padding: 20px 28px 48px; }
+    .sewa-detail-grid    { gap: 36px; }
+
+    .flash-wrap          { padding: 0 28px; }
+}
+
+/* ════════════════════════════════
+   ── RESPONSIVE: MOBILE (≤768px) ──
+   ════════════════════════════════ */
+@media (max-width: 768px) {
+
+    /* AUTH */
+    .auth-layout         { grid-template-columns: 1fr; }
+    .auth-panel-left     { padding: 36px 24px; min-height: auto; }
+    .auth-panel-right    { padding: 32px 24px; }
+
+    /* WISHLIST */
+    .wishlist-wrap       { padding: 20px 16px; }
+    .wishlist-grid       { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+    /* PROMO */
+    .promo-hero-section  { padding: 32px 16px; }
+    .promo-grid-section  { padding: 28px 16px; }
+    .promo-grid          { grid-template-columns: 1fr; }
+    .promo-voucher-section { padding: 36px 16px; }
+
+    /* PROMO DETAIL */
+    .promo-detail-wrap   { padding: 20px 16px 40px; }
+    .promo-detail-hero-grid { grid-template-columns: 1fr; gap: 24px; }
+    .promo-detail-sk-grid   { grid-template-columns: 1fr; gap: 16px; }
+
+    /* SEWA DETAIL */
+    .sewa-detail-wrap    { padding: 16px 16px 40px; }
+    .sewa-detail-grid    { grid-template-columns: 1fr; gap: 28px; }
+    .tarif-grid          { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .tanggal-grid        { grid-template-columns: 1fr; }
+
+    /* CART ITEM: stack vertikal */
+    .cart-item-card      { flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+    .cart-item-actions   { width: 100%; justify-content: space-between; }
+    .cart-item-price-block { min-width: auto; }
+
+    /* ADMIN TOPBAR: sembunyikan breadcrumb & date di mobile */
+    .adm-topbar-breadcrumb { display: none; }
+    .adm-topbar-date       { display: none; }
+
+    /* FLASH WRAP */
+    .flash-wrap          { padding: 0 16px; }
+
+    /* Pastikan admin tabel tidak overflow */
+    .adm-tbl-wrap        { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+    /* User dropdown agar tidak terpotong */
+    .nav-user-dropdown   { position: static !important; }
+    #userDropdown        {
+        position: fixed !important;
+        right: 8px !important;
+        top: 62px !important;
+        left: auto !important;
+        z-index: 9999 !important;
+        min-width: 180px !important;
+        max-width: calc(100vw - 16px);
+    }
+}
+
+/* ═══════════════════════════════════════
+   ── RESPONSIVE: SMALL MOBILE (≤480px) ──
+   ═══════════════════════════════════════ */
+@media (max-width: 480px) {
+
+    /* WISHLIST */
+    .wishlist-grid       { grid-template-columns: 1fr; gap: 12px; }
+
+    /* PROMO: sudah 1 col dari 768px */
+
+    /* SEWA DETAIL */
+    .tarif-grid          { grid-template-columns: 1fr; gap: 8px; }
+
+    /* AUTH */
+    .auth-panel-left     { padding: 28px 16px; }
+    .auth-panel-right    { padding: 24px 16px; }
+
+    /* FLASH WRAP */
+    .flash-wrap          { padding: 0 12px; }
+
+    /* Promo hero badge: sembunyikan di very small */
+    .promo-detail-badge  { display: none; }
+}
+
+/* ── HERO SEARCH BAR: pastikan tidak overflow di mobile ── */
+@media (max-width: 768px) {
+    .hero-search-bar {
+        max-width: 100%;
+        flex-wrap: nowrap;
+    }
+    .hero-search-bar input {
+        min-width: 0;
+        font-size: 13px;
+    }
+    .hero-search-bar .btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 7px 14px;
+        font-size: 13px;
+    }
+}
+
+/* ── HERO STATS: wrap di mobile ── */
+@media (max-width: 480px) {
+    .hero-stats { flex-wrap: wrap; gap: 16px; }
+    .hero-search-bar { gap: 4px; padding: 4px; }
+    .hero-search-bar .btn { padding: 6px 12px; font-size: 12px; }
+}
+
+/* ── NAVBAR: wishlist icon responsif ── */
+@media (max-width: 768px) {
+    /* Sembunyikan nav wishlist icon di mobile (sudah ada di drawer) */
+    .nav-wishlist-icon { display: none; }
+}
+
+/* ── ADMIN TOPBAR: wrap lebih rapi ── */
+@media (max-width: 768px) {
+    .adm-topbar {
+        padding: 8px 14px !important;
+        height: auto !important;
+        min-height: 52px;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .adm-topbar-title {
+        font-size: 14px;
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* ── SEWA DETAIL: alamat radio tidak overflow ── */
+.sewa-alamat-list label {
+    word-break: break-word;
+}
+.sewa-alamat-list label div {
+    min-width: 0;
+    overflow-wrap: break-word;
+}
+
+/* ── PROMO CARD: pastikan tidak overflow ── */
+.promo-grid > a {
+    min-width: 0;
+    word-break: break-word;
+}
+
+/* ── TABEL ADMIN: horizontal scroll wrapper ── */
+.table-scroll-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+.table-scroll-wrap table {
+    min-width: 580px;
+}
+
+/* ── GLOBAL: Tidak ada elemen yang keluar dari viewport ── */
+img { max-width: 100%; height: auto; }
+* { box-sizing: border-box; }
+
+/* ═══════════════════════════════════════════════════════
+   ── PRODUK DETAIL ──
+   ═══════════════════════════════════════════════════════ */
+.produk-detail-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 28px 48px 64px;
+}
+.produk-breadcrumb-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 20px 48px 0;
+}
+.produk-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: start;
+}
+.produk-tab-deskripsi-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+}
+.produk-rekomen-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+/* ── Aksi tombol produk: Tambah + Beli + Wishlist ── */
+.produk-aksi-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.produk-aksi-row .btn-keranjang { flex: 2; justify-content: center; padding: 14px; font-size: 15px; }
+.produk-aksi-row .btn-beli      { flex: 1; justify-content: center; align-items: center; display: flex; }
+.produk-aksi-row .btn-wishlist  { flex-shrink: 0; width: 48px; height: 50px; padding: 0; justify-content: center; border-radius: var(--r-md); font-size: 18px; }
+
+/* ═══════════════════════════════════════════════════════
+   ── PROFIL ──
+   ═══════════════════════════════════════════════════════ */
+.profil-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 48px 64px;
+}
+.profil-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+}
+/* Inline grid 2 col di form alamat */
+.profil-form-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ── ADMIN KATEGORI ──
+   ═══════════════════════════════════════════════════════ */
+.adm-kategori-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ── ADMIN SEWA ──
+   ═══════════════════════════════════════════════════════ */
+.adm-sewa-stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.adm-sewa-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ── ADMIN STOK ──
+   ═══════════════════════════════════════════════════════ */
+.adm-stok-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ── ADMIN PENGATURAN ──
+   ═══════════════════════════════════════════════════════ */
+.adm-pengaturan-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 24px;
+}
+.adm-pengaturan-nav {
+    position: sticky;
+    top: 78px;
+    height: fit-content;
+}
+.adm-pengaturan-form-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ── RESPONSIVE: TABLET (≤1024px) ──
+   ═══════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .produk-detail-wrap       { padding: 20px 28px 48px; }
+    .produk-breadcrumb-wrap   { padding: 16px 28px 0; }
+    .produk-detail-grid       { gap: 36px; }
+    .produk-rekomen-grid      { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+    .profil-wrap              { padding: 28px 28px 48px; }
+
+    .adm-sewa-stats           { grid-template-columns: repeat(3, 1fr); }
+
+    .adm-pengaturan-grid      { grid-template-columns: 200px 1fr; }
+
+    .adm-stok-grid            { grid-template-columns: 1fr; }
+    .adm-kategori-grid        { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ── RESPONSIVE: MOBILE (≤767px) ──
+   ═══════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+    /* ── Produk Detail ── */
+    .produk-detail-wrap       { padding: 16px 16px 40px; }
+    .produk-breadcrumb-wrap   { padding: 14px 16px 0; }
+    .produk-detail-grid       { grid-template-columns: 1fr; gap: 24px; }
+    .produk-tab-deskripsi-grid { grid-template-columns: 1fr; gap: 20px; }
+    .produk-rekomen-grid      { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .produk-aksi-row          { flex-wrap: wrap; gap: 8px; }
+    .produk-aksi-row .btn-keranjang { flex: 1 1 100%; order: 1; }
+    .produk-aksi-row .btn-beli      { flex: 1; order: 2; }
+    .produk-aksi-row .btn-wishlist  { order: 3; }
+
+    /* ── Profil ── */
+    .profil-wrap              { padding: 16px 16px 40px; }
+    .profil-layout            { grid-template-columns: 1fr; gap: 20px; }
+    .profil-form-2col         { grid-template-columns: 1fr; gap: 0; }
+
+    /* ── Admin Kategori ── */
+    .adm-kategori-grid        { grid-template-columns: 1fr; gap: 16px; }
+
+    /* ── Admin Sewa ── */
+    .adm-sewa-stats           { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .adm-sewa-grid            { grid-template-columns: 1fr; gap: 16px; }
+
+    /* ── Admin Stok ── */
+    .adm-stok-grid            { grid-template-columns: 1fr; gap: 16px; }
+
+    /* ── Admin Pengaturan ── */
+    .adm-pengaturan-grid      { grid-template-columns: 1fr; gap: 16px; }
+    .adm-pengaturan-nav       { position: static; }
+    .adm-pengaturan-form-2col { grid-template-columns: 1fr; gap: 0; }
+
+    /* Tab nav pengaturan: tampil horizontal scroll */
+    .adm-pengaturan-nav > div {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: var(--r-lg);
+    }
+    .adm-pengaturan-nav > div button {
+        white-space: nowrap;
+        flex-shrink: 0;
+        border-bottom: none !important;
+        border-right: 1px solid rgba(176,139,110,.07);
+    }
+
+    /* adm-stat-strip: sudah ada tapi pastikan tidak overflow */
+    .adm-stat-strip           { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ── RESPONSIVE: SMALL MOBILE (≤480px) ──
+   ═══════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+    .produk-rekomen-grid      { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .adm-sewa-stats           { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .adm-stat-strip           { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* ── EXPORT LAPORAN menu item: sudah ada di sidebar ──
+   Tidak perlu tambah item baru, hanya perlu class untuk
+   stok laporan yang sudah ada via route admin.stok.laporan */
+
+
 
 /* ── LEGAL PAGE STYLES ── */
 .legal-page,

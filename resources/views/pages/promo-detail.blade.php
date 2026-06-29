@@ -2,7 +2,7 @@
 @section('title', $promo->nama . ' — Promo Sinar Alam')
 
 @section('content')
-<div style="max-width:1100px;margin:0 auto;padding:36px 48px 64px">
+<div class="promo-detail-wrap">
 
     {{-- Breadcrumb --}}
     <nav style="font-size:13px;color:var(--clay);display:flex;align-items:center;gap:7px;margin-bottom:28px;flex-wrap:wrap">
@@ -17,7 +17,7 @@
     <div style="background:var(--soil);border-radius:var(--r-xl);padding:48px;position:relative;overflow:hidden;margin-bottom:36px">
         <div style="position:absolute;inset:0;background-image:radial-gradient(ellipse 60% 70% at 80% 30%,rgba(198,107,61,.3) 0%,transparent 55%),radial-gradient(ellipse 40% 50% at 10% 80%,rgba(192,142,58,.18) 0%,transparent 50%)"></div>
         <div class="grain"></div>
-        <div style="position:relative;z-index:2;display:grid;grid-template-columns:2fr 1fr;gap:40px;align-items:center">
+        <div class="promo-detail-hero-grid">
             <div>
                 @if($promo->label)
                     <div style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;background:rgba(198,107,61,.2);border:1px solid rgba(198,107,61,.4);border-radius:20px;color:var(--clay-light);font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:18px">
@@ -48,7 +48,7 @@
             </div>
 
             {{-- Badge diskon besar --}}
-            <div style="text-align:center">
+            <div class="promo-detail-badge" style="text-align:center">
                 <div style="width:160px;height:160px;border-radius:50%;background:rgba(198,107,61,.15);border:2px solid rgba(198,107,61,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto">
                     <div style="font-family:var(--fs);font-size:44px;font-weight:700;color:var(--terracotta);line-height:1">
                         @if($promo->tipe === 'persentase')
@@ -66,7 +66,7 @@
     </div>
 
     {{-- Syarat & Ketentuan --}}
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:36px">
+    <div class="promo-detail-sk-grid">
         <div style="background:#fff;border-radius:var(--r-lg);padding:28px;box-shadow:var(--sh-sm);border:1px solid rgba(176,139,110,.08)">
             <div style="font-family:var(--fs);font-size:18px;font-weight:700;color:var(--soil);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--sand)">
                 Syarat & Ketentuan Promo

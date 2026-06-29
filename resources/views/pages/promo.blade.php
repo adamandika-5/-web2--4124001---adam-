@@ -4,13 +4,13 @@
 @section('content')
 
 {{-- Hero --}}
-<section style="background:var(--soil);padding:48px;position:relative;overflow:hidden">
+<section class="promo-hero-section">
     <div style="position:absolute;inset:0;background-image:radial-gradient(ellipse 55% 70% at 80% 40%,rgba(198,107,61,.3) 0%,transparent 55%),radial-gradient(ellipse 40% 50% at 10% 80%,rgba(192,142,58,.2) 0%,transparent 55%)"></div>
     <div class="grain"></div>
     <div style="max-width:1280px;margin:0 auto;position:relative;z-index:2;text-align:center">
         <div class="section-label" style="color:var(--clay-light);justify-content:center;display:flex">Penawaran Terbaik</div>
         <h1 style="font-family:var(--fs);font-size:clamp(28px,4vw,48px);font-weight:700;color:var(--sand);margin:10px 0 12px;line-height:1.1">
-            Promo & <em style="font-style:italic;color:var(--terracotta)">Diskon</em> Aktif
+            Promo &amp; <em style="font-style:italic;color:var(--terracotta)">Diskon</em> Aktif
         </h1>
         <p style="font-size:15px;color:rgba(232,220,199,.5);max-width:480px;margin:0 auto">
             Hemat lebih banyak dengan promo pilihan Sinar Alam. Update setiap minggu!
@@ -19,7 +19,7 @@
 </section>
 
 {{-- Grid Promo --}}
-<div style="max-width:1280px;margin:0 auto;padding:48px">
+<div class="promo-grid-section">
 
     @if($promos->isEmpty())
         <div style="text-align:center;padding:80px 40px;background:#fff;border-radius:var(--r-xl);border:1px solid rgba(176,139,110,.1)">
@@ -29,7 +29,7 @@
             <a href="{{ route('katalog.index') }}" class="btn btn-primary">Belanja Tanpa Promo →</a>
         </div>
     @else
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        <div class="promo-grid">
             @foreach($promos as $promo)
             <a href="{{ route('promo.show', $promo->slug) }}"
                style="text-decoration:none;display:block;background:var(--soil-mid);border-radius:var(--r-xl);padding:32px;position:relative;overflow:hidden;transition:transform .3s var(--ease)"
@@ -98,8 +98,8 @@
 </div>
 
 {{-- ── SECTION KODE VOUCHER ── --}}
-<div style="background:var(--oat);border-top:1px solid rgba(176,139,110,.12);padding:56px 48px">
-<div style="max-width:1280px;margin:0 auto">
+<div class="promo-voucher-section">
+<div class="promo-voucher-inner">
 
     <div style="text-align:center;margin-bottom:36px">
         <div class="section-label" style="justify-content:center;display:flex">Kode Voucher</div>

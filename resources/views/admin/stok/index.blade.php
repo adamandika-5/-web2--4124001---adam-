@@ -28,7 +28,7 @@
     @endforeach
 </div>
 
-<div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+<div class="adm-stok-grid">
 
     {{-- Tabel Stok --}}
     <div class="adm-tbl-wrap">

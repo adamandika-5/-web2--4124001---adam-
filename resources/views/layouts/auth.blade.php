@@ -23,10 +23,11 @@
 </head>
 <body>
 
-<div style="min-height:100vh;display:grid;grid-template-columns:1fr 1fr;background:#fff">
+{{-- Layout 2 kolom desktop / 1 kolom mobile --}}
+<div class="auth-layout">
 
     {{-- ── PANEL KIRI (visual / branding) ── --}}
-    <div style="background:var(--soil);display:flex;flex-direction:column;justify-content:center;padding:64px 56px;position:relative;overflow:hidden">
+    <div class="auth-panel-left">
 
         {{-- Background pattern --}}
         <div style="position:absolute;inset:0;opacity:.04;background-image:radial-gradient(circle,var(--sand) 1px,transparent 1px);background-size:24px 24px;pointer-events:none"></div>
@@ -71,7 +72,7 @@
     </div>
 
     {{-- ── PANEL KANAN (form) ── --}}
-    <div style="display:flex;flex-direction:column;justify-content:center;padding:64px 56px;overflow-y:auto">
+    <div class="auth-panel-right">
 
         {{-- Back to home --}}
         <div style="margin-bottom:40px">
