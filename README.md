@@ -1,59 +1,184 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sinar Alam Material
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sinar Alam Material adalah aplikasi web toko material bangunan berbasis Laravel yang digunakan untuk membantu pelanggan melihat katalog produk, melakukan pemesanan material, menyewa alat bangunan, menggunakan promo/voucher, serta memantau status pesanan secara online.
 
-## About Laravel
+Website ini juga menyediakan panel administrator untuk mengelola produk, kategori, stok, pesanan, pembayaran, promo, sewa alat, supplier, pengguna, dan pengaturan toko.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+URL Live
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Website dapat diakses melalui:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+https://sinaralammaterial.my.id
 
-## Learning Laravel
+Fitur Utama
+ 
+Fitur Pengguna
+- Melihat halaman beranda toko
+- Melihat katalog produk material bangunan
+- Melihat detail produk
+- Menambahkan produk ke keranjang
+- Menambahkan produk ke wishlist
+- Melakukan checkout pesanan
+- Melacak status pesanan
+- Melihat promo dan voucher
+- Melakukan pemesanan sewa alat bangunan
+- Mengelola profil pengguna
+- Mengelola alamat pengiriman
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Fitur Admin
+- Dashboard ringkasan data toko
+- Manajemen produk
+- Manajemen kategori dan sub-kategori
+- Manajemen stok dan gudang
+- Manajemen pesanan
+- Verifikasi pembayaran
+- Manajemen promo dan voucher
+- Manajemen sewa alat
+- Manajemen supplier
+- Manajemen user
+- Activity log
+- Pengaturan toko, kontak, pembayaran, pengiriman, notifikasi, SEO, dan tampilan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Teknologi yang Digunakan
 
-## Laravel Sponsors
+- Laravel 12
+- PHP 8.2
+- MySQL
+- Blade Template
+- HTML
+- CSS
+- JavaScript
+- Nginx / Web Server Hosting
+- Git dan GitHub
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Cara Menjalankan Project di Lokal
 
-### Premium Partners
+1. Clone Repository
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+git clone https://github.com/adamandika-5/-web2--4124001---adam-.git
 
-## Contributing
+cd -web2--4124001---adam-
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. Install Dependency Laravel
 
-## Code of Conduct
+```bash
+composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. Salin File Environment
 
-## Security Vulnerabilities
+```bash
+cp .env.example .env
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. Generate Application Key
 
-## License
+```bash
+php artisan key:generate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+5. Atur Database
+
+Buat database MySQL baru, lalu sesuaikan konfigurasi pada file `.env`:
+
+.env
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=c211sinar_alam
+DB_USERNAME=c211user367546
+DB_PASSWORD=Adamandika1
+
+
+6. Jalankan Migrasi dan Seeder
+
+```bash
+php artisan migrate --seed
+```
+
+7. Jalankan Storage Link
+
+```bash
+php artisan storage:link
+```
+
+8. Jalankan Server Lokal
+
+```bash
+php artisan serve
+```
+
+Akses aplikasi melalui:
+
+http://127.0.0.1:8000
+
+
+Akun Demo
+
+Admin
+
+Email    : adam@sinaralam.id
+Password : password 
+
+User
+
+Email    : user@sinaralam.id
+Password : Adamandika1
+
+
+Ringkasan Deployment
+
+Aplikasi dideploy pada layanan hosting dengan domain aktif:
+
+https://sinaralammaterial.my.id
+
+Langkah deployment yang dilakukan:
+
+1. Mengunggah project Laravel ke server hosting.
+2. Mengatur folder public Laravel sebagai document root.
+3. Mengatur file `.env` untuk mode production.
+4. Menghubungkan aplikasi dengan database MySQL hosting.
+5. Menjalankan instalasi dependency menggunakan Composer.
+6. Menjalankan optimasi konfigurasi Laravel.
+7. Mengaktifkan SSL/HTTPS.
+8. Menguji halaman user dan admin agar dapat diakses secara online.
+
+Kendala Deployment
+
+Beberapa kendala yang ditemukan saat deployment:
+
+* Error 500 karena path Laravel belum sesuai.
+* Folder `vendor` belum lengkap.
+* Asset CSS tidak tampil karena konfigurasi URL belum sesuai HTTPS.
+* Perlu penyesuaian responsive mobile pada beberapa halaman.
+
+Solusi Deployment
+
+Solusi yang dilakukan:
+
+* Memperbaiki path `public/index.php`.
+* Menjalankan ulang instalasi dependency dengan Composer.
+* Mengatur `APP_URL` dan `ASSET_URL` menggunakan HTTPS.
+* Membersihkan cache Laravel dengan perintah:
+
+```bash
+php artisan optimize:clear
+```
+
+* Memperbaiki tampilan responsive melalui file Blade dan CSS.
+
+Struktur Role
+
+Aplikasi memiliki dua role utama:
+
+1. Admin
+   Mengelola data toko, produk, pesanan, pembayaran, promo, stok, user, dan pengaturan.
+
+2. User
+   Melihat produk, melakukan pemesanan, menyewa alat, menyimpan wishlist, dan melacak pesanan.
+
+Pengembang
+
+Project ini dibuat untuk memenuhi tugas akhir mata kuliah Pemrograman Web berbasis Laravel.
